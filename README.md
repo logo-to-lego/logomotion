@@ -1,5 +1,4 @@
-# logomotion
-
+# Logomotion
 
 ## Purpose of the application
 Logomotion is a logo to java compiler. The goal of the project is to enable the use of Logo programming language to control and instruct Lego mindstorms robots, models EV3 and NXT, on the LeJos operating system written in Java. The primary purpose of this compiler is to provide educational assistance for children learning programming.
@@ -20,3 +19,12 @@ Logomotion is a logo to java compiler. The goal of the project is to enable the 
 ### Branching
 
 Every PR is peer reviewed and must go through CI/CD pipeline before merging to trunk. Trunk should always contain working code.
+
+## How users can get started with the project
+
+Instructions WIP
+
+## Where users can get help with your project
+If you need help, please create a github issue.
+
+## Who maintains and contributes to the project
