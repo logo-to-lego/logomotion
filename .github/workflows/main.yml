@@ -22,6 +22,8 @@ jobs:
         run: poetry install
       - name: Run tests
         run: poetry run invoke test
+      - name: Run Coverage
+        run: poetry run invoke coverage
       - name: Coverage report
         run: poetry run coverage xml
       - name: Coverage report to Codecov
