@@ -1,3 +1,3 @@
 [run]
 source = src
-omit = src/tests/**,src/hello.py
+omit = src/tests/**
