@@ -1,3 +1,5 @@
-"""Hello world!"""
+class Hello:
+    """Test class for testing CI environment"""
 
-print("hello world")
+    def hello_world(console_io):
+        console_io.write("hello world")
