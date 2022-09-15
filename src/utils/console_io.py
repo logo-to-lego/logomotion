@@ -15,4 +15,3 @@ class ConsoleIO:
         print(message)
 
 default_console_io = ConsoleIO()
-
