@@ -40,7 +40,7 @@ class Lexer:
     def t_ignore_newline(self, token):
         token.lexer.lineno += token.value.count("\n")
 
-    @TOKEN(r"\;.*\n")
+    @TOKEN(r"\;.*")
     def t_ignore_comment(self, token):
         token.lexer.lineno += 1
 
