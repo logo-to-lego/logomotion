@@ -10,6 +10,8 @@ Logomotion is a logo to java compiler. The goal of the project is to enable the 
 
 ## Documentation
 
+[Working hours](https://docs.google.com/spreadsheets/d/12jyUsrNQjnxRyR_zxs0hcPKDV8_77uyjEEaTHGnhgDI/edit?usp=sharing)
+
 ## Definition of Done
 
 * Pull requests from branches go through CI/CD pipeline successfully
@@ -31,3 +33,4 @@ Instructions WIP
 If you need help, please create a github issue.
 
 ## Who maintains and contributes to the project
+
