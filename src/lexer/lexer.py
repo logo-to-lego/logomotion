@@ -34,7 +34,7 @@ class Lexer:
 
     # Ignored tokens, do not put these in the tokens-tuple.
 
-    t_ignore = r" /t"
+    t_ignore = r" \t"
 
     @TOKEN(r"(\r?\n)+")
     def t_ignore_newline(self, token):
