@@ -50,10 +50,11 @@ class TestLexer(unittest.TestCase):
         self.lexer.t_ignore_newline(self.token_mock)
         self.assertEqual(self.token_mock.lexer.lineno, 3)
 
-    def test_token_increases_line_number_from_comments(self):
-        test_string = "; This is a comment"
+    def test_token_does_not_increase_line_number_from_comments(self):
+        test_string = """; This is a comment
+        This is not."""
 
         self.token_mock.value = test_string
         self.assertEqual(self.token_mock.lexer.lineno, 0)
         self.lexer.t_ignore_comment(self.token_mock)
-        self.assertEqual(self.token_mock.lexer.lineno, 1)
+        self.assertEqual(self.token_mock.lexer.lineno, 0)

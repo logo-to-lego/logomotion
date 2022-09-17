@@ -1,16 +1,10 @@
-"""Define token types.
-
-Token types are used by PLY's lexer-generator to make the lexer. Input stream
-is split into a stream of tokens according to regex/rules defined here.
-"""
+"""Token types used by the lexer. """
 
 from enum import Enum
 
-NAME_REGEX = r"[\w_][\w\d_.]*"
-
 
 class TokenType(Enum):
-    """Insert new token names here and the related regex/rule to the dict below."""
+    """Insert new token names here and the rule to the Lexer-class."""
 
     IDENT = "IDENT"
     MUL = "MUL"
@@ -38,57 +32,4 @@ class TokenType(Enum):
     FOR = "FOR"
     IF = "IF"
     NUMBER = "NUMBER"
-
-
-# Add tokens with only regex rules here.
-# If the token needs a function call, add it in the lexer.
-# Do not use regex like 'foo' here, add it to the reserved dict and
-# handle it in t_IDENT of the lexer.
-token_types = {
-    TokenType.MUL: r"\*",
-    TokenType.DIV: r"\/",
-    TokenType.PLUS: r"\+",
-    TokenType.MINUS: r"\-",
-    TokenType.LPAREN: r"\(",
-    TokenType.RPAREN: r"\)",
-    TokenType.LBRACKET: r"\[",
-    TokenType.RBRACKET: r"\]",
-    TokenType.LBRACE: r"\{",
-    TokenType.RBRACE: r"\}",
-    TokenType.EQUALS: r"\=",
-    TokenType.STRINGLITERAL: r"\"" + NAME_REGEX,
-    TokenType.DEREF: r"\:" + NAME_REGEX,
-    TokenType.COMMA: r",",
-}
-
-# Maps <word in input> to <token type string>
-reserved_words = {
-    "to": TokenType.TO.value,
-    "miten": TokenType.TO.value,
-    "end": TokenType.END.value,
-    "valmis": TokenType.END.value,
-    "fd": TokenType.FD.value,
-    "forward": TokenType.FD.value,
-    "et": TokenType.FD.value,
-    "eteen": TokenType.FD.value,
-    "bk": TokenType.BK.value,
-    "backward": TokenType.BK.value,
-    "ta": TokenType.BK.value,
-    "taakse": TokenType.BK.value,
-    "rt": TokenType.RT.value,
-    "right": TokenType.RT.value,
-    "oi": TokenType.RT.value,
-    "oikealle": TokenType.RT.value,
-    "lt": TokenType.LT.value,
-    "left": TokenType.LT.value,
-    "va": TokenType.LT.value,
-    "vasemmalle": TokenType.LT.value,
-    "stop": TokenType.STOP.value,
-    "seis": TokenType.STOP.value,
-    "make": TokenType.MAKE.value,
-    "olkoon": TokenType.MAKE.value,
-    "if": TokenType.IF.value,
-    "jos": TokenType.IF.value,
-    "for": TokenType.FOR.value,
-    "luvuille": TokenType.FOR.value,
-}
+    SHOW = "SHOW"
