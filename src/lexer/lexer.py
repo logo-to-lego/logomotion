@@ -5,7 +5,7 @@ Lexer module used by PLY's lexer-generator.
 
 from ply.lex import lex, TOKEN
 from lexer.token_types import TokenType
-from utils.console_io import ConsoleIO
+from utils.console_io import default_console_io
 
 
 class Lexer:
@@ -48,8 +48,8 @@ class Lexer:
     NAME_REGEX = r"[\w_][\w\d_.]*"
 
     # Add tokens with only regex rules here.
-    # If the token needs a function call, add it ONLY as a method.
-    # Do not use regex like 'foo' here, add them to the reserved dict.
+    # If the token needs a function call, add it only as a method.
+    # Do not use regex like 'foo' here, add them to reserved_words.
     token_types = {
         TokenType.MUL: r"\*",
         TokenType.DIV: r"\/",
@@ -67,9 +67,10 @@ class Lexer:
         TokenType.COMMA: r",",
     }
 
-    def __init__(self):
+    def __init__(self, console_io=default_console_io):
         self.lexer = None
         self.tokens = [token_type.value for token_type in TokenType]
+        self.console_io = console_io
 
         # Set regex only tokens.
         for name, value in self.token_types.items():
@@ -90,7 +91,7 @@ class Lexer:
 
     # Ignored tokens, do not put these in the tokens-list.
 
-    t_ignore = r" \t"
+    t_ignore = " \t"
 
     @TOKEN(r"(\r?\n)+")
     def t_ignore_newline(self, token):
@@ -101,7 +102,7 @@ class Lexer:
         pass
 
     def t_error(self, token):
-        ConsoleIO.write(f"Illegal char {token.value[0]!r}")
+        self.console_io.write(f"Illegal char {token.value[0]!r}")
         token.lexer.skip(1)
 
     def build(self, **kwargs):
