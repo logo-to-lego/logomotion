@@ -58,6 +58,16 @@ class Number(Node):
         super().__init__("Number", children=None, leaf=leaf)
 
 
+class Float(Node):
+    def __init__(self, leaf):
+        super().__init__("Float", children=None, leaf=leaf)
+
+
+class Bool(Node):
+    def __init__(self, leaf):
+        super().__init__("Bool", children=None, leaf=leaf)
+
+
 class Identifier(Node):
     def __init__(self, leaf):
         super().__init__("Ident", children=None, leaf=leaf)

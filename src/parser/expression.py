@@ -27,6 +27,17 @@ def p_expression_number(prod):
     prod[0] = ast.Number(prod[1])
 
 
+def p_expression_float(prod):
+    "expression : FLOAT"
+    prod[0] = ast.Float(prod[1])
+
+
+def p_expression_bool(prod):
+    """expression : TRUE
+    | FALSE"""
+    prod[0] = ast.Bool(lexer.reserved_words[prod[1]])
+
+
 def p_expression_deref(prod):
     "expression : DEREF"
     prod[0] = ast.Deref(prod[1][1:])

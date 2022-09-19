@@ -43,6 +43,10 @@ class Lexer:
         "luvuille": TokenType.FOR,
         "show": TokenType.SHOW,
         "näytä": TokenType.SHOW,
+        "true": TokenType.TRUE,
+        "joo": TokenType.TRUE,
+        "false": TokenType.FALSE,
+        "ei": TokenType.FALSE,
     }
 
     NAME_REGEX = r"[\w_][\w\d_.]*"
@@ -77,6 +81,12 @@ class Lexer:
             setattr(self, "t_" + name.value, value)
 
     # Token methods. Name as t_<TOKEN_NAME>, where TOKEN_NAME is in the tokens-list.
+    # Declaration order matters for matching, i.e. longest similar regex first.
+
+    @TOKEN(r"\d+\.\d+")
+    def t_FLOAT(self, token):
+        token.value = float(token.value)
+        return token
 
     @TOKEN(r"\d+")
     def t_NUMBER(self, token):
@@ -86,7 +96,8 @@ class Lexer:
     @TOKEN(NAME_REGEX)
     def t_IDENT(self, token):
         """Used for tokenizing all identifiers, keywords."""
-        token.type = self.reserved_words.get(token.value, TokenType.IDENT).value
+        word = token.value.lower()
+        token.type = self.reserved_words.get(word, TokenType.IDENT).value
         return token
 
     # Ignored tokens, do not put these in the tokens-list.
