@@ -12,7 +12,9 @@ def p_command(prod):
     | rt
     | show
     | make
-    | bye"""
+    | bye
+    | if
+    | ifelse"""
     prod[0] = prod[1]
 
 
@@ -74,3 +76,23 @@ def p_make(prod):
 def p_bye(prod):
     "bye : BYE"
     prod[0] = ast.Command(lexer.reserved_words[prod[1]])
+
+
+def p_if(prod):
+    "if : IF LBRACE expression RBRACE LBRACE statement_list RBRACE"
+    prod[0] = ast.If(children=[prod[6]], leaf=prod[3])
+
+
+def p_if_without_braces(prod):
+    "if : IF expression LBRACE statement_list RBRACE"
+    prod[0] = ast.If(children=[prod[4]], leaf=prod[2])
+
+
+def p_ifelse(prod):
+    "ifelse : IFELSE LBRACE expression RBRACE LBRACE statement_list RBRACE LBRACE statement_list RBRACE"
+    prod[0] = ast.IfElse([prod[6], prod[9]], prod[3])
+
+
+def p_ifelse_without_braces(prod):
+    "ifelse : IFELSE expression LBRACE statement_list RBRACE LBRACE statement_list RBRACE"
+    prod[0] = ast.IfElse([prod[4], prod[7]], prod[2])

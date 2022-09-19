@@ -81,3 +81,13 @@ class Deref(Node):
 class StringLiteral(Node):
     def __init__(self, leaf):
         super().__init__("StringLiteral", children=None, leaf=leaf)
+
+
+class If(Node):
+    def __init__(self, children, leaf):
+        super().__init__("If", children, leaf)
+
+
+class IfElse(Node):
+    def __init__(self, children, leaf):
+        super().__init__("IfElse", children, leaf)
