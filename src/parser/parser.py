@@ -71,7 +71,7 @@ from utils.console_io import default_console_io as console
 
 def p_start(prod):
     "start : statement_list"
-    prod[0] = prod[1]
+    prod[0] = ast.Start([prod[1]])
 
 
 def p_statement_list(prod):
@@ -95,30 +95,27 @@ def p_empty(prod):
 
 # pylint: disable-next=missing-function-docstring
 def p_error(prod):
-    colpos = shared.ply_lexer.lexpos - shared.ply_lexer.linestartpos
+    lineno = lexer.ply.lineno
+    colpos = lexer.ply.lexpos - lexer.ply.linestartpos
 
     if prod:
-        console.write(
-            f"Syntax error at '{prod.value}' ({shared.ply_lexer.lineno}, {colpos})"
-        )
+        console.write(f"Syntax error at '{prod.value}' ({lineno}, {colpos})")
     else:
-        console.write(f"Syntax error at {shared.ply_lexer.lineno}, {colpos}")
+        console.write(f"Syntax error at {lineno}, {colpos}")
 
 
 class Parser:
-    """Wrapper class for parser functionality."""
+    """Wrapper class for parser functionality. Used to transform source code into AST."""
 
-    def __init__(self, code_lexer: Lexer) -> None:
-        self.lexer = code_lexer
-        shared.lexer = code_lexer
-        shared.ply_lexer = code_lexer.get_lexer()
-        globals()["tokens"] = code_lexer.tokens
-        reserved_words.update(code_lexer.reserved_words)
-        self.parser = None
+    def __init__(self, current_lexer: Lexer) -> None:
+        self._current_lexer = current_lexer
+        lexer.update(current_lexer)
+        globals()["tokens"] = current_lexer.tokens
+        self._parser = None
 
     def build(self, **kwargs):
-        """Builds the PLY parser. Passes arguments to yacc.yacc()."""
-        self.parser = yacc.yacc(**kwargs)
+        """Builds the PLY parser. Passes arguments to PLY's yacc.yacc()."""
+        self._parser = yacc.yacc(**kwargs)
 
     def parse(self, code, **kwargs):
         """Calls the PLY parser on given code and parser arguments.
@@ -127,13 +124,18 @@ class Parser:
             code (str): Logo source code.
 
         Returns:
-            node (parser.ast.Node): AST
+            start_node (parser.ast.Start): AST
         """
-        parser = self.get_parser()
-        return parser.parse(code, lexer=self.lexer.get_lexer(), **kwargs)
+        self._current_lexer.reset()
+        ply_parser = self.get_ply_parser()
+        ply_lexer = self._current_lexer.get_ply_lexer()
 
-    def get_parser(self):
-        """Returns PLY parser. Automatically calls build() if it doesn't exist."""
-        if not self.parser:
-            self.build()
-        return self.parser
+        start_node = ply_parser.parse(code, lexer=ply_lexer, **kwargs)
+
+        return start_node
+
+    def get_ply_parser(self, **kwargs):
+        """Returns the built PLY parser. Automatically calls build() if it doesn't exist."""
+        if not self._parser:
+            self.build(**kwargs)
+        return self._parser

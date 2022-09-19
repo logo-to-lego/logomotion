@@ -24,6 +24,11 @@ class Node:
         return result
 
 
+class Start(Node):
+    def __init__(self, children=None):
+        super().__init__("Start", children)
+
+
 class StatementList(Node):
     def __init__(self, children=None):
         super().__init__("StatementList", children, None)

@@ -1,10 +1,10 @@
 import unittest
-from hello import Hello 
+from hello import Hello
 from unittest.mock import Mock
 
+
 class TestHello(unittest.TestCase):
-    """Test class for testing CI environment
-    """
+    """Test class for testing CI environment"""
 
     def setUp(self):
         self.mock = Mock()

@@ -11,6 +11,8 @@ class TestLexer(unittest.TestCase):
         self.lexer = Lexer(console_io=self.console_mock)
         self.token_mock = Mock()
         self.token_mock.lexer.lineno = 0
+        self.token_mock.lexer.linestartpos = 0
+        self.token_mock.lexpos = 0
 
     def tearDown(self):
         self.token_mock = Mock()
@@ -66,7 +68,7 @@ class TestLexer(unittest.TestCase):
         ; This is a comment
         DEF"""
 
-        lexer = self.lexer.get_lexer()
+        lexer = self.lexer.get_ply_lexer()
         lexer.input(test_string)
         token_abc = lexer.token()
         self.assertEqual(token_abc.lineno, 1)
@@ -76,7 +78,7 @@ class TestLexer(unittest.TestCase):
     def test_lexer_finds_illegal_characters(self):
         test_string = 'make % "travel.distance 10'
 
-        lexer = self.lexer.get_lexer()
+        lexer = self.lexer.get_ply_lexer()
         lexer.input(test_string)
 
         for token in lexer:

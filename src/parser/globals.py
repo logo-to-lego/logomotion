@@ -1,5 +1,7 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, too-few-public-methods
 """Parsing rules and globals used by the parser"""
+
+from lexer.lexer import Lexer
 
 precedence = (
     ("left", "PLUS", "MINUS"),
@@ -10,13 +12,22 @@ precedence = (
 
 names = {}
 
-reserved_words = {}
-
 start = "start"
 
 
-class Wrapper:
-    pass
+class LexerWrapper:
+    """Wrapper class for exposing the lexer to parser functions."""
+
+    def __init__(self) -> None:
+        self.reserved_words = {}
+        self.ply = None
+        self.current_lexer = None
+
+    def update(self, current_lexer: Lexer):
+        """Update wrapper fields with current_lexer."""
+        self.current_lexer = current_lexer
+        self.ply = current_lexer.get_ply_lexer()
+        self.reserved_words = current_lexer.reserved_words
 
 
-shared = Wrapper()
+lexer = LexerWrapper()
