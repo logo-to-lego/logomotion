@@ -13,3 +13,10 @@ names = {}
 reserved_words = {}
 
 start = "start"
+
+
+class Wrapper:
+    pass
+
+
+shared = Wrapper()

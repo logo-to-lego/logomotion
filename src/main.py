@@ -31,6 +31,7 @@ def parser_ui():
 
             program.append(user_input)
 
+        io.write("AST:")
         io.write(parser.parse("\n".join(program)))
 
 

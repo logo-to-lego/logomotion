@@ -1,4 +1,4 @@
-# pylint: disable=unused-argument,wildcard-import,unused-wildcard-import, wrong-import-position
+# pylint: disable=unused-argument,wildcard-import,unused-wildcard-import
 
 """
 Parser module using PLY. Create a new Parser object to use the parser.
@@ -66,6 +66,7 @@ from parser.value import *
 from parser.expression import *
 from ply import yacc
 from lexer.lexer import Lexer
+from utils.console_io import default_console_io as console
 
 
 def p_start(prod):
@@ -94,16 +95,25 @@ def p_empty(prod):
 
 # pylint: disable-next=missing-function-docstring
 def p_error(prod):
-    print(f"Syntax error at '{prod.value}'")
+    colpos = shared.ply_lexer.lexpos - shared.ply_lexer.linestartpos
+
+    if prod:
+        console.write(
+            f"Syntax error at '{prod.value}' ({shared.ply_lexer.lineno}, {colpos})"
+        )
+    else:
+        console.write(f"Syntax error at {shared.ply_lexer.lineno}, {colpos}")
 
 
 class Parser:
     """Wrapper class for parser functionality."""
 
-    def __init__(self, lexer: Lexer) -> None:
-        self.lexer = lexer
-        globals()["tokens"] = lexer.tokens
-        reserved_words.update(lexer.reserved_words)
+    def __init__(self, code_lexer: Lexer) -> None:
+        self.lexer = code_lexer
+        shared.lexer = code_lexer
+        shared.ply_lexer = code_lexer.get_lexer()
+        globals()["tokens"] = code_lexer.tokens
+        reserved_words.update(code_lexer.reserved_words)
         self.parser = None
 
     def build(self, **kwargs):

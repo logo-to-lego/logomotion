@@ -96,6 +96,7 @@ class Lexer:
     @TOKEN(r"(\r?\n)+")
     def t_ignore_newline(self, token):
         token.lexer.lineno += token.value.count("\n")
+        token.lexer.linestartpos = token.lexpos + 1
 
     @TOKEN(r"\;.*")
     def t_ignore_comment(self, token):
@@ -108,6 +109,7 @@ class Lexer:
     def build(self, **kwargs):
         """Builds the lexer based on token rules."""
         self.lexer = lex(object=self, **kwargs)
+        self.lexer.linestartpos = 0
 
     def get_lexer(self):
         """Returns the ply lexer."""
