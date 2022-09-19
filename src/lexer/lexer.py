@@ -47,6 +47,8 @@ class Lexer:
         "joo": TokenType.TRUE,
         "false": TokenType.FALSE,
         "ei": TokenType.FALSE,
+        "bye": TokenType.BYE,
+        "heippa": TokenType.BYE
     }
 
     NAME_REGEX = r"[\w_][\w\d_.]*"

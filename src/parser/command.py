@@ -11,7 +11,8 @@ def p_command(prod):
     | lt
     | rt
     | show
-    | make"""
+    | make
+    | bye"""
     prod[0] = prod[1]
 
 
@@ -68,3 +69,8 @@ def p_show_paren(prod):
 def p_make(prod):
     """make : MAKE STRINGLITERAL value"""
     prod[0] = ast.Command(lexer.reserved_words[prod[1]], children=[prod[3]], leaf=prod[2][1:])
+
+
+def p_bye(prod):
+    "bye : BYE"
+    prod[0] = ast.Command(lexer.reserved_words[prod[1]])

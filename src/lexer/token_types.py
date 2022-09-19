@@ -36,3 +36,4 @@ class TokenType(Enum):
     FLOAT = "FLOAT"
     TRUE = "TRUE"
     FALSE = "FALSE"
+    BYE = "BYE"
