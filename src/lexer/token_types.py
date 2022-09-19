@@ -31,6 +31,7 @@ class TokenType(Enum):
     MAKE = "MAKE"
     FOR = "FOR"
     IF = "IF"
+    IFELSE = "IFELSE"
     SHOW = "SHOW"
     NUMBER = "NUMBER"
     FLOAT = "FLOAT"

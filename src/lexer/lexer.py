@@ -39,6 +39,8 @@ class Lexer:
         "olkoon": TokenType.MAKE,
         "if": TokenType.IF,
         "jos": TokenType.IF,
+        "ifelse": TokenType.IFELSE,
+        "riippuen": TokenType.IFELSE,
         "for": TokenType.FOR,
         "luvuille": TokenType.FOR,
         "show": TokenType.SHOW,
