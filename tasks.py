@@ -22,6 +22,14 @@ def black(ctx):
     ctx.run("black src", pty=True)
 
 
+@task(optional=["file"])
+def start(ctx, file=None):
+    if file:
+        ctx.run("python3 src/main.py " + file)
+    else:
+        ctx.run("python3 src/main.py")
+
+
 # From https://github.com/ohjelmistotekniikka-hy/python-todo-app/blob/master/tasks.py
 @task
 def coverage(ctx):

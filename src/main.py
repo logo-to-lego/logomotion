@@ -35,11 +35,37 @@ def parser_ui():
         io.write(parser.parse("\n".join(program)))
 
 
-USE_UI = True
+def load_file(filename):
+    """Loads a file and returns contents as a string."""
+    content = []
 
-if USE_UI:
-    parser_ui()
-else:
-    PROG = """fd 2 bk 50 rt 1+2 lt :a"""
-    ast = parser.parse(PROG)
-    io.write(ast)
+    with open(filename, "r", encoding="utf8") as file:
+        content = file.readlines()
+
+    return "".join(content)
+
+
+def file_parser():
+    """Parses a user given file and prints lexer & parser results."""
+    filename = sys.argv[1]
+    code = load_file(filename)
+    io.write(f"Load file {filename}:")
+    io.write(code + "\n")
+    io.write("Lexer tokens:")
+    io.write("\n".join((str(token) for token in lexer.tokenize_input(code))) + "\n")
+    io.write("Parser AST:")
+    io.write(parser.parse(code))
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        file_parser()
+    else:
+        USE_UI = True
+
+        if USE_UI:
+            parser_ui()
+        else:
+            PROG = """fd 2 bk 50 rt 1+2 lt :a"""
+            ast = parser.parse(PROG)
+            io.write(ast)
