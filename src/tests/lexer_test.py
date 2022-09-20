@@ -246,3 +246,11 @@ class TestLexer(unittest.TestCase):
 
         self.console_mock.write.assert_called()
         self.assertIn("Illegal", self.console_mock.write.call_args.args[0])
+
+    def test_lexer_is_reset_correctly(self):
+        lexer = self.lexer.get_ply_lexer()
+        lexer.lineno = 123
+        lexer.linestartpos = 45
+        self.lexer.reset()
+        self.assertNotEqual(lexer.lineno, 123)
+        self.assertNotEqual(lexer.linestartpos, 45)
