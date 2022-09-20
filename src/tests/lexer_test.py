@@ -17,6 +17,15 @@ class TestLexer(unittest.TestCase):
     def tearDown(self):
         self.token_mock = Mock()
 
+    def test_token_method_returns_floats_correctly(self):
+        self.token_mock.value = "1.23"
+        tok = self.lexer.t_FLOAT(self.token_mock)
+        self.assertAlmostEqual(tok.value, 1.23)
+        
+        self.token_mock.value = "123.456"
+        tok = self.lexer.t_FLOAT(self.token_mock)
+        self.assertAlmostEqual(tok.value, 123.456)
+
     def test_token_method_returns_numbers_correctly(self):
         self.token_mock.value = "123"
         tok = self.lexer.t_NUMBER(self.token_mock)
