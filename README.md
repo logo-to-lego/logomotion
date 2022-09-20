@@ -4,13 +4,13 @@
 [![codecov](https://codecov.io/gh/logo-to-lego/logomotion/branch/main/graph/badge.svg?token=UTNJ6PS64G)](https://codecov.io/gh/logo-to-lego/logomotion)
 
 ## Purpose of the application
-Logomotion is a logo to java compiler. The goal of the project is to enable the use of Logo programming language to control and instruct Lego mindstorms robots, models EV3 and NXT, on the LeJos operating system written in Java. The primary purpose of this compiler is to provide educational assistance for children learning programming.
+Logomotion is a Logo to Java compiler. The goal of the project is to enable the use of Logo programming language to control and instruct Lego Mindstorms robots, models EV3 and NXT, on the leJOS operating system written in Java. The primary purpose of this compiler is to provide educational assistance for children learning programming.
 
 ## Project progress
 
 ## Documentation
 
-[Working hours](https://docs.google.com/spreadsheets/d/12jyUsrNQjnxRyR_zxs0hcPKDV8_77uyjEEaTHGnhgDI/edit?usp=sharing)
+[Working hours](https://docs.google.com/spreadsheets/d/12jyUsrNQjnxRyR_zxs0hcPKDV8_77uyjEEaTHGnhgDI)
 
 ## Definition of Done
 
