@@ -1,4 +1,4 @@
-# pylint: disable=unused-argument,wildcard-import,unused-wildcard-import
+# pylint: disable=unused-argument,wildcard-import,unused-wildcard-import,line-too-long
 """ Command production rules
 """
 from parser.globals import *
