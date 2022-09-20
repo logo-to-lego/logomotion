@@ -1,19 +1,45 @@
 """Main module for the compiler.
 """
+import sys
+from parser.parser import Parser
 from lexer.lexer import Lexer
+from utils.console_io import default_console_io as io
 
-# from parser.parser import parser
-
-PROG = """foo 4 + 2 - 1 for make "foo 5 [ ] { } :test %
-make forward if show
-; foo show
-oikealle 4 / 2"""
 
 lexer = Lexer()
-lexer.build(debug=True)
-lexer.get_lexer().input(PROG)
+lexer.build()
 
-for token in lexer.get_lexer():
-    print(token)
+parser = Parser(lexer)
+parser.build()
 
-# parser.parse(code, lexer=lexer)
+
+def parser_ui():
+    """For parser testing."""
+    while True:
+        program = []
+
+        io.write("Enter logo code, an empty line to start parsing or q! to quit:")
+
+        while True:
+            user_input = io.read()
+
+            if user_input == "q!":
+                sys.exit()
+
+            if not user_input:
+                break
+
+            program.append(user_input)
+
+        io.write("Result:")
+        io.write(parser.parse("\n".join(program)))
+
+
+USE_UI = True
+
+if USE_UI:
+    parser_ui()
+else:
+    PROG = """fd 2 bk 50 rt 1+2 lt :a"""
+    ast = parser.parse(PROG)
+    io.write(ast)

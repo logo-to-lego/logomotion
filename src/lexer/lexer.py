@@ -39,10 +39,18 @@ class Lexer:
         "olkoon": TokenType.MAKE,
         "if": TokenType.IF,
         "jos": TokenType.IF,
+        "ifelse": TokenType.IFELSE,
+        "riippuen": TokenType.IFELSE,
         "for": TokenType.FOR,
         "luvuille": TokenType.FOR,
         "show": TokenType.SHOW,
         "näytä": TokenType.SHOW,
+        "true": TokenType.TRUE,
+        "joo": TokenType.TRUE,
+        "false": TokenType.FALSE,
+        "ei": TokenType.FALSE,
+        "bye": TokenType.BYE,
+        "heippa": TokenType.BYE,
     }
 
     NAME_REGEX = r"[\w_][\w\d_.]*"
@@ -68,7 +76,7 @@ class Lexer:
     }
 
     def __init__(self, console_io=default_console_io):
-        self.lexer = None
+        self._ply_lexer = None
         self.tokens = [token_type.value for token_type in TokenType]
         self.console_io = console_io
 
@@ -77,6 +85,12 @@ class Lexer:
             setattr(self, "t_" + name.value, value)
 
     # Token methods. Name as t_<TOKEN_NAME>, where TOKEN_NAME is in the tokens-list.
+    # Declaration order matters for matching, i.e. longest similar regex first.
+
+    @TOKEN(r"\d+\.\d+")
+    def t_FLOAT(self, token):
+        token.value = float(token.value)
+        return token
 
     @TOKEN(r"\d+")
     def t_NUMBER(self, token):
@@ -86,7 +100,8 @@ class Lexer:
     @TOKEN(NAME_REGEX)
     def t_IDENT(self, token):
         """Used for tokenizing all identifiers, keywords."""
-        token.type = self.reserved_words.get(token.value, TokenType.IDENT).value
+        word = token.value.lower()
+        token.type = self.reserved_words.get(word, TokenType.IDENT).value
         return token
 
     # Ignored tokens, do not put these in the tokens-list.
@@ -96,6 +111,7 @@ class Lexer:
     @TOKEN(r"(\r?\n)+")
     def t_ignore_newline(self, token):
         token.lexer.lineno += token.value.count("\n")
+        token.lexer.linestartpos = token.lexpos + 1
 
     @TOKEN(r"\;.*")
     def t_ignore_comment(self, token):
@@ -107,11 +123,20 @@ class Lexer:
 
     def build(self, **kwargs):
         """Builds the lexer based on token rules."""
-        self.lexer = lex(object=self, **kwargs)
+        self._ply_lexer = lex(object=self, **kwargs)
+        self.reset()
 
-    def get_lexer(self):
-        """Returns the ply lexer."""
-        if not self.lexer:
+    def get_ply_lexer(self):
+        """Returns the built ply lexer."""
+        if not self._ply_lexer:
             self.build()
 
-        return self.lexer
+        return self._ply_lexer
+
+    def reset(self):
+        """Resets the lexer's internal state."""
+        if not self._ply_lexer:
+            self.build()
+
+        self._ply_lexer.lineno = 1  # Must reset here, since it isn't done by PLY.
+        self._ply_lexer.linestartpos = 0

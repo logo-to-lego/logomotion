@@ -15,7 +15,7 @@ Logomotion is a Logo to Java compiler. The goal of the project is to enable the 
 ## Definition of Done
 
 * Pull requests from branches go through CI/CD pipeline successfully
-* Code coverage percentage > 90%
+* Code coverage percentage > 80%
 * Pylint score should be 10/10
 
 
