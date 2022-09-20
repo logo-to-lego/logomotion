@@ -140,3 +140,14 @@ class Lexer:
 
         self._ply_lexer.lineno = 1  # Must reset here, since it isn't done by PLY.
         self._ply_lexer.linestartpos = 0
+
+    def tokenize_input(self, code):
+        """Turns input code into a list of tokens."""
+        self.build()
+        self.reset()
+
+        self._ply_lexer.input(code)
+        tokens = list(self._ply_lexer)
+
+        self.reset()
+        return tokens

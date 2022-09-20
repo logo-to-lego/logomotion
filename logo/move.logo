@@ -1,0 +1,5 @@
+fd 5
+(bk -5)
+(rt 1+4)
+lt :angle
+fd 2*3+ 1

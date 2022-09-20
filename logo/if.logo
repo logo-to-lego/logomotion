@@ -1,0 +1,10 @@
+make "robot_move true
+make "robot_say false
+make "robot.message "ThisIsRobotSpeaking
+
+if { :robot_move } {
+    if :robot_say {
+        show "Hello
+        show :robot.message
+    }
+}
