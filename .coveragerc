@@ -1,6 +1,6 @@
 [run]
 source = src
-omit = src/tests/**, src/ply/**, src/main.py, src/entities/**
+omit = src/tests/**, src/ply/**, src/main.py
 
 [report]
 fail_under = 80

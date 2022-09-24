@@ -6,7 +6,7 @@ class SymbolTable:
     def __init__(self):
         """Initializes a new symbol table object"""
         self._table = {}
-        self._stack = [self._table]
+        self._stack = []
 
     def insert(self, symbol, value):
         """Inserts a new entry to the symbol table"""
@@ -14,7 +14,9 @@ class SymbolTable:
 
     def lookup(self, symbol):
         """Searches for a symbol and returns it's value"""
-        return self._table[symbol]
+        if symbol in self._table:
+            return self._table[symbol]
+        return None
 
     def free(self):
         """Removes entries from a current symbol table"""
@@ -22,16 +24,14 @@ class SymbolTable:
 
     def initialize_scope(self):
         """Saves current symbol table entries to a stack when entering to a new scope"""
-        self._stack.append(self._table)
         copy = self._table.copy()
-        self._table = copy
+        self._stack.append(copy)
 
     def finalize_scope(self):
         """Restores previous symbol table entries from a previous scope and discards
            entries from a current scope"""
-        if len(self._stack) > 1:
-            self._stack.pop()
-            self._table = self._stack[0]
+        if len(self._stack) > 0:
+            self._table =  self._stack.pop()
             return True
         return False
 
