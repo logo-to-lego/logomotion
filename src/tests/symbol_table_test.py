@@ -40,7 +40,7 @@ class TestSymbolTable(unittest.TestCase):
         re = self.st.lookup("y")
         self.assertEqual(None, re)
 
-    def current_level_insertions_are_erased_after_free(self):
+    def test_current_level_insertions_are_erased_after_free(self):
         self.st.insert("x", self.value1)
         self.st.initialize_scope()
         self.st.insert("x", self.value2)
@@ -50,3 +50,10 @@ class TestSymbolTable(unittest.TestCase):
         re2 = self.st.lookup("x")
         self.assertEqual(None, re1)
         self.assertEqual(self.value1, re2)
+
+    def test_finalize_scope_cant_be_run_on_lowest_scope_level(self):
+        self.st.initialize_scope()
+        re1 = self.st.finalize_scope()
+        re2 = self.st.finalize_scope()
+        self.assertEqual(True, re1)
+        self.assertEqual(False, re2)
