@@ -1,7 +1,8 @@
+# pylint: disable=too-few-public-methods
 """The evaluation module of the analysis part"""
 
-from entities.symbol_table import SymbolTable
 from parser.ast import Node
+from entities.symbol_table import SymbolTable
 
 class Evaluation:
     """The Evaluation class houses methods for semantic analysis for the nodes in the AST.
@@ -36,5 +37,5 @@ class Evaluation:
             # Should likely make a separate class for error messages for easier localization?
             self.semantic_errors.append(f"Not Initialized Error: What is '{node.leaf}'?")
             return False
-        
+
         return True
