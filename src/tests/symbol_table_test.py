@@ -44,11 +44,10 @@ class TestSymbolTable(unittest.TestCase):
         self.st.insert("x", self.value1)
         self.st.initialize_scope()
         self.st.insert("x", self.value2)
-        self.st.free()
         re1 = self.st.lookup("x")
-        self.st.finalize_scope()
+        self.st.free()
         re2 = self.st.lookup("x")
-        self.assertEqual(None, re1)
+        self.assertEqual(self.value2, re1)
         self.assertEqual(self.value1, re2)
 
     def test_finalize_scope_cant_be_run_on_lowest_scope_level(self):
