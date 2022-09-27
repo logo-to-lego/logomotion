@@ -3,6 +3,8 @@
 from entities.symbol_table import SymbolTable
 from entities.error_values import ErrorValues
 from entities.error_info import ErrorInfo
+from lexer.token_types import TokenType
+
 
 class Node:
     def __init__(self, node_type, children=None, leaf=None):
@@ -26,10 +28,9 @@ class Node:
         result += ")"
 
         return result
-    
+
     def check_for_errs(self, children, err_msg=""):
-        """ check for errorvalues, if doesnt exist, create one
-        """
+        """check for errorvalues, if doesnt exist, create one"""
         errs = []
         for child in children:
             if isinstance(child.value, ErrorValues):
@@ -40,6 +41,7 @@ class Node:
             ev.add_error(ei)
         ev.errors = errs
         return ev
+
 
 class Start(Node):
     def __init__(self, children=None):
@@ -85,9 +87,23 @@ class BinOp(Node):
         else:
             self.value = "ERROR"
 
+
 class UnaryOp(Node):
     def __init__(self, children, leaf):
         super().__init__("UnaryOp", children, leaf)
+
+
+class Equals(Node):
+    def __init__(self, children, leaf):
+        super().__init__("Equals", children, leaf)
+
+    def eval(self):
+        # if len(self.children) != 2:
+        #     print("too many children")
+        if self.children[0].value != self.children[1].value:
+            self.value = TokenType.FALSE
+        else:
+            self.value = TokenType.TRUE
 
 
 class Number(Node):
@@ -134,6 +150,16 @@ class If(Node):
     def __init__(self, children, leaf):
         super().__init__("If", children, leaf)
 
+    def eval(self):
+        # TODO Virheidenkäsittely: ErrorValues, ErrorInfo
+        if self.leaf.value == TokenType.TRUE:
+            print("tokentype true")
+            self.value = self.children[0]
+        elif self.leaf.value == TokenType.FALSE:
+            print("tokentype false")
+            self.value = None
+        else:
+            print("ERR")
 
 class IfElse(Node):
     def __init__(self, children, leaf):

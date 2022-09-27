@@ -21,7 +21,7 @@ class TestLexer(unittest.TestCase):
         self.token_mock.value = "1.23"
         tok = self.lexer.t_FLOAT(self.token_mock)
         self.assertAlmostEqual(tok.value, 1.23)
-        
+
         self.token_mock.value = "123.456"
         tok = self.lexer.t_FLOAT(self.token_mock)
         self.assertAlmostEqual(tok.value, 123.456)

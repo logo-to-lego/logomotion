@@ -45,3 +45,9 @@ def p_expression_bool(prod):
 def p_expression_deref(prod):
     "expression : DEREF"
     prod[0] = ast.Deref(prod[1][1:])
+
+
+def p_expression_equals(prod):
+    "expression : expression EQUALS expression"
+    prod[0] = ast.Equals([prod[1], prod[3]], prod[2])
+    prod[0].eval()
