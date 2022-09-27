@@ -11,8 +11,7 @@ def p_expression_binop(prod):
     | expression MUL expression
     | expression DIV expression"""
     prod[0] = ast.BinOp([prod[1], prod[3]], prod[2])
-    print(evals(prod[0]))
-    #print("expression binop", prod[0])
+    prod[0].eval()
 
 
 def p_expression_uminus(prod):
@@ -28,11 +27,13 @@ def p_expression_group(prod):
 def p_expression_number(prod):
     "expression : NUMBER"
     prod[0] = ast.Number(prod[1])
+    prod[0].eval()
 
 
 def p_expression_float(prod):
     "expression : FLOAT"
     prod[0] = ast.Float(prod[1])
+    prod[0].eval()
 
 
 def p_expression_bool(prod):

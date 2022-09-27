@@ -1,6 +1,8 @@
 # pylint: disable=missing-class-docstring,missing-function-docstring,too-few-public-methods
 """ Abstract Syntax Tree node definitions, returned by the parser. """
 from entities.symbol_table import SymbolTable
+from entities.error_values import ErrorValues
+from entities.error_info import ErrorInfo
 
 class Node:
     def __init__(self, node_type, children=None, leaf=None):
@@ -14,6 +16,7 @@ class Node:
 
         if self.leaf:
             result += f", {self.leaf if self.leaf else 'None'}"
+        result += f", value: {self.value}"
 
         if self.children:
             result += ", children: ["
@@ -23,7 +26,20 @@ class Node:
         result += ")"
 
         return result
-
+    
+    def check_for_errs(self, children, err_msg=""):
+        """ check for errorvalues, if doesnt exist, create one
+        """
+        errs = []
+        for child in children:
+            if isinstance(child.value, ErrorValues):
+                errs += child.value.errors
+        ev = ErrorValues()
+        if err_msg:
+            ei = ErrorInfo(self, err_msg)
+            ev.add_error(ei)
+        ev.errors = errs
+        return ev
 
 class Start(Node):
     def __init__(self, children=None):
@@ -50,8 +66,14 @@ class BinOp(Node):
 
     def eval(self):
         for child in self.children:
-            if child.type not in ("Number", "Float"):
-                self.value = "ERROR"
+            if type(child.value) not in (int, float, ErrorValues):
+                print("PRIIT")
+                self.value = self.check_for_errs(self.children, "virhe: binop muksu muu kuin int tai float")
+                return
+            elif isinstance(child.value, ErrorValues):
+                print("PRUUT")
+                self.value = self.check_for_errs(self.children)
+                return
         if self.leaf == "+":
             self.value = self.children[0].value + self.children[1].value
         elif self.leaf == "-":
@@ -62,7 +84,6 @@ class BinOp(Node):
             self.value = self.children[0].value / self.children[1].value
         else:
             self.value = "ERROR"
-
 
 class UnaryOp(Node):
     def __init__(self, children, leaf):
