@@ -26,6 +26,7 @@ def p_fd(prod):
 def p_fd_paren(prod):
     "fd : LPAREN FD expression RPAREN"
     prod[0] = ast.Command(lexer.reserved_words[prod[2]], [prod[3]])
+    print("prod[0]",prod[0].type)
 
 
 def p_bk(prod):

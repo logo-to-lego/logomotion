@@ -58,6 +58,7 @@ def file_parser():
 
 
 if __name__ == "__main__":
+    print(sys.argv)
     if len(sys.argv) == 2:
         file_parser()
     else:

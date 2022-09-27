@@ -2,6 +2,7 @@
 """Expression product rules"""
 from parser.globals import *
 from parser import ast
+from csa import evals
 
 
 def p_expression_binop(prod):
@@ -10,6 +11,8 @@ def p_expression_binop(prod):
     | expression MUL expression
     | expression DIV expression"""
     prod[0] = ast.BinOp([prod[1], prod[3]], prod[2])
+    print(evals(prod[0]))
+    #print("expression binop", prod[0])
 
 
 def p_expression_uminus(prod):
