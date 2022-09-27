@@ -1,12 +1,13 @@
-# pylint: disable=missing-class-docstring,too-few-public-methods
+# pylint: disable=missing-class-docstring,missing-function-docstring,too-few-public-methods
 """ Abstract Syntax Tree node definitions, returned by the parser. """
-
+from entities.symbol_table import SymbolTable
 
 class Node:
     def __init__(self, node_type, children=None, leaf=None):
         self.type = node_type
         self.children = children if children else []
         self.leaf = leaf
+        self.value = None
 
     def __str__(self):
         result = f"({self.type}"
@@ -47,6 +48,21 @@ class BinOp(Node):
     def __init__(self, children, leaf):
         super().__init__("BinOp", children, leaf)
 
+    def eval(self):
+        for child in self.children:
+            if child.type not in ("Number", "Float"):
+                self.value = "ERROR"
+        if self.leaf == "+":
+            self.value = self.children[0].value + self.children[1].value
+        elif self.leaf == "-":
+            self.value = self.children[0].value - self.children[1].value
+        elif self.leaf == "*":
+            self.value = self.children[0].value * self.children[1].value
+        elif self.leaf == "/":
+            self.value = self.children[0].value / self.children[1].value
+        else:
+            self.value = "ERROR"
+
 
 class UnaryOp(Node):
     def __init__(self, children, leaf):
@@ -57,10 +73,16 @@ class Number(Node):
     def __init__(self, leaf):
         super().__init__("Number", children=None, leaf=leaf)
 
+    def eval(self):
+        self.value = self.leaf
+
 
 class Float(Node):
     def __init__(self, leaf):
         super().__init__("Float", children=None, leaf=leaf)
+
+    def eval(self):
+        self.value = self.leaf
 
 
 class Bool(Node):
@@ -76,6 +98,10 @@ class Identifier(Node):
 class Deref(Node):
     def __init__(self, leaf):
         super().__init__("Deref", children=None, leaf=leaf)
+
+    def eval(self):
+        symbol_table = SymbolTable()
+        self.value = symbol_table.lookup(self.leaf)
 
 
 class StringLiteral(Node):
