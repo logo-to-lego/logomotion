@@ -92,6 +92,13 @@ class Lexer:
     # Token methods. Name as t_<TOKEN_NAME>, where TOKEN_NAME is in the tokens-list.
     # Declaration order matters for matching, i.e. longest similar regex first.
 
+    @TOKEN(FUNCTION_NAME)
+    def t_IDENT(self, token):
+        """Used for tokenizing all identifiers, keywords."""
+        word = token.value.lower()
+        token.type = self.reserved_words.get(word, TokenType.IDENT).value
+        return token
+
     @TOKEN(r"\d+[\.\,]\d+")
     def t_FLOAT(self, token):
         values = token.value.split(",")
@@ -103,13 +110,6 @@ class Lexer:
     @TOKEN(r"\d+")
     def t_NUMBER(self, token):
         token.value = int(token.value)
-        return token
-
-    @TOKEN(FUNCTION_NAME)
-    def t_IDENT(self, token):
-        """Used for tokenizing all identifiers, keywords."""
-        word = token.value.lower()
-        token.type = self.reserved_words.get(word, TokenType.IDENT).value
         return token
 
     # Ignored tokens, do not put these in the tokens-list.
