@@ -31,8 +31,11 @@ def parser_ui():
 
             program.append(user_input)
 
-        io.write("Result:")
-        io.write(parser.parse("\n".join(program)))
+        code = "\n".join(program)
+        io.write("Lexer tokens:")
+        io.write("\n".join((str(token) for token in lexer.tokenize_input(code))) + "\n")
+        io.write("AST Result:")
+        io.write(parser.parse(code))
 
 
 def load_file(filename):
