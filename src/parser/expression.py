@@ -17,6 +17,7 @@ def p_expression_binop(prod):
 def p_expression_uminus(prod):
     "expression : MINUS expression %prec UMINUS"
     prod[0] = ast.UnaryOp([prod[2]], "-")
+    prod[0].eval()
 
 
 def p_expression_group(prod):
@@ -45,7 +46,8 @@ def p_expression_bool(prod):
 def p_expression_deref(prod):
     "expression : DEREF"
     prod[0] = ast.Deref(prod[1][1:])
-
+    prod[0].eval()
+    
 
 def p_expression_equals(prod):
     "expression : expression EQUALS expression"

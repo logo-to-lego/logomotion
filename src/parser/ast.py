@@ -1,10 +1,9 @@
 # pylint: disable=missing-class-docstring,missing-function-docstring,too-few-public-methods
 """ Abstract Syntax Tree node definitions, returned by the parser. """
-from entities.symbol_table import SymbolTable
 from entities.error_values import ErrorValues
 from entities.error_info import ErrorInfo
 from lexer.token_types import TokenType
-
+from entities.symbol_table import default_symbol_table
 
 class Node:
     def __init__(self, node_type, children=None, leaf=None):
@@ -12,6 +11,7 @@ class Node:
         self.children = children if children else []
         self.leaf = leaf
         self.value = None
+        self.symbol_table = default_symbol_table
 
     def __str__(self):
         result = f"({self.type}"
@@ -28,9 +28,10 @@ class Node:
         result += ")"
 
         return result
-
-    def check_for_errs(self, children, err_msg=""):
-        """check for errorvalues, if doesnt exist, create one"""
+    
+    def check_for_errs(self, children=[], err_msg=""):
+        """ check for errorvalues, if doesnt exist, create one
+        """
         errs = []
         for child in children:
             if isinstance(child.value, ErrorValues):
@@ -69,11 +70,9 @@ class BinOp(Node):
     def eval(self):
         for child in self.children:
             if type(child.value) not in (int, float, ErrorValues):
-                print("PRIIT")
                 self.value = self.check_for_errs(self.children, "virhe: binop muksu muu kuin int tai float")
                 return
             elif isinstance(child.value, ErrorValues):
-                print("PRUUT")
                 self.value = self.check_for_errs(self.children)
                 return
         if self.leaf == "+":
@@ -91,6 +90,13 @@ class BinOp(Node):
 class UnaryOp(Node):
     def __init__(self, children, leaf):
         super().__init__("UnaryOp", children, leaf)
+
+    def eval(self):
+        # pitää ehkä tarkistaa, että muksu on float, int, error tai bool
+        if isinstance(children[0].value, ErrorValues):
+            self.value = self.check_for_errs(self.children)
+        else:
+            self.value = -self.children[0].value
 
 
 class Equals(Node):
@@ -137,9 +143,11 @@ class Deref(Node):
         super().__init__("Deref", children=None, leaf=leaf)
 
     def eval(self):
-        symbol_table = SymbolTable()
-        self.value = symbol_table.lookup(self.leaf)
-
+        lookup_rs = self.symbol_table.lookup(self.leaf)
+        if lookup_rs:
+            self.value = lookup_rs
+        else:
+            self.value = self.check_for_errs(self.children, f"muuttujaa {self.leaf} ei ole määritelty")
 
 class StringLiteral(Node):
     def __init__(self, leaf):
