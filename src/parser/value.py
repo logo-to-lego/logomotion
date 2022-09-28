@@ -12,6 +12,7 @@ def p_value_expression(prod):
 def p_value_deref(prod):
     "value : DEREF"
     prod[0] = ast.Deref((prod[1][1:]))
+    prod[0].eval()
 
 
 def p_value_string_literal(prod):

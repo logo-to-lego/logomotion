@@ -1,6 +1,7 @@
 import unittest
 from entities.symbol_table import SymbolTable
 
+
 class TestSymbolTable(unittest.TestCase):
     """test class for entities.symbol_table.SymbolTable"""
 
@@ -8,7 +9,7 @@ class TestSymbolTable(unittest.TestCase):
         self.st = SymbolTable()
         self.value1 = 123
         self.value2 = 456
-    
+
     def test_inserted_reference_is_found(self):
         self.st.insert("x", self.value1)
         re = self.st.lookup("x")
@@ -56,4 +57,3 @@ class TestSymbolTable(unittest.TestCase):
         re2 = self.st.finalize_scope()
         self.assertEqual(True, re1)
         self.assertEqual(False, re2)
-
