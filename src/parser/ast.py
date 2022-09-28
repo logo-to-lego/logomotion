@@ -18,7 +18,9 @@ class Node:
 
         if self.leaf:
             result += f", {self.leaf if self.leaf else 'None'}"
-        result += f", value: {self.value}"
+
+        if self.value is not None:
+            result += f", value: {self.value}"
 
         if self.children:
             result += ", children: ["
