@@ -3,11 +3,6 @@ from invoke import task
 
 
 @task
-def hello(ctx):
-    ctx.run("python3 src/hello.py", pty=True)
-
-
-@task
 def lint(ctx):
     ctx.run("pylint src", pty=True)
 
