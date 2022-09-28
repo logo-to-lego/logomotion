@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import Mock
 from lexer.lexer import Lexer
+from lexer.token_types import TokenType
 
 
 class TestLexer(unittest.TestCase):
@@ -9,6 +10,7 @@ class TestLexer(unittest.TestCase):
     def setUp(self):
         self.console_mock = Mock()
         self.lexer = Lexer(console_io=self.console_mock)
+        self.ply_lexer = self.lexer.get_ply_lexer()
         self.token_mock = Mock()
         self.token_mock.lexer.lineno = 0
         self.token_mock.lexer.linestartpos = 0
@@ -21,7 +23,7 @@ class TestLexer(unittest.TestCase):
         self.token_mock.value = "1.23"
         tok = self.lexer.t_FLOAT(self.token_mock)
         self.assertAlmostEqual(tok.value, 1.23)
-        
+
         self.token_mock.value = "123.456"
         tok = self.lexer.t_FLOAT(self.token_mock)
         self.assertAlmostEqual(tok.value, 123.456)
@@ -228,29 +230,143 @@ class TestLexer(unittest.TestCase):
         ; This is a comment
         DEF"""
 
-        lexer = self.lexer.get_ply_lexer()
-        lexer.input(test_string)
-        token_abc = lexer.token()
+        self.ply_lexer.input(test_string)
+        token_abc = self.ply_lexer.token()
         self.assertEqual(token_abc.lineno, 1)
-        token_def = lexer.token()
+        token_def = self.ply_lexer.token()
         self.assertEqual(token_def.lineno, 3)
 
     def test_lexer_finds_illegal_characters(self):
         test_string = 'make % "travel.distance 10'
 
-        lexer = self.lexer.get_ply_lexer()
-        lexer.input(test_string)
+        self.ply_lexer.input(test_string)
 
-        for token in lexer:
-            pass
+        list(self.ply_lexer)
 
         self.console_mock.write.assert_called()
         self.assertIn("Illegal", self.console_mock.write.call_args.args[0])
 
     def test_lexer_is_reset_correctly(self):
-        lexer = self.lexer.get_ply_lexer()
-        lexer.lineno = 123
-        lexer.linestartpos = 45
+        self.ply_lexer.lineno = 123
+        self.ply_lexer.linestartpos = 45
         self.lexer.reset()
-        self.assertNotEqual(lexer.lineno, 123)
-        self.assertNotEqual(lexer.linestartpos, 45)
+        self.assertNotEqual(self.ply_lexer.lineno, 123)
+        self.assertNotEqual(self.ply_lexer.linestartpos, 45)
+
+    def test_identities_cannot_be_only_numbers(self):
+        test_string = "to 123 show :x end foo 1 2"
+
+        self.ply_lexer.input(test_string)
+
+        token = self.ply_lexer.token()
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.NUMBER.value)
+
+    def test_identitities_cannot_have_brackets(self):
+        test_string = "to (123 robot.say end foo] 1 2 f{d 50"
+        self.ply_lexer.input(test_string)
+
+        for token in self.ply_lexer:
+            if token.type == TokenType.IDENT.value:
+                self.assertNotEqual(token.value, "(123")
+                self.assertNotEqual(token.value, "foo]")
+                self.assertNotEqual(token.value, "f{d")
+
+    def test_identities_can_have_numbers(self):
+        test_string = "miten 1aliohjelma h1e2i3 end"
+        self.ply_lexer.input(test_string)
+
+        for token in self.ply_lexer:
+            if token.type == TokenType.IDENT.value:
+                self.assertIn(token.value, ["1aliohjelma", "h1e2i3"])
+
+    def test_identities_can_have_scandics(self):
+        test_string = "miten röbättå :x robot.say :x end"
+        self.ply_lexer.input(test_string)
+
+        token = self.ply_lexer.token()
+        token = self.ply_lexer.token()
+        self.assertEqual(token.value, "röbättå")
+
+    def test_identities_can_have_periods(self):
+        test_string = "12a.2b"
+        self.ply_lexer.input(test_string)
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.IDENT.value)
+        self.assertEqual(token.value, "12a.2b")
+
+    def test_identities_cannot_have_operators(self):
+        test_string = "miten robotti-mene et 100 end"
+        self.ply_lexer.input(test_string)
+
+        for token in self.ply_lexer:
+            if token.type == TokenType.IDENT.value:
+                self.assertNotEqual(token.value, "robotti-mene")
+
+    def test_identities_cannot_have_spaces(self):
+        test_string = "miten robotti mene et 100 end"
+        self.ply_lexer.input(test_string)
+
+        for token in self.ply_lexer:
+            if token.type == TokenType.IDENT.value:
+                self.assertNotEqual(token.value, "robotti mene")
+
+    def test_identities_can_have_non_letters(self):
+        test_string = "miten ?r@b#t$! et 100 end"
+        self.ply_lexer.input(test_string)
+
+        token = self.ply_lexer.token()
+        token = self.ply_lexer.token()
+        self.assertEqual(token.value, "?r@b#t$!")
+
+    def test_floats_can_be_written_with_commas_and_periods(self):
+        test_string = "123.4 5,678"
+        self.ply_lexer.input(test_string)
+
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.FLOAT.value)
+        self.assertEqual(token.value, 123.4)
+
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.FLOAT.value)
+        self.assertEqual(token.value, 5.678)
+
+    def test_numbers_and_operators_are_tokenized_correctly_without_spaces(self):
+        test_string = "1+2-3/4.5*6"
+        self.ply_lexer.input(test_string)
+
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.NUMBER.value)
+        self.assertEqual(token.value, 1)
+
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.PLUS.value)
+        self.assertEqual(token.value, "+")
+
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.NUMBER.value)
+        self.assertEqual(token.value, 2)
+
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.MINUS.value)
+        self.assertEqual(token.value, "-")
+
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.NUMBER.value)
+        self.assertEqual(token.value, 3)
+
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.DIV.value)
+        self.assertEqual(token.value, "/")
+
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.FLOAT.value)
+        self.assertEqual(token.value, 4.5)
+
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.MUL.value)
+        self.assertEqual(token.value, "*")
+
+        token = self.ply_lexer.token()
+        self.assertEqual(token.type, TokenType.NUMBER.value)
+        self.assertEqual(token.value, 6)
