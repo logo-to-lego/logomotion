@@ -2,7 +2,6 @@
 """Expression product rules"""
 from parser.globals import *
 from parser import ast
-from csa import evals
 
 
 def p_expression_binop(prod):
