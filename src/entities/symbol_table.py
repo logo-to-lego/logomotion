@@ -1,6 +1,7 @@
 """Symbol table module"""
 from collections import deque
 
+
 class SymbolTable:
     """A class for storing symbols and their values"""
 
@@ -30,10 +31,11 @@ class SymbolTable:
 
     def finalize_scope(self):
         """Restores previous symbol table entries from a previous scope and discards
-           entries from a current scope"""
+        entries from a current scope"""
         if len(self._stack) > 1:
             self._stack.popleft()
             return True
         return False
+
 
 default_symbol_table = SymbolTable()

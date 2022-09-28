@@ -26,6 +26,7 @@ def p_fd(prod):
 def p_fd_paren(prod):
     "fd : LPAREN FD expression RPAREN"
     prod[0] = ast.Command(lexer.reserved_words[prod[2]], [prod[3]])
+    print("prod[0]", prod[0].type)
 
 
 def p_bk(prod):
@@ -101,6 +102,7 @@ def p_if_paren(prod):
 def p_if_without_braces(prod):
     "if : IF expression LBRACE statement_list RBRACE"
     prod[0] = ast.If(children=[prod[4]], leaf=prod[2])
+    prod[0].eval()
 
 
 def p_if_without_braces_paren(prod):

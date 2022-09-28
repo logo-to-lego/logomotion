@@ -1,8 +1,10 @@
-#pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods
 """Module for the ErrorValue class"""
+
 
 class ErrorValues:
     """Class to keep track error values to AST nodes"""
+
     def __init__(self):
         """Initialize a new ErrorValues object"""
         self.errors = []
