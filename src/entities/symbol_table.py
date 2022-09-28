@@ -14,7 +14,7 @@ class SymbolTable:
         self._stack[0][symbol] = value
 
     def lookup(self, symbol):
-        """Searches for a symbol and returns it's value"""
+        """Searches for a symbol and returns its value"""
         for table in self._stack:
             if symbol in table:
                 return table[symbol]
