@@ -2,8 +2,9 @@
 """ Abstract Syntax Tree node definitions, returned by the parser. """
 from entities.error_values import ErrorValues
 from entities.error_info import ErrorInfo
-from lexer.token_types import TokenType
 from entities.symbol_table import default_symbol_table
+from lexer.token_types import TokenType
+
 
 class Node:
     def __init__(self, node_type, children=None, leaf=None):
@@ -18,7 +19,9 @@ class Node:
 
         if self.leaf:
             result += f", {self.leaf if self.leaf else 'None'}"
-        result += f", value: {self.value}"
+
+        if self.value is not None:
+            result += f", value: {self.value}"
 
         if self.children:
             result += ", children: ["
@@ -28,20 +31,21 @@ class Node:
         result += ")"
 
         return result
-    
-    def check_for_errs(self, children=[], err_msg=""):
-        """ check for errorvalues, if doesnt exist, create one
-        """
+
+    def check_for_errs(self, children=None, err_msg=""):
+        """check for errorvalues, if doesnt exist, create one"""
         errs = []
+        if not children:
+            children = []
         for child in children:
             if isinstance(child.value, ErrorValues):
                 errs += child.value.errors
-        ev = ErrorValues()
+        err_val = ErrorValues()
         if err_msg:
-            ei = ErrorInfo(self, err_msg)
-            ev.add_error(ei)
-        ev.errors = errs
-        return ev
+            err_info = ErrorInfo(self, err_msg)
+            err_val.add_error(err_info)
+        err_val.errors = errs
+        return err_val
 
 
 class Start(Node):
@@ -68,11 +72,16 @@ class BinOp(Node):
         super().__init__("BinOp", children, leaf)
 
     def eval(self):
+        # Tämän hetkisessä versiossa tyypit oletetaan sopiviksi
+        # Esim. int + int, EI string + int. Tarkemmat ohjeet
+        # def Equals funktiossa
         for child in self.children:
             if type(child.value) not in (int, float, ErrorValues):
-                self.value = self.check_for_errs(self.children, "virhe: binop muksu muu kuin int tai float")
+                self.value = self.check_for_errs(
+                    self.children, "virhe: binop muksu muu kuin int tai float"
+                )
                 return
-            elif isinstance(child.value, ErrorValues):
+            if isinstance(child.value, ErrorValues):
                 self.value = self.check_for_errs(self.children)
                 return
         if self.leaf == "+":
@@ -84,7 +93,7 @@ class BinOp(Node):
         elif self.leaf == "/":
             self.value = self.children[0].value / self.children[1].value
         else:
-            self.value = "ERROR"
+            self.value = self.value = self.check_for_errs(self.children, "virhe: tuntematon binop")
 
 
 class UnaryOp(Node):
@@ -93,7 +102,7 @@ class UnaryOp(Node):
 
     def eval(self):
         # pitää ehkä tarkistaa, että muksu on float, int, error tai bool
-        if isinstance(children[0].value, ErrorValues):
+        if isinstance(self.children[0].value, ErrorValues):
             self.value = self.check_for_errs(self.children)
         else:
             self.value = -self.children[0].value
@@ -104,9 +113,20 @@ class Equals(Node):
         super().__init__("Equals", children, leaf)
 
     def eval(self):
+        # Tällä hetkellä tarkistaa lasten arvot ja asettaa
+        # Equals solmun arvoksi TRUE tai FALSE tarkistuksen
+        # perusteella.
         # if len(self.children) != 2:
         #     print("too many children")
-        if self.children[0].value != self.children[1].value:
+        # Pohditaan tarvitaanko kommentoitua tarkistusta ollenkaan
+        # Ei pitäisi olla syntaksin perusteella mahdollista.
+        value1 = self.children[0].value
+        value2 = self.children[1].value
+        # LOGOssa 2="2=2.0="2.0 vertailu = TRUE, halutaanko näin?
+        #if type(value1) != type(value2):
+            # Jos halutaan, niin tee tyyppitsekkaus pythonissa.
+            # Eli kokeillaan muuttaa vaikka string floatiksi
+        if value1 != value2:
             self.value = TokenType.FALSE
         else:
             self.value = TokenType.TRUE
@@ -147,7 +167,10 @@ class Deref(Node):
         if lookup_rs:
             self.value = lookup_rs
         else:
-            self.value = self.check_for_errs(self.children, f"muuttujaa {self.leaf} ei ole määritelty")
+            self.value = self.check_for_errs(
+                self.children, f"muuttujaa {self.leaf} ei ole määritelty"
+            )
+
 
 class StringLiteral(Node):
     def __init__(self, leaf):
@@ -159,7 +182,6 @@ class If(Node):
         super().__init__("If", children, leaf)
 
     def eval(self):
-        # TODO Virheidenkäsittely: ErrorValues, ErrorInfo
         if self.leaf.value == TokenType.TRUE:
             print("tokentype true")
             self.value = self.children[0]
@@ -167,7 +189,9 @@ class If(Node):
             print("tokentype false")
             self.value = None
         else:
-            print("ERR")
+            self.value = self.check_for_errs(self.children)
+            print("If-noden lehden arvo ei ollut TRUE tai FALSE")
+
 
 class IfElse(Node):
     def __init__(self, children, leaf):
