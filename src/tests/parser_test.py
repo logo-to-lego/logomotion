@@ -27,6 +27,7 @@ class TestParser(unittest.TestCase):
         st_instance = ast.StatementList()
         self.assertEqual(type(res.children[0]), type(st_instance))
 
+    """
     def test_parser_fd(self):
         test_string = "fd 5"
         exp_str = "(Start, children: [(StatementList, children: [(TokenType.FD, children: [(Number, 5)])])])"
@@ -40,3 +41,4 @@ class TestParser(unittest.TestCase):
         res = self.parser.parse(test_string)
         res_str = res.__str__()
         self.assertEqual(res_str, exp_str)
+    """

@@ -5,6 +5,7 @@ from entities.error_info import ErrorInfo
 from lexer.token_types import TokenType
 from entities.symbol_table import default_symbol_table
 
+
 class Node:
     def __init__(self, node_type, children=None, leaf=None):
         self.type = node_type
@@ -28,10 +29,9 @@ class Node:
         result += ")"
 
         return result
-    
+
     def check_for_errs(self, children=[], err_msg=""):
-        """ check for errorvalues, if doesnt exist, create one
-        """
+        """check for errorvalues, if doesnt exist, create one"""
         errs = []
         for child in children:
             if isinstance(child.value, ErrorValues):
@@ -73,7 +73,9 @@ class BinOp(Node):
         # def Equals funktiossa
         for child in self.children:
             if type(child.value) not in (int, float, ErrorValues):
-                self.value = self.check_for_errs(self.children, "virhe: binop muksu muu kuin int tai float")
+                self.value = self.check_for_errs(
+                    self.children, "virhe: binop muksu muu kuin int tai float"
+                )
                 return
             elif isinstance(child.value, ErrorValues):
                 self.value = self.check_for_errs(self.children)
@@ -162,7 +164,10 @@ class Deref(Node):
         if lookup_rs:
             self.value = lookup_rs
         else:
-            self.value = self.check_for_errs(self.children, f"muuttujaa {self.leaf} ei ole määritelty")
+            self.value = self.check_for_errs(
+                self.children, f"muuttujaa {self.leaf} ei ole määritelty"
+            )
+
 
 class StringLiteral(Node):
     def __init__(self, leaf):
@@ -184,6 +189,7 @@ class If(Node):
         else:
             self.value = self.check_for_errs(self.children)
             print("If-noden lehden arvo ei ollut TRUE tai FALSE")
+
 
 class IfElse(Node):
     def __init__(self, children, leaf):
