@@ -164,7 +164,7 @@ class If(Node):
         super().__init__("If", children, leaf)
 
     def eval(self):
-        # TODO Virheidenkäsittely: ErrorValues, ErrorInfo
+        # TEHTÄVÄ Virheidenkäsittely: ErrorValues, ErrorInfo
         if self.leaf.value == TokenType.TRUE:
             print("tokentype true")
             self.value = self.children[0]
