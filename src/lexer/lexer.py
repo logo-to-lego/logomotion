@@ -53,7 +53,12 @@ class Lexer:
         "heippa": TokenType.BYE,
     }
 
-    NAME_REGEX = r"[\w_][\w\d_.]*"
+    OPERATORS = r"+\-\/\*\<\>\="
+    BRACKETS = r"\[\]\(\)\{\}"
+    FORBIDDEN_CHARS = r" \"\'\:\;\n\r" + OPERATORS + BRACKETS
+
+    FUNCTION_NAME = r"[^" + FORBIDDEN_CHARS + r"]*[a-zA-ZåäöÅÄÖ][^" + FORBIDDEN_CHARS + r"]*"
+    VARIABLE_NAME = r"[^" + FORBIDDEN_CHARS + "]+"
 
     # Add tokens with only regex rules here.
     # If the token needs a function call, add it only as a method.
@@ -70,8 +75,8 @@ class Lexer:
         TokenType.LBRACE: r"\{",
         TokenType.RBRACE: r"\}",
         TokenType.EQUALS: r"\=",
-        TokenType.STRINGLITERAL: r"\"" + NAME_REGEX,
-        TokenType.DEREF: r"\:" + NAME_REGEX,
+        TokenType.STRINGLITERAL: r"\"" + VARIABLE_NAME,
+        TokenType.DEREF: r"\:" + VARIABLE_NAME,
         TokenType.COMMA: r",",
     }
 
@@ -87,21 +92,24 @@ class Lexer:
     # Token methods. Name as t_<TOKEN_NAME>, where TOKEN_NAME is in the tokens-list.
     # Declaration order matters for matching, i.e. longest similar regex first.
 
-    @TOKEN(r"\d+\.\d+")
+    @TOKEN(FUNCTION_NAME)
+    def t_IDENT(self, token):
+        """Used for tokenizing all identifiers, keywords."""
+        word = token.value.lower()
+        token.type = self.reserved_words.get(word, TokenType.IDENT).value
+        return token
+
+    @TOKEN(r"\d+[\.\,]\d+")
     def t_FLOAT(self, token):
+        values = token.value.split(",")
+        if len(values) == 2:
+            token.value = f"{values[0]}" + "." + f"{values[1]}"
         token.value = float(token.value)
         return token
 
     @TOKEN(r"\d+")
     def t_NUMBER(self, token):
         token.value = int(token.value)
-        return token
-
-    @TOKEN(NAME_REGEX)
-    def t_IDENT(self, token):
-        """Used for tokenizing all identifiers, keywords."""
-        word = token.value.lower()
-        token.type = self.reserved_words.get(word, TokenType.IDENT).value
         return token
 
     # Ignored tokens, do not put these in the tokens-list.
