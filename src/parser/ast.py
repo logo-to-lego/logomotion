@@ -87,7 +87,8 @@ class BinOp(Node):
         elif self.leaf == "/":
             self.value = self.children[0].value / self.children[1].value
         else:
-            self.value = "ERROR"
+            self.value = self.value = self.check_for_errs(self.children,
+                                                          "virhe: tuntematon binop")
 
 
 class UnaryOp(Node):
