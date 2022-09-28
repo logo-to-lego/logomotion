@@ -3,6 +3,7 @@
 import sys
 from parser.parser import Parser
 from lexer.lexer import Lexer
+from entities.symbol_table import SymbolTable
 from utils.console_io import default_console_io as io
 
 
@@ -61,6 +62,7 @@ def file_parser():
 
 
 if __name__ == "__main__":
+    print(sys.argv)
     if len(sys.argv) == 2:
         file_parser()
     else:

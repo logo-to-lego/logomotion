@@ -1,5 +1,6 @@
-#pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods
 """Module for the ErrorInfo class"""
+
 
 class ErrorInfo:
     """Class for storing AST node error information"""
