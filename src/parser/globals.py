@@ -4,6 +4,7 @@
 from lexer.lexer import Lexer
 
 precedence = (
+    ("nonassoc", "EQUALS", "LESSTHAN", "GREATERTHAN", "LTEQUALS", "GTEQUALS"),
     ("left", "PLUS", "MINUS"),
     ("left", "MUL", "DIV"),
     ("right", "UMINUS"),

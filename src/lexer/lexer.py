@@ -75,6 +75,10 @@ class Lexer:
         TokenType.LBRACE: r"\{",
         TokenType.RBRACE: r"\}",
         TokenType.EQUALS: r"\=",
+        TokenType.LESSTHAN: r"\<",
+        TokenType.GREATERTHAN: r"\>",
+        TokenType.LTEQUALS: r"\<\=",
+        TokenType.GTEQUALS: r"\>\=",
         TokenType.STRINGLITERAL: r"\"" + VARIABLE_NAME,
         TokenType.DEREF: r"\:" + VARIABLE_NAME,
         TokenType.COMMA: r",",
@@ -109,7 +113,7 @@ class Lexer:
 
     @TOKEN(r"\d+")
     def t_NUMBER(self, token):
-        token.value = int(token.value)
+        token.value = float(token.value)
         return token
 
     # Ignored tokens, do not put these in the tokens-list.

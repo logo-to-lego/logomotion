@@ -108,28 +108,9 @@ class UnaryOp(Node):
             self.value = -self.children[0].value
 
 
-class Equals(Node):
+class RelOp(Node):
     def __init__(self, children, leaf):
-        super().__init__("Equals", children, leaf)
-
-    def eval(self):
-        # Tällä hetkellä tarkistaa lasten arvot ja asettaa
-        # Equals solmun arvoksi TRUE tai FALSE tarkistuksen
-        # perusteella.
-        # if len(self.children) != 2:
-        #     print("too many children")
-        # Pohditaan tarvitaanko kommentoitua tarkistusta ollenkaan
-        # Ei pitäisi olla syntaksin perusteella mahdollista.
-        value1 = self.children[0].value
-        value2 = self.children[1].value
-        # LOGOssa 2="2=2.0="2.0 vertailu = TRUE, halutaanko näin?
-        #if type(value1) != type(value2):
-            # Jos halutaan, niin tee tyyppitsekkaus pythonissa.
-            # Eli kokeillaan muuttaa vaikka string floatiksi
-        if value1 != value2:
-            self.value = TokenType.FALSE
-        else:
-            self.value = TokenType.TRUE
+        super().__init__("RelOp", children, leaf)
 
 
 class Number(Node):
