@@ -10,7 +10,6 @@ class Node:
         self.type = node_type
         self.children = children if children else []
         self.leaf = leaf
-        self.value = None
         self.symbol_table = default_symbol_table
 
     def __str__(self):
@@ -18,9 +17,6 @@ class Node:
 
         if self.leaf:
             result += f", {self.leaf if self.leaf else 'None'}"
-
-        if self.value is not None:
-            result += f", value: {self.value}"
 
         if self.children:
             result += ", children: ["
