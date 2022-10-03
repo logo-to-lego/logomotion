@@ -66,7 +66,6 @@ from parser.value import *
 from parser.expression import *
 from ply import yacc
 from lexer.lexer import Lexer
-from utils.console_io import default_console_io as console
 
 
 def p_start(prod):
@@ -107,11 +106,14 @@ def p_error(prod):
 class Parser:
     """Wrapper class for parser functionality. Used to transform source code into AST."""
 
-    def __init__(self, current_lexer: Lexer) -> None:
+    def __init__(self, current_lexer: Lexer, console_io=None) -> None:
         self._current_lexer = current_lexer
         lexer.update(current_lexer)
         globals()["tokens"] = current_lexer.tokens
         self._parser = None
+
+        if console_io:
+            globals()["console"] = console_io
 
     def build(self, **kwargs):
         """Builds the PLY parser. Passes arguments to PLY's yacc.yacc()."""

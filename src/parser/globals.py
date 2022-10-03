@@ -2,6 +2,7 @@
 """Parsing rules and globals used by the parser"""
 
 from lexer.lexer import Lexer
+from utils.console_io import default_console_io
 
 precedence = (
     ("left", "PLUS", "MINUS"),
@@ -13,6 +14,8 @@ precedence = (
 names = {}
 
 start = "start"
+
+console = default_console_io
 
 
 class LexerWrapper:
