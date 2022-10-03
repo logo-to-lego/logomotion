@@ -62,7 +62,6 @@ list
 from parser import ast
 from parser.globals import *
 from parser.command import *
-from parser.value import *
 from parser.expression import *
 from ply import yacc
 from lexer.lexer import Lexer

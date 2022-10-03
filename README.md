@@ -12,10 +12,12 @@ Logomotion is a Logo to Java compiler. The goal of the project is to enable the 
 
 [Working hours](https://docs.google.com/spreadsheets/d/12jyUsrNQjnxRyR_zxs0hcPKDV8_77uyjEEaTHGnhgDI)
 
+[Logo language](https://github.com/logo-to-lego/logomotion/blob/main/documentation/logo.md)
+
 ## Definition of Done
 
 * Pull requests from branches go through CI/CD pipeline successfully
-* Code coverage percentage > 80%
+* Code coverage percentage > 70%
 * Pylint score should be 10/10
 
 

@@ -24,8 +24,6 @@ class TestParser(unittest.TestCase):
     def test_parser_statementlist(self):
         test_string = "show (23+32*19)"
         res = self.parser.parse(test_string)
-        print(res.children[0])
-        print(type(res.children[0]))
         st_instance = ast.StatementList()
         print(st_instance)
         print(type(st_instance))
@@ -58,3 +56,17 @@ class TestParser(unittest.TestCase):
         ast = self.parser.parse(test_string)
         correct_result = "(Start, children: [(StatementList, children: [(If, (Bool, TokenType.TRUE), children: [(StatementList, children: [(TokenType.SHOW, children: [(Number, 10)])])])])])"
         self.assertEqual(str(ast), correct_result)
+
+    def test_parser_fd(self):
+        test_string = "fd 5"
+        exp_str = "(Start, children: [(StatementList, children: [(TokenType.FD, children: [(Number, 5)])])])"
+        res = self.parser.parse(test_string)
+        res_str = res.__str__()
+        self.assertEqual(res_str, exp_str)
+
+    def test_parser_div_paren(self):
+        test_string = "show (5+2)/2"
+        exp_str = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(BinOp, /, children: [(BinOp, +, children: [(Number, 5), (Number, 2)]), (Number, 2)])])])])"
+        res = self.parser.parse(test_string)
+        res_str = res.__str__()
+        self.assertEqual(res_str, exp_str)

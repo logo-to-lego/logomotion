@@ -59,23 +59,23 @@ def p_rt_paren(prod):
 
 
 def p_show(prod):
-    "show : SHOW value"
+    "show : SHOW expression"
     prod[0] = ast.Command(lexer.reserved_words[prod[1]], [prod[2]])
 
 
 def p_show_paren(prod):
-    "show : LPAREN SHOW value values RPAREN"
+    "show : LPAREN SHOW expression expressions RPAREN"
     prod[0] = ast.Command(lexer.reserved_words[prod[2]], [prod[3]] + prod[4])
 
 
 def p_make(prod):
-    """make : MAKE STRINGLITERAL value"""
-    prod[0] = ast.Command(lexer.reserved_words[prod[1]], children=[prod[3]], leaf=prod[2][1:])
+    """make : MAKE expression expression"""
+    prod[0] = ast.Command(lexer.reserved_words[prod[1]], children=[prod[3]], leaf=prod[2])
 
 
 def p_make_paren(prod):
-    "make : LPAREN MAKE STRINGLITERAL value RPAREN"
-    prod[0] = ast.Command(lexer.reserved_words[prod[2]], children=[prod[4]], leaf=prod[3][1:])
+    "make : LPAREN MAKE expression expression RPAREN"
+    prod[0] = ast.Command(lexer.reserved_words[prod[2]], children=[prod[4]], leaf=prod[3])
 
 
 def p_bye(prod):

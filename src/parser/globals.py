@@ -5,6 +5,7 @@ from lexer.lexer import Lexer
 from utils.console_io import default_console_io
 
 precedence = (
+    ("nonassoc", "EQUALS", "LESSTHAN", "GREATERTHAN", "LTEQUALS", "GTEQUALS"),
     ("left", "PLUS", "MINUS"),
     ("left", "MUL", "DIV"),
     ("right", "UMINUS"),
