@@ -60,8 +60,8 @@ class TestSymbolTable(unittest.TestCase):
 
     def test_insert_global_inserts_symbol_to_global_scope(self):
         self.st.initialize_scope()
-        self.st.insert_global("x", self.value1)
         self.st.insert("x", self.value2)
+        self.st.insert_global("x", self.value1)
         self.st.initialize_scope()
         self.st.insert_global("y", self.value2)
         re_local = self.st.lookup("x")
