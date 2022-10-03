@@ -11,6 +11,7 @@ Logomotion is a Logo to Java compiler. The goal of the project is to enable the 
 ## Documentation
 
 [Working hours](https://docs.google.com/spreadsheets/d/12jyUsrNQjnxRyR_zxs0hcPKDV8_77uyjEEaTHGnhgDI)
+[Logo rules](https://github.com/logo-to-lego/logomotion/tree/main/documentation/logo.md)
 
 ## Definition of Done
 
