@@ -38,35 +38,93 @@ class TestParser(unittest.TestCase):
     def test_parser_make_call_is_parsed_correctly(self):
         test_string = 'make "var 10'
         ast = self.parser.parse(test_string)
-        correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, var, children: [(Number, 10)])])])"
+        correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, (StringLiteral, var), children: [(Float, 10.0)])])])"
         self.assertEqual(str(ast), correct_result)
 
         test_string = 'make "var :10'
         ast = self.parser.parse(test_string)
-        correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, var, children: [(Deref, 10)])])])"
+        correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, (StringLiteral, var), children: [(Deref, 10)])])])"
         self.assertEqual(str(ast), correct_result)
 
         test_string = 'make "var "10'
         ast = self.parser.parse(test_string)
-        correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, var, children: [(StringLiteral, 10)])])])"
+        correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, (StringLiteral, var), children: [(StringLiteral, 10)])])])"
+        self.assertEqual(str(ast), correct_result)
+
+    def test_make_with_parenthesis(self):
+        test_string = '(make "robot.move 1+2)'
+        ast = self.parser.parse(test_string)
+        correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, (StringLiteral, robot.move), children: [(BinOp, +, children: [(Float, 1.0), (Float, 2.0)])])])])"
         self.assertEqual(str(ast), correct_result)
 
     def test_parser_if_is_parsed_correctly(self):
         test_string = r"if true { show 10}"
         ast = self.parser.parse(test_string)
-        correct_result = "(Start, children: [(StatementList, children: [(If, (Bool, TokenType.TRUE), children: [(StatementList, children: [(TokenType.SHOW, children: [(Number, 10)])])])])])"
+        correct_result = "(Start, children: [(StatementList, children: [(If, (Bool, TokenType.TRUE), children: [(StatementList, children: [(TokenType.SHOW, children: [(Float, 10.0)])])])])])"
         self.assertEqual(str(ast), correct_result)
 
     def test_parser_fd(self):
         test_string = "fd 5"
-        exp_str = "(Start, children: [(StatementList, children: [(TokenType.FD, children: [(Number, 5)])])])"
+        exp_str = "(Start, children: [(StatementList, children: [(TokenType.FD, children: [(Float, 5.0)])])])"
         res = self.parser.parse(test_string)
-        res_str = res.__str__()
-        self.assertEqual(res_str, exp_str)
+        self.assertEqual(str(res), exp_str)
+
+    def test_parser_bk(self):
+        test_string = "bk 1"
+        exp_str = "(Start, children: [(StatementList, children: [(TokenType.BK, children: [(Float, 1.0)])])])"
+        res = self.parser.parse(test_string)
+        self.assertEqual(str(res), exp_str)
+
+    def test_parser_rt(self):
+        test_string = "rt 2.1"
+        exp_str = "(Start, children: [(StatementList, children: [(TokenType.RT, children: [(Float, 2.1)])])])"
+        res = self.parser.parse(test_string)
+        self.assertEqual(str(res), exp_str)
+
+    def test_parser_lt(self):
+        test_string = "lt 4"
+        exp_str = "(Start, children: [(StatementList, children: [(TokenType.LT, children: [(Float, 4.0)])])])"
+        res = self.parser.parse(test_string)
+        self.assertEqual(str(res), exp_str)
+
+    def test_parser_show(self):
+        test_string = 'show "a'
+        ast = self.parser.parse(test_string)
+        expected = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(StringLiteral, a)])])])"
+        self.assertEqual(str(ast), expected)
+
+    def test_parser_show_paren_one_arg(self):
+        test_string = '(show "a)'
+        ast = self.parser.parse(test_string)
+        expected = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(StringLiteral, a)])])])"
+        self.assertEqual(str(ast), expected)
+
+    def test_parser_show_paren_multiple_arg(self):
+        test_string = '(show "a "b "c)'
+        ast = self.parser.parse(test_string)
+        expected = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(StringLiteral, a), (StringLiteral, b), (StringLiteral, c)])])])"
+        self.assertEqual(str(ast), expected)
+
+    def test_parser_show_with_single_quote(self):
+        test_string = "(show 'a 'b 'c)"
+        ast = self.parser.parse(test_string)
+        expected = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(StringLiteral, a), (StringLiteral, b), (StringLiteral, c)])])])"
+        self.assertEqual(str(ast), expected)
 
     def test_parser_div_paren(self):
         test_string = "show (5+2)/2"
-        exp_str = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(BinOp, /, children: [(BinOp, +, children: [(Number, 5), (Number, 2)]), (Number, 2)])])])])"
+        exp_str = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(BinOp, /, children: [(BinOp, +, children: [(Float, 5.0), (Float, 2.0)]), (Float, 2.0)])])])])"
         res = self.parser.parse(test_string)
-        res_str = res.__str__()
-        self.assertEqual(res_str, exp_str)
+        self.assertEqual(str(res), exp_str)
+
+    def test_if(self):
+        test_string = "if 1+1 < 3 { show 1 }"
+        expected = "(Start, children: [(StatementList, children: [(If, (RelOp, <, children: [(BinOp, +, children: [(Float, 1.0), (Float, 1.0)]), (Float, 3.0)]), children: [(StatementList, children: [(TokenType.SHOW, children: [(Float, 1.0)])])])])])"
+        ast = self.parser.parse(test_string)
+        self.assertEqual(str(ast), expected)
+
+    def test_ifelse(self):
+        test_string = "ifelse 1+1 < 3 { show 1 } { show 2}"
+        expected = "(Start, children: [(StatementList, children: [(IfElse, (RelOp, <, children: [(BinOp, +, children: [(Float, 1.0), (Float, 1.0)]), (Float, 3.0)]), children: [(StatementList, children: [(TokenType.SHOW, children: [(Float, 1.0)])]), (StatementList, children: [(TokenType.SHOW, children: [(Float, 2.0)])])])])])"
+        ast = self.parser.parse(test_string)
+        self.assertEqual(str(ast), expected)
