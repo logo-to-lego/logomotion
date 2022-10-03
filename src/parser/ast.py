@@ -44,7 +44,7 @@ class Node:
         if err_msg:
             err_info = ErrorInfo(self, err_msg)
             err_val.add_error(err_info)
-        err_val.errors = errs
+        err_val.errors += errs
         return err_val
 
 
