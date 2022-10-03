@@ -26,6 +26,7 @@ class TokenType(Enum):
     DEREF = "DEREF"
     TO = "TO"
     END = "END"
+    OP = "OP"
     COMMA = "COMMA"
     FD = "FD"
     BK = "BK"
