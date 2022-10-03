@@ -15,10 +15,15 @@ class SymbolTable:
         self._stack[0][symbol] = value
 
     def lookup(self, symbol):
-        """Searches for a symbol and returns its value"""
-        for table in self._stack:
-            if symbol in table:
-                return table[symbol]
+        """Searches for a symbol and returns its value.
+        Global scope can't be reached from other scopes"""
+        if len(self._stack) > 1:
+            for i in range(0, len(self._stack)-1):
+                if symbol in self._stack[i]:
+                    return self._stack[i][symbol]
+        else:
+            if symbol in self._stack[0]:
+                return self._stack[0][symbol]
         return None
 
     def free(self):

@@ -12,16 +12,28 @@ class TestSymbolTable(unittest.TestCase):
 
     def test_inserted_reference_is_found(self):
         self.st.insert("x", self.value1)
+        re1 = self.st.lookup("x")
+        self.st.initialize_scope()
+        self.st.insert("x", self.value2)
+        re2 = self.st.lookup("x")
+        self.assertEqual(self.value1, re1)
+        self.assertEqual(self.value2, re2)
+    
+    def test_global_scope_cant_be_reached_from_other_scopes(self):
+        self.st.insert("x", self.value1)
+        self.st.initialize_scope()
         re = self.st.lookup("x")
-        self.assertEqual(self.value1, re)
+        self.assertEqual(None, re)
 
-    def test_insertion_is_found_after_changing_the_scope(self):
+    def test_insertion_is_found_after_changing_a_upper_level_scope(self):
+        self.st.initialize_scope()
         self.st.insert("x", self.value1)
         self.st.initialize_scope()
         re = self.st.lookup("x")
         self.assertEqual(self.value1, re)
 
     def test_insertion_can_be_overwriten_in_upper_level_scope(self):
+        self.st.initialize_scope()
         self.st.insert("x", self.value1)
         self.st.initialize_scope()
         self.st.insert("x", self.value2)
@@ -29,6 +41,7 @@ class TestSymbolTable(unittest.TestCase):
         self.assertEqual(self.value2, re)
 
     def test_lower_level_scope_insertion_remains_after_upper_level_changes(self):
+        self.st.initialize_scope()
         self.st.insert("x", self.value1)
         self.st.initialize_scope()
         self.st.insert("x", self.value2)
@@ -38,20 +51,23 @@ class TestSymbolTable(unittest.TestCase):
 
     def test_lookup_returns_none_if_insertion_doesnt_exist(self):
         self.st.insert("x", self.value1)
-        re = self.st.lookup("y")
-        self.assertEqual(None, re)
+        re1 = self.st.lookup("y")
+        self.st.initialize_scope()
+        self.st.insert("x", self.value2)
+        re2 = self.st.lookup("y")
+        self.assertEqual(None, re1)
+        self.assertEqual(None, re2)
 
     def test_current_level_insertions_are_erased_after_free(self):
-        self.st.insert("x", self.value1)
         self.st.initialize_scope()
         self.st.insert("x", self.value2)
         re1 = self.st.lookup("x")
         self.st.free()
         re2 = self.st.lookup("x")
         self.assertEqual(self.value2, re1)
-        self.assertEqual(self.value1, re2)
+        self.assertEqual(None, re2)
 
-    def test_finalize_scope_cant_be_run_on_lowest_scope_level(self):
+    def test_finalize_scope_cant_be_run_on_global_scope_level(self):
         self.st.initialize_scope()
         re1 = self.st.finalize_scope()
         re2 = self.st.finalize_scope()
