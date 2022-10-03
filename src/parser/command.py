@@ -15,7 +15,8 @@ def p_command(prod):
     | bye
     | if
     | ifelse
-    | proc_decl"""
+    | proc_decl
+    | output"""
     prod[0] = prod[1]
 
 
@@ -87,6 +88,11 @@ def p_proc_decl(prod):
 def p_proc_args(prod):
     "proc_args : proc_args DEREF"
     prod[0] = ast.ProcArgs(prod[1].children + [prod[2]])
+
+
+def p_output(prod):
+    "output : OUTPUT expression"
+    prod[0] = ast.Command(lexer.reserved_words[prod[1]], [prod[2]])
 
 
 def p_proc_args_empty(prod):
