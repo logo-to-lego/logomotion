@@ -82,7 +82,7 @@ class Lexer:
         TokenType.GREATERTHAN: r"\>",
         TokenType.LTEQUALS: r"\<\=",
         TokenType.GTEQUALS: r"\>\=",
-        TokenType.STRINGLITERAL: r"\"" + VARIABLE_NAME,
+        TokenType.STRINGLITERAL: r"[\"\']" + VARIABLE_NAME,
         TokenType.DEREF: r"\:" + VARIABLE_NAME,
         TokenType.COMMA: r",",
     }
