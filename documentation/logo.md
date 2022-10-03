@@ -1,6 +1,6 @@
 # Logo
 
-Tässä dokumentissa on koostettuna projektissa käytettyjä logo-kielen sääntöjä.
+Tässä dokumentissa on koostettuna projektissa käytetyn logo-kielen sääntöjä.
 
 ## Muuttujat
 
@@ -20,13 +20,13 @@ TO foo :n
 END
 ```
 
-Funktiota voidaan kutsua, esimerkiksi muuttujalla x
+Funktiota voidaan kutsua muuttujalla x
 ```
 MAKE "x 42
 foo :x
 ```
 
-Funktiota **ei voida** kuitenkaan määritellä ja kutsua näin, sillä funktion ulkopuolella määritellyt muuttujat eivät näy funktion sisälle.
+Funktiota **ei voida** kuitenkaan määritellä ja kutsua globaalilla muuttujalla, sillä funktion ulkopuolella määritetyt muuttujat eivät näy funktion sisälle.
 ```
 TO foo 
   show :x
@@ -34,6 +34,7 @@ END
 
 MAKE "x 42
 foo
+ERR
 ```
 
 ## Ehtolauseet
@@ -46,11 +47,12 @@ if :x < 100 {
 }
 ```
 
-Ehtolauseilla on oma näkyvyysalue, eli ehtolauseen sisällä voidaan määrittää muuttujia, jotka eivät näy ehtolauseen ulkopuolelle. Seuraava koodi kaatuu virheeseen, sillä muuttujaan y viitataan ehtolauseen ulkopuolella.
+Ehtolauseissa voidaan siis viitata ehtolauseen ulkopuolella oleviin muuttujiin. Ehtolauseilla on kuitenkin oma näkyvyysalue, eli ehtolauseen sisällä voidaan määrittää muuttujia, jotka eivät näy ehtolauseen ulkopuolelle. Seuraava koodi kaatuu virheeseen, sillä muuttujaan y viitataan ehtolauseen ulkopuolella.
 ```
 make "x 42
 if :x < 100 {
     make "y 123
 }
 show :y
+ERR
 ```
