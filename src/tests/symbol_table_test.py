@@ -57,3 +57,18 @@ class TestSymbolTable(unittest.TestCase):
         re2 = self.st.finalize_scope()
         self.assertEqual(True, re1)
         self.assertEqual(False, re2)
+
+    def test_insert_global_inserts_symbol_to_global_scope(self):
+        self.st.initialize_scope()
+        self.st.insert_global("x", self.value1)
+        self.st.insert("x", self.value2)
+        self.st.initialize_scope()
+        self.st.insert_global("y", self.value2)
+        re_local = self.st.lookup("x")
+        self.st.finalize_scope()
+        self.st.finalize_scope()
+        re_global1 = self.st.lookup("x")
+        re_global2 = self.st.lookup("y")
+        self.assertEqual(re_local, self.value2)
+        self.assertEqual(re_global1, self.value1)
+        self.assertEqual(re_global2, self.value2)
