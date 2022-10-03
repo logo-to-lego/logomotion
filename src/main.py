@@ -4,13 +4,14 @@ import sys
 from parser.parser import Parser
 from lexer.lexer import Lexer
 #from entities.symbol_table import SymbolTable
-from utils.console_io import default_console_io as io
+from utils.console_io import ConsoleIO
 
+io = ConsoleIO(debug=True)
 
-lexer = Lexer()
+lexer = Lexer(console_io=io)
 lexer.build()
 
-parser = Parser(lexer)
+parser = Parser(lexer, console_io=io)
 parser.build()
 
 
