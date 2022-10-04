@@ -39,7 +39,7 @@ class Variable(Symbol):
         Args:
             name (str): Variables name
             logotype (LogoType, optional): Variables values type. Defaults to LogoType.UNKNOWN.
-            value (_type_, optional): Variables value. Defaults to None.
+            value (Any, optional): Variables value. Defaults to None.
         """
         super().__init__(name, logotype, **kwargs)
         self._value = value
