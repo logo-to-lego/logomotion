@@ -14,7 +14,9 @@ def p_command(prod):
     | make
     | bye
     | if
-    | ifelse"""
+    | ifelse
+    | proc_decl
+    | output"""
     prod[0] = prod[1]
 
 
@@ -76,6 +78,26 @@ def p_make(prod):
 def p_make_paren(prod):
     "make : LPAREN MAKE expression expression RPAREN"
     prod[0] = ast.Command(lexer.reserved_words[prod[2]], children=[prod[4]], leaf=prod[3])
+
+
+def p_proc_decl(prod):
+    "proc_decl : TO IDENT proc_args statement_list END"
+    prod[0] = ast.ProcDecl([prod[3], prod[4]], prod[2])
+
+
+def p_proc_args(prod):
+    "proc_args : proc_args DEREF"
+    prod[0] = ast.ProcArgs(prod[1].children + [prod[2]])
+
+
+def p_output(prod):
+    "output : OUTPUT expression"
+    prod[0] = ast.Command(lexer.reserved_words[prod[1]], [prod[2]])
+
+
+def p_proc_args_empty(prod):
+    "proc_args : empty"
+    prod[0] = ast.ProcArgs()
 
 
 def p_bye(prod):

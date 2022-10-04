@@ -115,3 +115,13 @@ class If(Node):
 class IfElse(Node):
     def __init__(self, children, leaf):
         super().__init__("IfElse", children, leaf)
+
+
+class ProcDecl(Node):
+    def __init__(self, children, leaf):
+        super().__init__("ProcDecl", children, leaf)
+
+
+class ProcArgs(Node):
+    def __init__(self, children=None):
+        super().__init__("ProcArgs", children)
