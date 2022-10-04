@@ -117,8 +117,20 @@ class TestParser(unittest.TestCase):
         correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, (StringLiteral, robot.move), children: [(BinOp, +, children: [(Float, 1.0), (Float, 2.0)])])])])"
         self.assertEqual(str(ast), correct_result)
 
-    def test_parser_if_is_parsed_correctly(self):
+    def test_parser_if_statementlist_brackets(self):
         test_string = r"if true { show 10}"
+        ast = self.parser.parse(test_string)
+        correct_result = "(Start, children: [(StatementList, children: [(If, (Bool, TokenType.TRUE), children: [(StatementList, children: [(TokenType.SHOW, children: [(Float, 10.0)])])])])])"
+        self.assertEqual(str(ast), correct_result)
+
+    def test_parser_if_expression_and_statementlist_brackets(self):
+        test_string = r"if {true} { show 10}"
+        ast = self.parser.parse(test_string)
+        correct_result = "(Start, children: [(StatementList, children: [(If, (Bool, TokenType.TRUE), children: [(StatementList, children: [(TokenType.SHOW, children: [(Float, 10.0)])])])])])"
+        self.assertEqual(str(ast), correct_result)
+
+    def test_parser_if_statementlist_brackets_paren(self):
+        test_string = r"(if true { show 10})"
         ast = self.parser.parse(test_string)
         correct_result = "(Start, children: [(StatementList, children: [(If, (Bool, TokenType.TRUE), children: [(StatementList, children: [(TokenType.SHOW, children: [(Float, 10.0)])])])])])"
         self.assertEqual(str(ast), correct_result)
@@ -129,8 +141,20 @@ class TestParser(unittest.TestCase):
         res = self.parser.parse(test_string)
         self.assertEqual(str(res), exp_str)
 
+    def test_parser_fd_paren(self):
+        test_string = "(fd 5)"
+        exp_str = "(Start, children: [(StatementList, children: [(TokenType.FD, children: [(Float, 5.0)])])])"
+        res = self.parser.parse(test_string)
+        self.assertEqual(str(res), exp_str)
+
     def test_parser_bk(self):
         test_string = "bk 1"
+        exp_str = "(Start, children: [(StatementList, children: [(TokenType.BK, children: [(Float, 1.0)])])])"
+        res = self.parser.parse(test_string)
+        self.assertEqual(str(res), exp_str)
+
+    def test_parser_bk_paren(self):
+        test_string = "(bk 1)"
         exp_str = "(Start, children: [(StatementList, children: [(TokenType.BK, children: [(Float, 1.0)])])])"
         res = self.parser.parse(test_string)
         self.assertEqual(str(res), exp_str)
@@ -141,8 +165,20 @@ class TestParser(unittest.TestCase):
         res = self.parser.parse(test_string)
         self.assertEqual(str(res), exp_str)
 
+    def test_parser_rt_paren(self):
+        test_string = "(rt 2.1)"
+        exp_str = "(Start, children: [(StatementList, children: [(TokenType.RT, children: [(Float, 2.1)])])])"
+        res = self.parser.parse(test_string)
+        self.assertEqual(str(res), exp_str)
+
     def test_parser_lt(self):
         test_string = "lt 4"
+        exp_str = "(Start, children: [(StatementList, children: [(TokenType.LT, children: [(Float, 4.0)])])])"
+        res = self.parser.parse(test_string)
+        self.assertEqual(str(res), exp_str)
+
+    def test_parser_lt_paren(self):
+        test_string = "(lt 4)"
         exp_str = "(Start, children: [(StatementList, children: [(TokenType.LT, children: [(Float, 4.0)])])])"
         res = self.parser.parse(test_string)
         self.assertEqual(str(res), exp_str)
@@ -186,5 +222,29 @@ class TestParser(unittest.TestCase):
     def test_ifelse(self):
         test_string = "ifelse 1+1 < 3 { show 1 } { show 2}"
         expected = "(Start, children: [(StatementList, children: [(IfElse, (RelOp, <, children: [(BinOp, +, children: [(Float, 1.0), (Float, 1.0)]), (Float, 3.0)]), children: [(StatementList, children: [(TokenType.SHOW, children: [(Float, 1.0)])]), (StatementList, children: [(TokenType.SHOW, children: [(Float, 2.0)])])])])])"
+        ast = self.parser.parse(test_string)
+        self.assertEqual(str(ast), expected)
+
+    def test_ifelse_paren(self):
+        test_string = "(ifelse 1+1 < 3 { show 1 } { show 2})"
+        expected = "(Start, children: [(StatementList, children: [(IfElse, (RelOp, <, children: [(BinOp, +, children: [(Float, 1.0), (Float, 1.0)]), (Float, 3.0)]), children: [(StatementList, children: [(TokenType.SHOW, children: [(Float, 1.0)])]), (StatementList, children: [(TokenType.SHOW, children: [(Float, 2.0)])])])])])"
+        ast = self.parser.parse(test_string)
+        self.assertEqual(str(ast), expected)
+
+    def test_ifelse_paren(self):
+        test_string = "(ifelse {1+1 < 3} { show 1 } { show 2})"
+        expected = "(Start, children: [(StatementList, children: [(IfElse, (RelOp, <, children: [(BinOp, +, children: [(Float, 1.0), (Float, 1.0)]), (Float, 3.0)]), children: [(StatementList, children: [(TokenType.SHOW, children: [(Float, 1.0)])]), (StatementList, children: [(TokenType.SHOW, children: [(Float, 2.0)])])])])])"
+        ast = self.parser.parse(test_string)
+        self.assertEqual(str(ast), expected)
+
+    def test_bye(self):
+        test_string = "bye"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.BYE)])])"
+        ast = self.parser.parse(test_string)
+        self.assertEqual(str(ast), expected)
+
+    def test_bye_paren(self):
+        test_string = "(bye)"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.BYE)])])"
         ast = self.parser.parse(test_string)
         self.assertEqual(str(ast), expected)
