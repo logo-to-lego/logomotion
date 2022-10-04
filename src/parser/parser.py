@@ -129,7 +129,7 @@ class Parser:
         ply_parser = self.get_ply_parser()
         ply_lexer = self._current_lexer.get_ply_lexer()
 
-        start_node = ply_parser.parse(code, lexer=ply_lexer, **kwargs)
+        start_node = ply_parser.parse(code, lexer=ply_lexer, tracking=True, **kwargs)
 
         return start_node
 
