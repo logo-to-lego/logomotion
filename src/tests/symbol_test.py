@@ -10,8 +10,7 @@ class TestSymbol(unittest.TestCase):
         self.value1 = 123
         self.value2 = 456
         self.var = Variable("y", value=self.value1)
-        self.func = Function("z", value=self.value2)
-        print(self.var)
+        self.func = Function("z", params=[LogoType.FLOAT, LogoType.STRING])
     
     def test_symbol_gives_right_name(self):
         given_name = "right_name"
@@ -28,15 +27,24 @@ class TestSymbol(unittest.TestCase):
         self.assertEqual(self.var.type, LogoType.FLOAT.value)
         self.assertEqual(self.func.type, LogoType.FLOAT.value)
     
-    def test_symbols_value_can_be_changed_with_setter(self):
+    def test_variables_value_can_be_changed_with_setter(self):
         self.var.value = self.value2
-        self.func.value = self.value1
         self.assertEqual(self.var.value, self.value2)
-        self.assertEqual(self.func.value, self.value1)
     
-    def test_function_arguments_can_be_called(self):
-        f = Function("z", args=[1,2,3])
-        re1 = f.arguments[1]
-        re2 = f.get_function_argument(1)
-        self.assertEqual(re1, 2)
-        self.assertEqual(re2, 2)
+    def test_function_parameters_can_be_called(self):
+        re1 = self.func.parameters[0]
+        re2 = self.func.get_function_parameter(1)
+        self.assertEqual(re1, LogoType.FLOAT)
+        self.assertEqual(re2, LogoType.STRING)
+    
+    def test_get_function_parameter_with_invalid_index_gives_none(self):
+        re1 = self.func.get_function_parameter(-1)
+        re2 = self.func.get_function_parameter(2)
+        self.assertEqual(re1, None)
+        self.assertEqual(re2, None)
+
+    def test_set_function_parameter_sets_parameter(self):
+        i = 0
+        re = self.func.set_function_parameter(LogoType.BOOL, i)
+        self.assertEqual(re, True)
+        self.assertEqual(self.func.parameters[i], LogoType.BOOL)
