@@ -51,6 +51,19 @@ class TestLexer(unittest.TestCase):
         tok = self.lexer.t_IDENT(self.token_mock)
         self.assertEqual(tok.type, "END")
 
+    def test_token_method_returns_output_identifier_correctly(self):
+        self.token_mock.value = "output"
+        tok = self.lexer.t_IDENT(self.token_mock)
+        self.assertEqual(tok.type, "OUTPUT")
+
+        self.token_mock.value = "anna"
+        tok = self.lexer.t_IDENT(self.token_mock)
+        self.assertEqual(tok.type, "OUTPUT")
+
+        self.token_mock.value = "op"
+        tok = self.lexer.t_IDENT(self.token_mock)
+        self.assertEqual(tok.type, "OUTPUT")
+
     def test_token_method_returns_fd_identifier_correctly(self):
         self.token_mock.value = "forward"
         tok = self.lexer.t_IDENT(self.token_mock)
