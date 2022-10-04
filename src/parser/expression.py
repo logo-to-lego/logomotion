@@ -65,3 +65,8 @@ def p_expression_deref(prod):
 def p_expression_string_literal(prod):
     "expression : STRINGLITERAL"
     prod[0] = ast.StringLiteral(prod[1][1:])
+
+
+def p_expression_proc_call(prod):
+    "expression : proc_call"
+    prod[0] = prod[1]

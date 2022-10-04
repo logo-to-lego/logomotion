@@ -3,6 +3,7 @@
 """
 from parser.globals import *
 from parser import ast
+from lexer.token_types import TokenType
 
 
 def p_command(prod):
@@ -16,7 +17,8 @@ def p_command(prod):
     | if
     | ifelse
     | proc_decl
-    | output"""
+    | output
+    | proc_call"""
     prod[0] = prod[1]
 
 
@@ -98,6 +100,11 @@ def p_output(prod):
 def p_proc_args_empty(prod):
     "proc_args : empty"
     prod[0] = ast.ProcArgs()
+
+
+def p_proc_call(prod):
+    "proc_call : LPAREN IDENT expressions RPAREN"
+    prod[0] = ast.Command(TokenType.IDENT, prod[3], prod[2])
 
 
 def p_bye(prod):
