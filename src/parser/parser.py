@@ -65,7 +65,7 @@ from parser.command import *
 from parser.expression import *
 from ply import yacc
 from lexer.lexer import Lexer
-from entities.error_handler import default_error_handler
+from entities.error_handler import default_error_handler as error_handler
 
 
 def p_start(prod):
@@ -98,11 +98,9 @@ def p_error(prod):
     colpos = lexer.ply.lexpos - lexer.ply.linestartpos
 
     if prod:
-        #console.write(f"Syntax error at '{prod.value}' ({lineno}, {colpos})")
-        default_error_handler.add_error(2000, row=lineno, column=colpos, prodval=prod.value)
+        error_handler.add_error(2000, row=lineno, column=colpos, prodval=prod.value)
     else:
-        #console.write(f"Syntax error at {lineno}, {colpos}")
-        default_error_handler.add_error(2001, row=lineno, column=colpos)
+        error_handler.add_error(2001, row=lineno, column=colpos)
 
 
 class Parser:
