@@ -2,7 +2,7 @@
 """Parsing rules and globals used by the parser"""
 
 from lexer.lexer import Lexer
-from utils.console_io import default_console_io
+from utils.console_io import ConsoleIO
 
 precedence = (
     ("nonassoc", "EQUALS", "LESSTHAN", "GREATERTHAN", "LTEQUALS", "GTEQUALS"),
@@ -16,22 +16,22 @@ names = {}
 
 start = "start"
 
-console = default_console_io
 
-
-class LexerWrapper:
-    """Wrapper class for exposing the lexer to parser functions."""
+class Shared:
+    """Wrapper class for exposing the lexer, console_io, symbol tables to parser functions."""
 
     def __init__(self) -> None:
         self.reserved_words = {}
-        self.ply = None
+        self.ply_lexer = None
         self.current_lexer = None
+        self.console = None
 
-    def update(self, current_lexer: Lexer):
-        """Update wrapper fields with current_lexer."""
+    def update(self, current_lexer: Lexer, console_io: ConsoleIO):
+        """Update parser-wide shared fields"""
         self.current_lexer = current_lexer
-        self.ply = current_lexer.get_ply_lexer()
+        self.ply_lexer = current_lexer.get_ply_lexer()
         self.reserved_words = current_lexer.reserved_words
+        self.console = console_io
 
 
-lexer = LexerWrapper()
+shared = Shared()

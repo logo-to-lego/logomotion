@@ -158,7 +158,8 @@ class Lexer:
 
     def tokenize_input(self, code):
         """Turns input code into a list of tokens."""
-        self.build()
+        if not self._ply_lexer:
+            self.build()
         self.reset()
 
         self._ply_lexer.input(code)

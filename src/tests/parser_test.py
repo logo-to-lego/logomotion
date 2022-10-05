@@ -248,3 +248,27 @@ class TestParser(unittest.TestCase):
         expected = "(Start, children: [(StatementList, children: [(TokenType.BYE)])])"
         ast = self.parser.parse(test_string)
         self.assertEqual(str(ast), expected)
+
+    def test_proc_call(self):
+        test_string = "(foo)"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.IDENT, foo)])])"
+        ast = self.parser.parse(test_string)
+        self.assertEqual(str(ast), expected)
+
+    def test_proc_call_as_part_of_something_else(self):
+        test_string = "show (foo)"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(TokenType.IDENT, foo)])])])"
+        ast = self.parser.parse(test_string)
+        self.assertEqual(str(ast), expected)
+
+    def test_proc_call_with_args(self):
+        test_string = "(foo 123)"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.IDENT, foo, children: [(Float, 123.0)])])])"
+        ast = self.parser.parse(test_string)
+        self.assertEqual(str(ast), expected)
+
+    def test_proc_call_with_args_as_part_of_something_else(self):
+        test_string = "show (foo 123)"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(TokenType.IDENT, foo, children: [(Float, 123.0)])])])])"
+        ast = self.parser.parse(test_string)
+        self.assertEqual(str(ast), expected)
