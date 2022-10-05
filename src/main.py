@@ -13,7 +13,7 @@ io = ConsoleIO(debug=True)
 lexer = Lexer(console_io=io)
 lexer.build()
 
-parser = Parser(lexer, console_io=io)
+parser = Parser(lexer, console_io=io, error_handler=error_handler)
 parser.build()
 
 
