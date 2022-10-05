@@ -65,7 +65,6 @@ from parser.command import *
 from parser.expression import *
 from ply import yacc
 from lexer.lexer import Lexer
-from entities.error_handler import default_error_handler
 from utils.console_io import default_console_io
 
 
@@ -111,7 +110,7 @@ class Parser:
         self,
         current_lexer: Lexer,
         console_io=default_console_io,
-        error_handler=default_error_handler,
+        error_handler=None
     ) -> None:
         self._current_lexer = current_lexer
         shared.update(current_lexer, console_io, error_handler)

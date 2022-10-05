@@ -4,7 +4,6 @@ and storing error messages in a list when they occur during compiling
 
 import json
 import os
-from utils.console_io import default_console_io as console
 
 
 class ErrorHandler:
@@ -12,8 +11,10 @@ class ErrorHandler:
     The messages are stored in a list
     """
 
-    def __init__(self, language="FIN"):
+    def __init__(self, console_io, language="FIN"):
         self.errors = []
+
+        self.console_io = console_io
         self.language = language
         self.error_dir = os.path.join(
             os.path.dirname(os.path.relpath(__file__)), "../error_messages"
@@ -65,7 +66,4 @@ class ErrorHandler:
     def write_errors_to_console(self):
         """Writes error messages to console in the selected language"""
         for msg in self.errors:
-            console.write(msg[self.language])
-
-
-default_error_handler = ErrorHandler()
+            self.console_io.write(msg[self.language])

@@ -3,12 +3,12 @@
 import sys
 from parser.parser import Parser
 from lexer.lexer import Lexer
-
-# from entities.symbol_table import SymbolTable
 from utils.console_io import ConsoleIO
-from entities.error_handler import default_error_handler as error_handler
+from entities.error_handler import ErrorHandler
+
 
 io = ConsoleIO(debug=True)
+error_handler = ErrorHandler(console_io=io, language="FIN")
 
 lexer = Lexer(console_io=io)
 lexer.build()

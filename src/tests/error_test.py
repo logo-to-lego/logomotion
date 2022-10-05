@@ -14,7 +14,7 @@ class TestErrorHandler(unittest.TestCase):
         self.lexer = Lexer(console_io=self.console_mock)
         self.lexer.build()
 
-        self.error_handler = ErrorHandler()
+        self.error_handler = ErrorHandler(console_io=self.console_mock)
         self.parser = Parser(
             current_lexer=self.lexer, console_io=self.console_mock, error_handler=self.error_handler
         )
