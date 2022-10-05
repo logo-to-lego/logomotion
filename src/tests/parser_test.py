@@ -78,7 +78,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(str(ast), expected)
 
     def test_parser_output_with_string_literal(self):
-        test_string = "output \"foo"
+        test_string = 'output "foo'
         ast = self.parser.parse(test_string)
         expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, children: [(StringLiteral, foo)])])])"
         self.assertEqual(str(ast), expected)
@@ -88,12 +88,6 @@ class TestParser(unittest.TestCase):
         ast = self.parser.parse(test_string)
         expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, children: [(Bool, TokenType.TRUE)])])])"
         self.assertEqual(str(ast), expected)
-
-    def test_parser_non_existing_proc_call_causes_syntax_error(self):
-        test_string = "foo"
-        ast = self.parser.parse(test_string)
-        self.console_mock.write.assert_called()
-        self.assertIn("Syntax", self.console_mock.write.call_args.args[0])
 
     def test_parser_make_call_is_parsed_correctly(self):
         test_string = 'make "var 10'

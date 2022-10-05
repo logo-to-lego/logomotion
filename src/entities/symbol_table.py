@@ -38,7 +38,7 @@ class SymbolTable:
 
     def insert_global(self, symbol, value):
         """Inserts a global scope entry to the symbol table"""
-        self._stack[len(self._stack)-1][symbol] = value
+        self._stack[len(self._stack) - 1][symbol] = value
 
 
 default_symbol_table = SymbolTable()

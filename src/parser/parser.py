@@ -98,17 +98,22 @@ def p_error(prod):
     colpos = shared.ply_lexer.lexpos - shared.ply_lexer.linestartpos
 
     if prod:
-        shared.console.write(f"Syntax error at '{prod.value}' ({lineno}, {colpos})")
+        shared.error_handler.add_error(2000, row=lineno, column=colpos, prodval=prod.value)
     else:
-        shared.console.write(f"Syntax error at {lineno}, {colpos}")
+        shared.error_handler.add_error(2001, row=lineno, column=colpos)
 
 
 class Parser:
     """Wrapper class for parser functionality. Used to transform source code into AST."""
 
-    def __init__(self, current_lexer: Lexer, console_io=default_console_io) -> None:
+    def __init__(
+        self,
+        current_lexer: Lexer,
+        console_io=default_console_io,
+        error_handler=None
+    ) -> None:
         self._current_lexer = current_lexer
-        shared.update(current_lexer, console_io)
+        shared.update(current_lexer, console_io, error_handler)
         globals()["tokens"] = current_lexer.tokens
         self._parser = None
 
