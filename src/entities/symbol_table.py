@@ -45,5 +45,15 @@ class SymbolTable:
         """Inserts a global scope entry to the symbol table"""
         self._stack[len(self._stack)-1][symbol] = value
 
+    def is_scope_global(self):
+        """returns True if scope is global"""
+        if len(self._stack) == 1:
+            return True
+        return False
+
+    def get_current_scope(self):
+        """return current scope as dict"""
+        return self._stack[0]
+
 
 default_symbol_table = SymbolTable()
