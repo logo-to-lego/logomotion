@@ -10,6 +10,13 @@ Muuttuja määritetään avainsanalla make tai tee, ja antamalla " ennen muuttuj
 Muuttujaan viitataan kaksoispisteellä. Esimerkiksi muuttujan x arvo tulostetaan avainsanalla show, print, sano tai tulosta
 `show :x`
 
+Muuttujan tyyppiä ei saa muuttaa myöhemmin. Alla oleva esimerkki tuottaa virheen:
+```
+make "x 10
+make "x "viesti
+ERROR
+```
+
 ## Funktiot
 
 Funktioilla on oma näkyvyysalue, eikä funktion ulkopuolella määriteltyjä muuttujia pysty käyttämään funktion sisällä, ellei niitä anna parametreina. Luodaan esimerkiksi funktio foo, joka tulostaa saamansa parametrin n arvon

@@ -48,7 +48,7 @@ class SymbolTable:
 
     def insert_global(self, symbol, value):
         """Inserts a global scope entry to the symbol table"""
-        self._stack[len(self._stack)-1][symbol] = value
+        self._stack[len(self._stack) - 1][symbol] = value
 
     def is_scope_global(self):
         """returns True if scope is global"""
