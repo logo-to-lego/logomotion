@@ -6,3 +6,4 @@ htmlcov
 .coverage.xml
 *.pyc
 .idea
+coverage.xml

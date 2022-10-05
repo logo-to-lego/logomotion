@@ -9,36 +9,56 @@ class SymbolTable:
         """Initializes a new symbol table object"""
         self._stack = deque()
         self._stack.appendleft({})
+        self._in_function_scope = False
 
-    def insert(self, symbol, value):
+    def insert(self, key, value):
         """Inserts a new entry to the symbol table"""
-        self._stack[0][symbol] = value
+        self._stack[0][key] = value
 
-    def lookup(self, symbol):
-        """Searches for a symbol and returns its value"""
-        for table in self._stack:
-            if symbol in table:
-                return table[symbol]
+    def lookup(self, key):
+        """Searches for a symbol and returns its value.
+        Global scope can't be reached in function scope"""
+        if self._in_function_scope:
+            for i in range(len(self._stack)-1):
+                if key in self._stack[i]:
+                    return self._stack[i][key]
+        else:
+            for table in self._stack:
+                if key in table:
+                    return table[key]
         return None
 
     def free(self):
         """Removes entries from the current symbol table scope"""
         self._stack[0] = {}
 
-    def initialize_scope(self):
+    def initialize_scope(self, function_scope=False):
         """Saves current symbol table entries to a stack when entering to a new scope"""
         self._stack.appendleft({})
+        self._in_function_scope = function_scope
 
     def finalize_scope(self):
         """Restores the previous symbol table scope and discards the current scope"""
         if len(self._stack) > 1:
             self._stack.popleft()
+            if len(self._stack) == 1:
+                self._in_function_scope = False
             return True
         return False
 
     def insert_global(self, symbol, value):
         """Inserts a global scope entry to the symbol table"""
         self._stack[len(self._stack) - 1][symbol] = value
+
+    def is_scope_global(self):
+        """returns True if scope is global"""
+        if len(self._stack) == 1:
+            return True
+        return False
+
+    def get_current_scope(self):
+        """return current scope as dict"""
+        return self._stack[0]
 
 
 default_symbol_table = SymbolTable()
