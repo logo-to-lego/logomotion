@@ -54,7 +54,7 @@ def p_expression_float(prod):
 def p_expression_bool(prod):
     """expression : TRUE
     | FALSE"""
-    prod[0] = ast.Bool(lexer.reserved_words[prod[1]])
+    prod[0] = ast.Bool(shared.reserved_words[prod[1]])
 
 
 def p_expression_deref(prod):
