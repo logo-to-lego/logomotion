@@ -88,3 +88,23 @@ class TestSymbolTable(unittest.TestCase):
         self.assertEqual(re_local, self.value2)
         self.assertEqual(re_global1, self.value1)
         self.assertEqual(re_global2, self.value2)
+
+    def test_is_scope_global_gives_right_bool_value(self):
+        re1 = self.st.is_scope_global()
+        self.st.initialize_scope()
+        re2 = self.st.is_scope_global()
+        self.st.finalize_scope()
+        re3 = self.st.is_scope_global()
+        self.assertEqual(True, re1)
+        self.assertEqual(False, re2)
+        self.assertEqual(True, re3)
+
+    def test_get_current_scope_gives_current_scope(self):
+        self.st.insert("x", self.value1)
+        self.st.initialize_scope()
+        self.st.insert("y", self.value2)
+        re1 = self.st.get_current_scope()
+        self.st.finalize_scope()
+        re2 = self.st.get_current_scope()
+        self.assertDictEqual(re1, {"y": self.value2})
+        self.assertDictEqual(re2, {"x": self.value1})
