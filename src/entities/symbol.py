@@ -24,7 +24,7 @@ class Variable:
     @property
     def type(self):
         """get symbols type"""
-        return self._type.value
+        return self._type
 
     @type.setter
     def type(self, logotype: LogoType):
