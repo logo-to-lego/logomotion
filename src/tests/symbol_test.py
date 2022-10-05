@@ -40,7 +40,7 @@ class TestSymbol(unittest.TestCase):
         with self.assertRaises(TypeError):
             Variable("name", "float")
 
-    def test_empty_argument_for_params_forms_enmpy_dict(self):
+    def test_empty_argument_for_params_forms_empty_dict(self):
         f = Function("name")
         re = f.parameters
         self.assertDictEqual(re, {})
