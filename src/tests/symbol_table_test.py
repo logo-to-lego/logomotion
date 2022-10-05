@@ -19,11 +19,26 @@ class TestSymbolTable(unittest.TestCase):
         self.assertEqual(self.value1, re1)
         self.assertEqual(self.value2, re2)
     
-    def test_global_scope_cant_be_reached_from_other_scopes(self):
+    def test_global_scope_can_be_reached_from_other_scopes_if_not_in_function(self):
         self.st.insert("x", self.value1)
         self.st.initialize_scope()
-        re = self.st.lookup("x")
-        self.assertEqual(None, re)
+        re1 = self.st.lookup("x")
+        self.st.insert("x", self.value2)
+        re2 = self.st.lookup("x")
+        self.assertEqual(re1, self.value1)
+        self.assertEqual(re2, self.value2)
+
+    def test_global_scope_cant_be_reached_from_other_scopes_if_in_function(self):
+        self.st.insert("x", self.value1)
+        self.st.initialize_scope(function_scope=True)
+        re1 = self.st.lookup("x")
+        self.st.insert("x", self.value2)
+        re2 = self.st.lookup("x")
+        self.st.initialize_scope()
+        re3 = self.st.lookup("x")
+        self.assertEqual(re1, None)
+        self.assertEqual(re2, self.value2)
+        self.assertEqual(re2, self.value2)
 
     def test_insertion_is_found_after_changing_a_upper_level_scope(self):
         self.st.initialize_scope()

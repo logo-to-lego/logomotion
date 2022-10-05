@@ -9,35 +9,40 @@ class SymbolTable:
         """Initializes a new symbol table object"""
         self._stack = deque()
         self._stack.appendleft({})
+        self._in_function_scope = False
 
-    def insert(self, symbol, value):
+    def insert(self, key, value):
         """Inserts a new entry to the symbol table"""
-        self._stack[0][symbol] = value
+        self._stack[0][key] = value
 
-    def lookup(self, symbol):
+    def lookup(self, key):
         """Searches for a symbol and returns its value.
-        Global scope can't be reached from other scopes"""
-        if len(self._stack) > 1:
-            for i in range(0, len(self._stack)-1):
-                if symbol in self._stack[i]:
-                    return self._stack[i][symbol]
+        Global scope can't be reached in function scope"""
+        if self._in_function_scope:
+            for i in range(len(self._stack)-1):
+                if key in self._stack[i]:
+                    return self._stack[i][key]
         else:
-            if symbol in self._stack[0]:
-                return self._stack[0][symbol]
+            for table in self._stack:
+                if key in table:
+                    return table[key]
         return None
 
     def free(self):
         """Removes entries from the current symbol table scope"""
         self._stack[0] = {}
 
-    def initialize_scope(self):
+    def initialize_scope(self, function_scope=False):
         """Saves current symbol table entries to a stack when entering to a new scope"""
         self._stack.appendleft({})
+        self._in_function_scope = function_scope
 
     def finalize_scope(self):
         """Restores the previous symbol table scope and discards the current scope"""
         if len(self._stack) > 1:
             self._stack.popleft()
+            if len(self._stack) == 1:
+                self._in_function_scope = False
             return True
         return False
 
