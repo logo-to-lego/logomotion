@@ -65,7 +65,7 @@ from parser.command import *
 from parser.expression import *
 from ply import yacc
 from lexer.lexer import Lexer
-from utils.console_io import default_console_io
+from utils.logger import Logger
 
 
 def p_start(prod):
@@ -98,22 +98,17 @@ def p_error(prod):
     colpos = shared.ply_lexer.lexpos - shared.ply_lexer.linestartpos
 
     if prod:
-        shared.error_handler.add_error(2000, row=lineno, column=colpos, prodval=prod.value)
+        shared.logger.error_handler.add_error(2000, row=lineno, column=colpos, prodval=prod.value)
     else:
-        shared.error_handler.add_error(2001, row=lineno, column=colpos)
+        shared.logger.error_handler.add_error(2001, row=lineno, column=colpos)
 
 
 class Parser:
     """Wrapper class for parser functionality. Used to transform source code into AST."""
 
-    def __init__(
-        self,
-        current_lexer: Lexer,
-        console_io=default_console_io,
-        error_handler=None
-    ) -> None:
+    def __init__(self, current_lexer: Lexer, logger: Logger) -> None:
         self._current_lexer = current_lexer
-        shared.update(current_lexer, console_io, error_handler)
+        shared.update(current_lexer, logger)
         globals()["tokens"] = current_lexer.tokens
         self._parser = None
 

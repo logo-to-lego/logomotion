@@ -2,8 +2,7 @@
 """Parsing rules and globals used by the parser"""
 
 from lexer.lexer import Lexer
-from utils.console_io import ConsoleIO
-from entities.error_handler import ErrorHandler
+from utils.logger import Logger
 
 precedence = (
     ("nonassoc", "EQUALS", "LESSTHAN", "GREATERTHAN", "LTEQUALS", "GTEQUALS"),
@@ -26,16 +25,14 @@ class Shared:
         self.reserved_words = {}
         self.ply_lexer = None
         self.current_lexer = None
-        self.console = None
-        self.error_handler = None
+        self.logger = None
 
-    def update(self, current_lexer: Lexer, console_io: ConsoleIO, error_handler: ErrorHandler):
+    def update(self, current_lexer: Lexer, logger: Logger):
         """Update parser-wide shared fields"""
         self.current_lexer = current_lexer
         self.ply_lexer = current_lexer.get_ply_lexer()
         self.reserved_words = current_lexer.reserved_words
-        self.console = console_io
-        self.error_handler = error_handler
+        self.logger = logger
 
 
 shared = Shared()

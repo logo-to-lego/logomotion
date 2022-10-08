@@ -4,16 +4,18 @@ import sys
 from parser.parser import Parser
 from lexer.lexer import Lexer
 from utils.console_io import ConsoleIO
-from entities.error_handler import ErrorHandler
+from utils.error_handler import ErrorHandler
+from utils.logger import Logger
 
 
 io = ConsoleIO(debug=True)
 error_handler = ErrorHandler(console_io=io, language="FIN")
+logger = Logger(io, error_handler)
 
-lexer = Lexer(console_io=io)
+lexer = Lexer(logger)
 lexer.build()
 
-parser = Parser(lexer, console_io=io, error_handler=error_handler)
+parser = Parser(lexer, logger)
 parser.build()
 
 

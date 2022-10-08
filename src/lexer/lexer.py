@@ -5,7 +5,6 @@ Lexer module used by PLY's lexer-generator.
 
 from ply.lex import lex, TOKEN
 from lexer.token_types import TokenType
-from utils.console_io import default_console_io
 
 
 class Lexer:
@@ -87,10 +86,10 @@ class Lexer:
         TokenType.COMMA: r",",
     }
 
-    def __init__(self, console_io=default_console_io):
+    def __init__(self, logger):
         self._ply_lexer = None
         self.tokens = [token_type.value for token_type in TokenType]
-        self.console_io = console_io
+        self._logger = logger
 
         # Set regex only tokens.
         for name, value in self.token_types.items():
@@ -133,7 +132,7 @@ class Lexer:
         pass
 
     def t_error(self, token):
-        self.console_io.write(f"Illegal char {token.value[0]!r}")
+        self._logger.console.write(f"Illegal char {token.value[0]!r}")
         token.lexer.skip(1)
 
     def build(self, **kwargs):
