@@ -86,11 +86,6 @@ def p_statement_list_empty(prod):
     prod[0] = shared.node_factory.create_node(ast.StatementList)
 
 
-def p_statement_command(prod):
-    "statement : command"
-    prod[0] = prod[1]
-
-
 def p_empty(prod):
     "empty :"
 

@@ -6,8 +6,8 @@ from parser import ast
 from lexer.token_types import TokenType
 
 
-def p_command(prod):
-    """command : fd
+def p_statement(prod):
+    """statement : fd
     | bk
     | lt
     | rt
