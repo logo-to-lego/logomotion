@@ -5,6 +5,8 @@ from utils.logger import default_logger
 
 
 class Node:
+    """Base AST Node class"""
+
     def __init__(self, node_type, children=None, leaf=None, **dependencies):
         self.type = node_type
         self.children = children if children else []
@@ -113,9 +115,12 @@ class ProcArgs(Node):
 
 
 class NodeFactory:
+    """Used to create new AST nodes, injects logger and symbol table as dependencies."""
+
     def __init__(self, logger=default_logger, symbol_table=default_symbol_table):
         self._logger = logger
         self._symbol_table = symbol_table
 
     def create_node(self, node_class: Node, **kwargs):
+        """Creates a new node of node_class, with the given keyword arguments."""
         return node_class(**kwargs, logger=self._logger, symbol_table=self._symbol_table)
