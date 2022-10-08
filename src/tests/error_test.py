@@ -4,6 +4,7 @@ from lexer.lexer import Lexer
 from parser.parser import Parser
 from parser import ast
 from utils.error_handler import ErrorHandler
+from utils.logger import Logger
 
 
 class TestErrorHandler(unittest.TestCase):
@@ -11,13 +12,12 @@ class TestErrorHandler(unittest.TestCase):
 
     def setUp(self):
         self.console_mock = Mock()
-        self.lexer = Lexer(console_io=self.console_mock)
+        self.error_handler = ErrorHandler(console_io=self.console_mock)
+        self.logger = Logger(self.console_mock, self.error_handler)
+        self.lexer = Lexer(self.logger)
         self.lexer.build()
 
-        self.error_handler = ErrorHandler(console_io=self.console_mock)
-        self.parser = Parser(
-            current_lexer=self.lexer, console_io=self.console_mock, error_handler=self.error_handler
-        )
+        self.parser = Parser(self.lexer, self.logger)
         self.parser.build()
 
     def test_error_with_invalid_make_keyword(self):

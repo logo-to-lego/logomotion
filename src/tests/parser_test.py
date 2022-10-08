@@ -4,15 +4,19 @@ from lexer.lexer import Lexer
 from parser.parser import Parser
 from parser import ast
 
+from utils.logger import Logger
+
 
 class TestParser(unittest.TestCase):
     """Test class for testing parser"""
 
     def setUp(self):
         self.console_mock = Mock()
-        self.lexer = Lexer(console_io=self.console_mock)
+        self.error_mock = Mock()
+        self.logger = Logger(self.console_mock, self.error_mock)
+        self.lexer = Lexer(self.logger)
         self.lexer.build()
-        self.parser = Parser(self.lexer, console_io=self.console_mock)
+        self.parser = Parser(self.lexer, self.logger)
         self.parser.build()
 
     def test_parser_start_node(self):

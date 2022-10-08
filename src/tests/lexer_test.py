@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import Mock
 from lexer.lexer import Lexer
 from lexer.token_types import TokenType
+from utils.logger import Logger
 
 
 class TestLexer(unittest.TestCase):
@@ -9,7 +10,9 @@ class TestLexer(unittest.TestCase):
 
     def setUp(self):
         self.console_mock = Mock()
-        self.lexer = Lexer(console_io=self.console_mock)
+        self.error_mock = Mock()
+        self.logger = Logger(self.console_mock, self.error_mock)
+        self.lexer = Lexer(self.logger)
         self.ply_lexer = self.lexer.get_ply_lexer()
         self.token_mock = Mock()
         self.token_mock.lexer.lineno = 0
