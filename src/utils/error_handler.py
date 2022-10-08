@@ -4,6 +4,7 @@ and storing error messages in a list when they occur during compiling
 
 import json
 import os
+from utils.console_io import default_console_io
 
 
 class ErrorHandler:
@@ -11,7 +12,7 @@ class ErrorHandler:
     The messages are stored in a list
     """
 
-    def __init__(self, console_io, language="FIN"):
+    def __init__(self, console_io=default_console_io, language="FIN"):
         self.errors = []
 
         self.console_io = console_io
@@ -31,8 +32,7 @@ class ErrorHandler:
             return self._get_parser_dict()[str(msg_id)]
         # if 3000 <= msg_id <= 3999:
         #     pass
-        raise Exception(
-            f"Message id {msg_id} was not found from error message files")
+        raise Exception(f"Message id {msg_id} was not found from error message files")
 
     def add_error(self, msg_id: int, **kwargs):
         """Gets the error message frame in the defined language (ENG/FIN),
@@ -67,3 +67,6 @@ class ErrorHandler:
         """Writes error messages to console in the selected language"""
         for msg in self.errors:
             self.console_io.write(msg[self.language])
+
+
+default_error_handler = ErrorHandler()

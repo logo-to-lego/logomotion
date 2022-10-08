@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from lexer.lexer import Lexer
 from parser.parser import Parser
 from parser import ast
-from entities.error_handler import ErrorHandler
+from utils.error_handler import ErrorHandler
 
 
 class TestErrorHandler(unittest.TestCase):
