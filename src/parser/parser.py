@@ -65,22 +65,25 @@ from parser.command import *
 from parser.expression import *
 from ply import yacc
 from lexer.lexer import Lexer
-from utils.logger import Logger
+from utils.logger import Logger, default_logger
+from entities.symbol_table import SymbolTable, default_symbol_table
 
 
 def p_start(prod):
     "start : statement_list"
-    prod[0] = ast.Start([prod[1]])
+    prod[0] = shared.node_factory.create_node(ast.Start, children=[prod[1]])
 
 
 def p_statement_list(prod):
     "statement_list : statement statement_list"
-    prod[0] = ast.StatementList([prod[1]] + prod[2].children)
+    prod[0] = shared.node_factory.create_node(
+        ast.StatementList, children=[prod[1]] + prod[2].children
+    )
 
 
 def p_statement_list_empty(prod):
     "statement_list : empty"
-    prod[0] = ast.StatementList()
+    prod[0] = shared.node_factory.create_node(ast.StatementList)
 
 
 def p_statement_command(prod):
@@ -106,9 +109,14 @@ def p_error(prod):
 class Parser:
     """Wrapper class for parser functionality. Used to transform source code into AST."""
 
-    def __init__(self, current_lexer: Lexer, logger: Logger) -> None:
+    def __init__(
+        self,
+        current_lexer: Lexer,
+        logger: Logger = default_logger,
+        symbol_table: SymbolTable = default_symbol_table,
+    ):
         self._current_lexer = current_lexer
-        shared.update(current_lexer, logger)
+        shared.update(current_lexer, logger, symbol_table)
         globals()["tokens"] = current_lexer.tokens
         self._parser = None
 

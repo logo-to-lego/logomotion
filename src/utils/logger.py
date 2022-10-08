@@ -9,3 +9,6 @@ class Logger:
     def __init__(self, console_io=default_console_io, error_handler=default_error_handler) -> None:
         self.console = console_io
         self.error_handler = error_handler
+
+
+default_logger = Logger()
