@@ -9,9 +9,9 @@ from utils.console_io import ConsoleIO
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
 
-io = ConsoleIO(debug=True)
+io = ConsoleIO()
 error_handler = ErrorHandler(console_io=io, language="FIN")
-logger = Logger(io, error_handler)
+logger = Logger(io, error_handler, debug=True)
 
 lexer = Lexer(logger)
 lexer.build()
