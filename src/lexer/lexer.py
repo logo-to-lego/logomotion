@@ -5,7 +5,7 @@ Lexer module used by PLY's lexer-generator.
 
 from ply.lex import lex, TOKEN
 from lexer.token_types import TokenType
-from utils.logger import Logger, default_logger
+from utils.logger import default_logger
 
 
 class Lexer:

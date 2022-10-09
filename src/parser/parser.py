@@ -65,25 +65,27 @@ from parser.command import *
 from parser.expression import *
 from ply import yacc
 from lexer.lexer import Lexer
-from utils.logger import Logger, default_logger
-from entities.symbol_table import SymbolTable, default_symbol_table
+from utils.logger import default_logger
+from entities.symbol_tables import default_symbol_tables
 
 
 def p_start(prod):
     "start : statement_list"
-    prod[0] = shared.node_factory.create_node(ast.Start, children=[prod[1]])
+    prod[0] = shared.node_factory.create_node(
+        ast.Start, children=[prod[1]], position=Position(prod)
+    )
 
 
 def p_statement_list(prod):
     "statement_list : statement statement_list"
     prod[0] = shared.node_factory.create_node(
-        ast.StatementList, children=[prod[1]] + prod[2].children
+        ast.StatementList, children=[prod[1]] + prod[2].children, position=Position(prod)
     )
 
 
 def p_statement_list_empty(prod):
     "statement_list : empty"
-    prod[0] = shared.node_factory.create_node(ast.StatementList)
+    prod[0] = shared.node_factory.create_node(ast.StatementList, position=Position(prod))
 
 
 def p_empty(prod):
@@ -107,11 +109,11 @@ class Parser:
     def __init__(
         self,
         current_lexer: Lexer,
-        logger: Logger = default_logger,
-        symbol_table: SymbolTable = default_symbol_table,
+        logger=default_logger,
+        symbol_tables=default_symbol_tables,
     ):
         self._current_lexer = current_lexer
-        shared.update(current_lexer, logger, symbol_table)
+        shared.update(current_lexer, logger, symbol_tables)
         globals()["tokens"] = current_lexer.tokens
         self._parser = None
 

@@ -19,7 +19,7 @@ class SymbolTable:
         """Searches for a symbol and returns its value.
         Global scope can't be reached in function scope"""
         if self._in_function_scope:
-            for i in range(len(self._stack)-1):
+            for i in range(len(self._stack) - 1):
                 if key in self._stack[i]:
                     return self._stack[i][key]
         else:
@@ -61,4 +61,5 @@ class SymbolTable:
         return self._stack[0]
 
 
-default_symbol_table = SymbolTable()
+default_variable_table = SymbolTable()
+default_function_table = SymbolTable()

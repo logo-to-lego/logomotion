@@ -229,7 +229,7 @@ class TestParser(unittest.TestCase):
         ast = self.parser.parse(test_string)
         self.assertEqual(str(ast), expected)
 
-    def test_ifelse_paren(self):
+    def test_ifelse_paren_braces(self):
         test_string = "(ifelse {1+1 < 3} { show 1 } { show 2})"
         expected = "(Start, children: [(StatementList, children: [(IfElse, (RelOp, <, children: [(BinOp, +, children: [(Float, 1.0), (Float, 1.0)]), (Float, 3.0)]), children: [(StatementList, children: [(TokenType.SHOW, children: [(Float, 1.0)])]), (StatementList, children: [(TokenType.SHOW, children: [(Float, 2.0)])])])])])"
         ast = self.parser.parse(test_string)
