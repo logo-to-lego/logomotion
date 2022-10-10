@@ -8,5 +8,10 @@
     {
         "FIN": "En saanut selvää rivillä @row ja sarakkeella @column olevasta koodista.",
         "ENG": "I could not understand the code in row @row and column @column."
+    },
+    "2002":
+    {
+        "FIN": "Rivillä @row yritit tehdä laskutoimituksen jollakin joka ei ole numero.",
+        "ENG": "In row @row you tried to calculate with something that is not a number."
     }
 }
