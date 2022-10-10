@@ -22,6 +22,18 @@ class TestErrorHandler(unittest.TestCase):
         self.parser = Parser(self.lexer, self.logger, self.symbol_tables)
         self.parser.build()
 
+    def test_valid_logo_code_does_not_yield_errors(self):
+        test_string = """
+            make "a 123
+            show :a
+            make "b true
+        """
+
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 0)
+
     def test_error_with_invalid_make_keyword(self):
         test_string = """mak "asd 123"""
 
@@ -113,14 +125,15 @@ class TestErrorHandler(unittest.TestCase):
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
         self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg)
 
-    def test_valid_logo_code_does_not_yield_errors(self):
-        test_string = """
-            make "a 123
-            show :a
-            make "b true
-        """
+    def test_variable_is_not_defined(self):
+        test_string = """fd :x"""
 
         ast = self.parser.parse(test_string)
         ast.check_types()
 
-        self.assertEqual(len(self.error_handler.get_error_messages()), 0)
+        fin_expected_msg = "Muuttujaa 'x' ei ole määritelty."
+        eng_expected_msg = "Variable 'x' is not defined."
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg)

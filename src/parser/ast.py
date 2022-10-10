@@ -191,7 +191,7 @@ class UnaryOp(Node):
         unary_type = self.get_type()
         if unary_type != LogoType.FLOAT:
             self._logger.error_handler.add_error(
-                2003, curr_type=self._logo_type.value, desired_type=LogoType.FLOAT.value
+                2003, curr_type=self._logo_type.value, expected_type=LogoType.FLOAT.value
             )
 
         # Check the type of the child of UnaryOp
@@ -199,7 +199,7 @@ class UnaryOp(Node):
             child_type = child.get_type()
             if child_type != LogoType.FLOAT:
                 self._logger.error_handler.add_error(
-                    2003, curr_type=child_type.value, desired_type=LogoType.FLOAT.value
+                    2003, curr_type=child_type.value, expected_type=LogoType.FLOAT.value
                 )
 
 
@@ -289,11 +289,13 @@ class Deref(Node):
         symbol = self._get_symbol()
 
         if not symbol:
-            self._logger.console.write(f"No such variable: {self.leaf}")
+            self._logger.error_handler.add_error(2007, var=self.leaf)
         elif symbol.type != self._logo_type:
-            self._logger.console.write(
-                f"Wrong variable type, was {symbol.type.value} in table "
-                + f"but expected {self._logo_type.value}"
+            self._logger.error_handler.add_error(
+                2008,
+                var=self.leaf,
+                curr_type=symbol.type.value,
+                expected_type=self._logo_type.value,
             )
 
 
