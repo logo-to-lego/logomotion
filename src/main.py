@@ -80,7 +80,11 @@ def file_parser():
     io.write("Lexer tokens:")
     io.write("\n".join((str(token) for token in lexer.tokenize_input(code))) + "\n")
     io.write("Parser AST:")
-    io.write(parser.parse(code))
+    start_node = parser.parse(code)
+    io.write(start_node)
+    start_node.check_types()
+    io.write("Type checks:")
+    io.write(start_node)
 
 
 if __name__ == "__main__":

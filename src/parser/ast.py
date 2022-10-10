@@ -274,11 +274,36 @@ class StringLiteral(Node):
 class If(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("If", children, leaf, **dependencies)
+    
+    def get_type(self):
+        return None
+    
+    def check_types(self, reverse=False):
+        if self.leaf.get_type() is not LogoType.BOOL:
+            self._logger.debug("If statements leafs type isn't boolean")
+            #self._logger.error_handler.write_errors_to_console() # type error
+        self.leaf.check_types()
+        self._symbol_tables.variables.initialize_scope()
+        self.children[0].check_types()
+        self._symbol_tables.variables.finalize_scope()
 
 
 class IfElse(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("IfElse", children, leaf, **dependencies)
+    
+    def get_type(self):
+        return None
+    
+    def check_types(self, reverse=False):
+        if self.leaf.get_type() is not LogoType.BOOL:
+            self._logger.debug("IfElse statements leafs type isn't boolean")
+            #self._logger.error_handler.write_errors_to_console() # type error
+        self.leaf.check_types()
+        self._symbol_tables.variables.initialize_scope()
+        for child in self.children:
+            child.check_types()
+        self._symbol_tables.variables.finalize_scope()
 
 
 class ProcDecl(Node):
