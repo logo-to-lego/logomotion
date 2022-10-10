@@ -111,7 +111,6 @@ class Command(Node):
         print(self.leaf)
         name = self.leaf
         name_type = name.get_type()
-        print("nametype", name_type)
 
         if name_type == LogoType.UNKNOWN:
             name.set_type(LogoType.STRING)
@@ -215,7 +214,21 @@ class RelOp(Node):
         return self._logo_type
 
     def check_types(self):
-        pass
+        child1 = self.children[0]
+        child2 = self.children[1]
+
+        child1_type = child1.get_type()
+        child2_type = child2.get_type()
+
+        row = child1.position.get_pos()[0]
+
+        if LogoType.UNKNOWN in (child1_type, child2_type):
+            self._logger.error_handler.add_error(2004, row=row)
+
+        if child1_type != child2_type:
+            self._logger.error_handler.add_error(
+                2005, row=row, type1=child1_type.value, type2=child2_type.value
+            )
 
 
 class Float(Node):
