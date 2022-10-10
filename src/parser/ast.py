@@ -148,7 +148,7 @@ class Command(Node):
         only as many arguments as the procedure takes in."""
         checker = self._type_checkers.get(
             self.type,
-            lambda r: self._logger.console.write("No type checker found for " + self.type.value),
+            lambda: self._logger.console.write("No type checker found for " + self.type.value),
         )
         checker()
 
