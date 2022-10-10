@@ -60,10 +60,7 @@ class StatementList(Node):
         super().__init__("StatementList", children, None, **dependencies)
 
     def check_types(self):
-        """Runs the check in given order. Reversed-flag means that the checking
-        is done from the last statement to first statement."""
-        children = self.children if not reverse else reversed(self.children)
-
+        """Runs the check in given order."""
         for child in self.children:
             child.get_type()
             child.check_types()
@@ -174,7 +171,7 @@ class BinOp(Node):
                 child.set_type(LogoType.FLOAT)
             elif child_type != LogoType.FLOAT:
                 pos = child.position.get_pos()
-                self._logger.error_handler.add_error(2002, row = pos[0])
+                self._logger.error_handler.add_error(2002, row=pos[0])
             child.check_types()
 
 
