@@ -59,13 +59,11 @@ class StatementList(Node):
     def __init__(self, children=None, **dependencies):
         super().__init__("StatementList", children, None, **dependencies)
 
-    def check_types(self, reverse=False):
-        """Runs the check in given order. Reversed-flag means that the checking
-        is done from the last statement to first statement."""
-        children = self.children if not reverse else reversed(self.children)
-
-        for child in children:
-            child.check_types(reverse)
+    def check_types(self):
+        """Runs the check in given order."""
+        for child in self.children:
+            child.get_type()
+            child.check_types()
 
 
 class Command(Node):
@@ -87,7 +85,7 @@ class Command(Node):
         self._logo_type = LogoType.VOID
         return self._logo_type
 
-    def _check_fd_types(self, reverse=False):
+    def _check_fd_types(self):
         if len(self.children) != 1:
             self._logger.console.write("Wrong amount of arguments for FD")
             return
@@ -98,13 +96,13 @@ class Command(Node):
             child.set_type(LogoType.FLOAT)
         elif child_type != LogoType.FLOAT:
             self._logger.console.write("Type should be float, not " + child.get_type().value)
-        child.check_types(reverse)
+        child.check_types()
 
     def _get_make_type(self):
         self._logo_type = LogoType.VOID
         return self._logo_type
 
-    def _check_make_types(self, reverse=False):
+    def _check_make_types(self):
         if len(self.children) != 1 or not self.leaf:
             self._logger.console.write("Wrong amount of arguments for MAKE")
             return
@@ -119,7 +117,7 @@ class Command(Node):
             self._logger.console.write(
                 "Type should be string literal, not " + name.get_type().value
             )
-        name.check_types(reverse)
+        name.check_types()
 
         # Check second argument type, assignment value
         value = self.children[0]
@@ -127,7 +125,7 @@ class Command(Node):
 
         if value_type == LogoType.VOID:
             self._logger.console.write("Type should not be VOID")
-        value.check_types(reverse)
+        value.check_types()
 
         if name.get_type() == LogoType.STRING:
             symbol = self._symbol_tables.variables.lookup(name.leaf)
@@ -145,14 +143,14 @@ class Command(Node):
                 symbol = Variable(name.leaf, value.get_type())
                 self._symbol_tables.variables.insert(name.leaf, symbol)
 
-    def check_types(self, reverse=False):
+    def check_types(self):
         """Checks that the args given to the procedure are of correct type and that there are
         only as many arguments as the procedure takes in."""
         checker = self._type_checkers.get(
             self.type,
-            lambda r: self._logger.console.write("No type checker found for " + self.type.value),
+            lambda: self._logger.console.write("No type checker found for " + self.type.value),
         )
-        checker(reverse)
+        checker()
 
 
 class BinOp(Node):
@@ -165,20 +163,16 @@ class BinOp(Node):
 
         return self._logo_type
 
-    def check_types(self, reverse=False):
-        """Checks that the types of both operands is LogoFloat. Reverse does nothing."""
+    def check_types(self):
+        """Checks that the types of both operands is LogoFloat"""
         for child in self.children:
             child_type = child.get_type()
             if child_type == LogoType.UNKNOWN:
                 child.set_type(LogoType.FLOAT)
             elif child_type != LogoType.FLOAT:
                 pos = child.position.get_pos()
-                self._logger.console.write(
-                    "Type should be FLOAT, not "
-                    + child.get_type().value
-                    + f", at (line: {pos[0]}, col: {pos[1]})"
-                )
-            child.check_types(reverse)
+                self._logger.error_handler.add_error(2002, row=pos[0])
+            child.check_types()
 
 
 class UnaryOp(Node):
@@ -201,7 +195,7 @@ class Float(Node):
 
         return self._logo_type
 
-    def check_types(self, reverse=False):
+    def check_types(self):
         pass
 
 
@@ -215,7 +209,7 @@ class Bool(Node):
 
         return self._logo_type
 
-    def check_types(self, reverse=False):
+    def check_types(self):
         pass
 
 
@@ -245,7 +239,7 @@ class Deref(Node):
     def _get_symbol(self) -> Variable:
         return self._symbol_tables.variables.lookup(self.leaf)
 
-    def check_types(self, reverse=False):
+    def check_types(self):
         symbol = self._get_symbol()
 
         if not symbol:
@@ -267,7 +261,7 @@ class StringLiteral(Node):
 
         return self._logo_type
 
-    def check_types(self, reverse=False):
+    def check_types(self):
         pass
 
 
@@ -316,7 +310,7 @@ class ProcDecl(Node):
 
         return self._logo_type
 
-    def check_types(self, reverse=False):
+    def check_types(self):
         if self._symbol_tables.functions.lookup(self.leaf):
             self._logger.console.write(f"Procedure {self.leaf} already declared")
 

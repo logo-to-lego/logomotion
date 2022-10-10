@@ -9,7 +9,7 @@ class SymbolTable:
         """Initializes a new symbol table object"""
         self._stack = deque()
         self._stack.appendleft({})
-        self._in_function_scope = False
+        self._in_function = None
 
     def insert(self, key, value):
         """Inserts a new entry to the symbol table"""
@@ -18,7 +18,7 @@ class SymbolTable:
     def lookup(self, key):
         """Searches for a symbol and returns its value.
         Global scope can't be reached in function scope"""
-        if self._in_function_scope:
+        if self._in_function:
             for i in range(len(self._stack) - 1):
                 if key in self._stack[i]:
                     return self._stack[i][key]
@@ -32,17 +32,17 @@ class SymbolTable:
         """Removes entries from the current symbol table scope"""
         self._stack[0] = {}
 
-    def initialize_scope(self, function_scope=False):
+    def initialize_scope(self, in_function=None):
         """Saves current symbol table entries to a stack when entering to a new scope"""
         self._stack.appendleft({})
-        self._in_function_scope = function_scope
+        self._in_function = in_function
 
     def finalize_scope(self):
         """Restores the previous symbol table scope and discards the current scope"""
         if len(self._stack) > 1:
             self._stack.popleft()
             if len(self._stack) == 1:
-                self._in_function_scope = False
+                self._in_function = None
             return True
         return False
 
@@ -59,6 +59,11 @@ class SymbolTable:
     def get_current_scope(self):
         """return current scope as dict"""
         return self._stack[0]
+
+    def get_in_scope_fuction_symbol(self):
+        """Return the current in-scope function's symbol,
+        or None when not currently in a function scope."""
+        return self._in_function
 
 
 default_variable_table = SymbolTable()
