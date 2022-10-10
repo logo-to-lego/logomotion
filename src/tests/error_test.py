@@ -41,10 +41,54 @@ class TestErrorHandler(unittest.TestCase):
 
         ast = self.parser.parse(test_string)
         ast.check_types()
-        
+
         fin_expected_msg = "Rivillä 3 yritit tehdä laskutoimituksen jollakin joka ei ole numero."
         eng_expected_msg = "In row 3 you tried to calculate with something that is not a number."
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
         self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg)
+
+    def test_invalid_unary_op_with_bool(self):
+        test_string = """
+            make "a -false
+            """
+
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        fin_expected_msg = "Negatiivisen luvun tyyppi on BOOL, vaikka sen pitäisi olla FLOAT."
+        eng_expected_msg = "The type of a negative number is BOOL, even though it should be FLOAT."
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg)
+
+    def test_invalid_unary_op_with_str(self):
+        test_string = """
+            make "a -"kissa
+            """
+
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        fin_expected_msg = "Negatiivisen luvun tyyppi on STRING, vaikka sen pitäisi olla FLOAT."
+        eng_expected_msg = (
+            "The type of a negative number is STRING, even though it should be FLOAT."
+        )
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg)
+
+    def test_valid_logo_code_does_not_yield_errors(self):
+        test_string = """
+            make "a 123
+            show :a
+            make "b true
+        """
+
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 0)

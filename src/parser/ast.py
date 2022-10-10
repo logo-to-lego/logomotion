@@ -108,8 +108,10 @@ class Command(Node):
             return
 
         # Check first argument type, variable name
+        print(self.leaf)
         name = self.leaf
         name_type = name.get_type()
+        print("nametype", name_type)
 
         if name_type == LogoType.UNKNOWN:
             name.set_type(LogoType.STRING)
@@ -148,7 +150,7 @@ class Command(Node):
         only as many arguments as the procedure takes in."""
         checker = self._type_checkers.get(
             self.type,
-            lambda r: self._logger.console.write("No type checker found for " + self.type.value),
+            lambda: self._logger.console.write("No type checker found for " + self.type.value),
         )
         checker()
 
@@ -179,10 +181,41 @@ class UnaryOp(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("UnaryOp", children, leaf, **dependencies)
 
+    def get_type(self):
+        if not self._logo_type:
+            self._logo_type = LogoType.FLOAT
+
+        return self._logo_type
+
+    def check_types(self):
+        # Check UnaryOp type
+        unary_type = self.get_type()
+        if unary_type != LogoType.FLOAT:
+            self._logger.error_handler.add_error(
+                2003, curr_type=self._logo_type.value, desired_type=LogoType.FLOAT.value
+            )
+
+        # Check the type of the child of UnaryOp
+        for child in self.children:
+            child_type = child.get_type()
+            if child_type != LogoType.FLOAT:
+                self._logger.error_handler.add_error(
+                    2003, curr_type=child_type.value, desired_type=LogoType.FLOAT.value
+                )
+
 
 class RelOp(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("RelOp", children, leaf, **dependencies)
+
+    def get_type(self):
+        if not self._logo_type:
+            self._logo_type = LogoType.BOOL
+
+        return self._logo_type
+
+    def check_types(self):
+        pass
 
 
 class Float(Node):

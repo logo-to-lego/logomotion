@@ -3,6 +3,7 @@ import unittest
 from entities.logotypes import LogoType
 from entities.symbol import Variable, Function
 
+
 class TestSymbol(unittest.TestCase):
     """test class for entities.symbol.Symbol and classes Variable
     and Function that inherits it"""
@@ -10,7 +11,9 @@ class TestSymbol(unittest.TestCase):
     def setUp(self):
         self.value1 = 123
         self.value2 = 456
-        self.var = Variable("x", )
+        self.var = Variable(
+            "x",
+        )
         self.func = Function("f", params={"x": LogoType.FLOAT, "y": LogoType.STRING})
 
     def test_symbol_gives_right_name(self):

@@ -13,5 +13,10 @@
     {
         "FIN": "Rivillä @row yritit tehdä laskutoimituksen jollakin joka ei ole numero.",
         "ENG": "In row @row you tried to calculate with something that is not a number."
+    },
+    "2003":
+    {
+        "FIN": "Negatiivisen luvun tyyppi on @curr_type, vaikka sen pitäisi olla @desired_type.",
+        "ENG": "The type of a negative number is @curr_type, even though it should be @desired_type."
     }
 }
