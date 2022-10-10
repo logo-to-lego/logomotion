@@ -59,13 +59,13 @@ class StatementList(Node):
     def __init__(self, children=None, **dependencies):
         super().__init__("StatementList", children, None, **dependencies)
 
-    def check_types(self, reverse=False):
+    def check_types(self):
         """Runs the check in given order. Reversed-flag means that the checking
         is done from the last statement to first statement."""
-        children = self.children if not reverse else reversed(self.children)
 
-        for child in children:
-            child.check_types(reverse)
+        for child in self.children:
+            child.get_type()
+            child.check_types()
 
 
 class Command(Node):
@@ -87,7 +87,7 @@ class Command(Node):
         self._logo_type = LogoType.VOID
         return self._logo_type
 
-    def _check_fd_types(self, reverse=False):
+    def _check_fd_types(self):
         if len(self.children) != 1:
             self._logger.console.write("Wrong amount of arguments for FD")
             return
@@ -98,7 +98,7 @@ class Command(Node):
             child.set_type(LogoType.FLOAT)
         elif child_type != LogoType.FLOAT:
             self._logger.console.write("Type should be float, not " + child.get_type().value)
-        child.check_types(reverse)
+        child.check_types()
 
     def _get_make_type(self):
         self._logo_type = LogoType.VOID
