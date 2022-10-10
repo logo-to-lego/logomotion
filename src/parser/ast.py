@@ -318,10 +318,9 @@ class If(Node):
     def get_type(self):
         return None
 
-    def check_types(self, reverse=False):
+    def check_types(self):
         if self.leaf.get_type() is not LogoType.BOOL:
-            self._logger.debug("If statements leafs type isn't boolean")
-            #self._logger.error_handler.write_errors_to_console() # Type Error
+            self._logger.error_handler.add_error(2006, row=self.position.get_pos()[0])
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()
         self.children[0].check_types()
@@ -335,10 +334,9 @@ class IfElse(Node):
     def get_type(self):
         return None
 
-    def check_types(self, reverse=False):
+    def check_types(self):
         if self.leaf.get_type() is not LogoType.BOOL:
-            self._logger.debug("IfElse statements leafs type isn't boolean")
-            #self._logger.error_handler.write_errors_to_console() # Type Error
+            self._logger.error_handler.add_error(2006, row=self.position.get_pos()[0])
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()
         for child in self.children:

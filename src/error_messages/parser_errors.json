@@ -27,5 +27,9 @@
     "2005": {
         "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2. Katso, että tyypit ovat keskenään samat.",
         "ENG": "In row @row you tried to compare types @type1 and @type2. Check that you are comparing the same types."
+    },
+    "2006": {
+        "FIN": "Ehtolause rivillä @row ei tuota totuusarvoa.",
+        "ENG": "If statement in line @row isn't boolean type."
     }
 }
