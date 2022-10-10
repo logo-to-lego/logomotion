@@ -87,7 +87,7 @@ class Lexer:
         TokenType.COMMA: r",",
     }
 
-    def __init__(self, logger = default_logger):
+    def __init__(self, logger=default_logger):
         self._ply_lexer = None
         self.tokens = [token_type.value for token_type in TokenType]
         self._logger = logger

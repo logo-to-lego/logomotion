@@ -2,9 +2,10 @@ import unittest
 from unittest.mock import Mock
 from lexer.lexer import Lexer
 from parser.parser import Parser
-from parser import ast
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
+from entities.symbol_tables import SymbolTables
+from entities.symbol_table import SymbolTable
 
 
 class TestErrorHandler(unittest.TestCase):
@@ -16,8 +17,9 @@ class TestErrorHandler(unittest.TestCase):
         self.logger = Logger(self.console_mock, self.error_handler)
         self.lexer = Lexer(self.logger)
         self.lexer.build()
+        self.symbol_tables = SymbolTables(SymbolTable(), SymbolTable())
 
-        self.parser = Parser(self.lexer, self.logger)
+        self.parser = Parser(self.lexer, self.logger, self.symbol_tables)
         self.parser.build()
 
     def test_error_with_invalid_make_keyword(self):
@@ -76,6 +78,36 @@ class TestErrorHandler(unittest.TestCase):
         eng_expected_msg = (
             "The type of a negative number is STRING, even though it should be FLOAT."
         )
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg)
+
+    def test_relop_raises_error_with_unknown_type(self):
+        test_string = """make "c :a >= :b"""
+
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        fin_expected_msg = "Rivillä 1 en pystynyt päättelemään vertailuoperaattorin tyyppiä."
+        eng_expected_msg = "In row 1 I could not infer the type of the operand."
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg)
+
+    def test_relop_raises_error_with_non_comparable_types(self):
+        test_string = """
+            make "a "abc
+            make "b 123
+            make "c :a >= :b
+            """
+
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        fin_expected_msg = "Rivillä 4 koitit vertailla tyyppejä STRING ja FLOAT. Katso, että tyypit ovat keskenään samat."
+        eng_expected_msg = "In row 4 you tried to compare types STRING and FLOAT. Check that you are comparing the same types."
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
