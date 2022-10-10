@@ -268,10 +268,10 @@ class StringLiteral(Node):
 class If(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("If", children, leaf, **dependencies)
-    
+
     def get_type(self):
         return None
-    
+
     def check_types(self, reverse=False):
         if self.leaf.get_type() is not LogoType.BOOL:
             self._logger.debug("If statements leafs type isn't boolean")
@@ -285,10 +285,10 @@ class If(Node):
 class IfElse(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("IfElse", children, leaf, **dependencies)
-    
+
     def get_type(self):
         return None
-    
+
     def check_types(self, reverse=False):
         if self.leaf.get_type() is not LogoType.BOOL:
             self._logger.debug("IfElse statements leafs type isn't boolean")
