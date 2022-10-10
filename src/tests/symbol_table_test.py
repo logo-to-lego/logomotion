@@ -18,7 +18,7 @@ class TestSymbolTable(unittest.TestCase):
         re2 = self.st.lookup("x")
         self.assertEqual(self.value1, re1)
         self.assertEqual(self.value2, re2)
-    
+
     def test_global_scope_can_be_reached_from_other_scopes_if_not_in_function(self):
         self.st.insert("x", self.value1)
         self.st.initialize_scope()
@@ -30,7 +30,7 @@ class TestSymbolTable(unittest.TestCase):
 
     def test_global_scope_cant_be_reached_from_other_scopes_if_in_function(self):
         self.st.insert("x", self.value1)
-        self.st.initialize_scope(function_scope=True)
+        self.st.initialize_scope(in_function="function x's symbol")
         re1 = self.st.lookup("x")
         self.st.insert("x", self.value2)
         re2 = self.st.lookup("x")
@@ -123,3 +123,8 @@ class TestSymbolTable(unittest.TestCase):
         re2 = self.st.get_current_scope()
         self.assertDictEqual(re1, {"y": self.value2})
         self.assertDictEqual(re2, {"x": self.value1})
+
+    def test_get_in_scope_function_symbol_returns_current_in_scope_function_symbol(self):
+        self.st.initialize_scope(in_function="function x's symbol")
+        result = self.st.get_in_scope_fuction_symbol()
+        self.assertEqual(result, "function x's symbol")
