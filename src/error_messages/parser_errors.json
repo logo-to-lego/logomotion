@@ -63,5 +63,9 @@
     "2014": {
         "FIN": "Rivillä @row komento '@command' ei voi ottaa parametrina funktiokutsua, joka palauttaa @return_type.",
         "ENG": "In row @row command '@command' cannot take a function call as parameter that returns @return_type."
+    },
+    "2015": {
+        "FIN": "Komento '@command' ei ota parametreja.",
+        "ENG": "Command '@command' does not take parameters."
     }
 }

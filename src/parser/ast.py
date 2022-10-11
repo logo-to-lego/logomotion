@@ -3,7 +3,6 @@
 from entities.logotypes import LogoType
 from entities.symbol import Variable
 from entities.symbol_tables import SymbolTables, default_symbol_tables
-from lexer.token_types import TokenType
 from utils.logger import Logger, default_logger
 
 
@@ -69,9 +68,6 @@ class StatementList(Node):
 class Move(Node):
     """FD, BK, LT, RT"""
 
-    def __init__(self, node_type, children=None, leaf=None, **dependencies):
-        super().__init__(node_type, children, leaf, **dependencies)
-
     def get_type(self):
         if not self._logo_type:
             self._logo_type = LogoType.VOID
@@ -79,7 +75,7 @@ class Move(Node):
 
     def check_types(self):
         if len(self.children) != 1:
-            # TODO logokoodi ja testi alla olevalle errorille. -Jusa
+            # logokoodi ja testi alla olevalle errorille. -Jusa
             self._logger.error_handler.add_error(
                 2009, row=self.position.get_pos()[0], command=self.type.value
             )
@@ -101,8 +97,6 @@ class Move(Node):
 
 
 class Make(Node):
-    def __init__(self, node_type, children=None, leaf=None, **dependencies):
-        super().__init__(node_type, children, leaf, **dependencies)
 
     def get_type(self):
         if not self._logo_type:
@@ -138,7 +132,7 @@ class Make(Node):
         value_type = value.get_type()
 
         if value_type == LogoType.VOID:
-            # TODO logokoodi ja testi alla olevalle errorille. -Jusa
+            # logokoodi ja testi alla olevalle errorille. -Jusa
             self._logger.error_handler.add_error(
                 2011,
                 row=self.position.get_pos()[0],
@@ -168,8 +162,6 @@ class Make(Node):
 
 
 class Output(Node):
-    def __init__(self, node_type, children=None, leaf=None, **dependencies):
-        super().__init__(node_type, children, leaf, **dependencies)
 
     def get_type(self):
         pass
@@ -179,8 +171,6 @@ class Output(Node):
 
 
 class Show(Node):
-    def __init__(self, node_type, children=None, leaf=None, **dependencies):
-        super().__init__(node_type, children, leaf, **dependencies)
 
     def get_type(self):
         if not self._logo_type:
@@ -189,7 +179,6 @@ class Show(Node):
 
     def check_types(self):
         # Must have at least 1 param
-        print(self.type.value)
         if len(self.children) == 0:
             self._logger.error_handler.add_error(2013, row=self.position.get_pos()[0])
 
@@ -197,7 +186,7 @@ class Show(Node):
         for child in self.children:
             logo_type = child.get_type()
             if logo_type == LogoType.VOID:
-                # TODO Tee testi tälle. -Jusa
+                # Tee testi tälle. -Jusa
                 self._logger.error_handler.add_error(
                     2014,
                     row=self.position.get_pos()[0],
@@ -208,8 +197,6 @@ class Show(Node):
 
 
 class Bye(Node):
-    def __init__(self, node_type, children=None, leaf=None, **dependencies):
-        super().__init__(node_type, children, leaf, **dependencies)
 
     def get_type(self):
         if not self._logo_type:
@@ -217,13 +204,12 @@ class Bye(Node):
         return self._logo_type
 
     def check_types(self):
-        pass
+        if self.children:
+            self._logger.error_handler.add_error(2015, command = self.type.value)
 
 
 class Command(Node):
-    def __init__(self, node_type, children=None, leaf=None, **dependencies):
-        super().__init__(node_type, children, leaf, **dependencies)
-
+    pass
 
 class BinOp(Node):
     def __init__(self, children, leaf, **dependencies):
@@ -356,7 +342,6 @@ class Deref(Node):
         return self._symbol_tables.variables.lookup(self.leaf)
 
     def check_types(self):
-        print("DEREF CHECK TYPES", self.leaf)
         symbol = self._get_symbol()
         if not symbol:
             self._logger.error_handler.add_error(2007, var=self.leaf)
