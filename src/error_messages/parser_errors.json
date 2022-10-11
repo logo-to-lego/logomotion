@@ -39,5 +39,13 @@
     "2008": {
         "FIN": "Muuttujan '@var' tyyppi on @curr_type, vaikka sen pitäisi olla @expected_type.",
         "ENG": "Variable '@var' has type @curr_type, even though it should be @expected_type."
+    },
+    "2009": {
+        "FIN": "Rivillä @row komennolle '@command' on liikaa argumentteja.",
+        "ENG": "In row @row command '@command' has too many arguments."
+    },
+    "2010": {
+        "FIN": "Rivillä @row komennon '@command' parametri on tyyppiä @curr_type, vaikka sen pitäisi olla @expected_type.",
+        "ENG": "In Row @row the parameter of '@command' was type @curr_type, even though it should be @expected_type."
     }
 }

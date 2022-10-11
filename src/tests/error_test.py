@@ -137,3 +137,38 @@ class TestErrorHandler(unittest.TestCase):
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
         self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg)
+
+    def test_move_commands_yield_error_with_invalid_parameter_type(self):
+        test_string = """
+            make "a "somevalue
+            fd "abc
+            bk true
+            lt false
+            rt :a
+            """
+        
+        fin_expected_msg1 = "Rivillä 3 komennon 'FD' parametri on tyyppiä STRING, vaikka sen pitäisi olla FLOAT."
+        fin_expected_msg2 = "Rivillä 4 komennon 'BK' parametri on tyyppiä BOOL, vaikka sen pitäisi olla FLOAT."
+        fin_expected_msg3 = "Rivillä 5 komennon 'LT' parametri on tyyppiä BOOL, vaikka sen pitäisi olla FLOAT."
+        fin_expected_msg4 = "Rivillä 6 komennon 'RT' parametri on tyyppiä STRING, vaikka sen pitäisi olla FLOAT."
+
+        eng_expected_msg1 = "In Row 3 the parameter of 'FD' was type STRING, even though it should be FLOAT."
+        eng_expected_msg2 = "In Row 4 the parameter of 'BK' was type BOOL, even though it should be FLOAT."
+        eng_expected_msg3 = "In Row 5 the parameter of 'LT' was type BOOL, even though it should be FLOAT."
+        eng_expected_msg4 = "In Row 6 the parameter of 'RT' was type STRING, even though it should be FLOAT."
+
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 4)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg1)
+        
+        self.assertEqual(self.error_handler.get_error_messages()[1]["FIN"], fin_expected_msg2)
+        self.assertEqual(self.error_handler.get_error_messages()[1]["ENG"], eng_expected_msg2)
+        
+        self.assertEqual(self.error_handler.get_error_messages()[2]["FIN"], fin_expected_msg3)
+        self.assertEqual(self.error_handler.get_error_messages()[2]["ENG"], eng_expected_msg3)
+        
+        self.assertEqual(self.error_handler.get_error_messages()[3]["FIN"], fin_expected_msg4)
+        self.assertEqual(self.error_handler.get_error_messages()[3]["ENG"], eng_expected_msg4)

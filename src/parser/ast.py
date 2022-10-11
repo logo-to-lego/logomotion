@@ -70,10 +70,19 @@ class Command(Node):
     def __init__(self, node_type, children=None, leaf=None, **dependencies):
         super().__init__(node_type, children, leaf, **dependencies)
         self._type_checkers = {
-            TokenType.FD: self._check_fd_types,
+            TokenType.FD: self._check_move_types,
+            TokenType.BK: self._check_move_types,
+            TokenType.RT: self._check_move_types,
+            TokenType.LT: self._check_move_types,
             TokenType.MAKE: self._check_make_types,
         }
-        self._type_getters = {TokenType.FD: self._get_fd_type, TokenType.MAKE: self._get_make_type}
+        self._type_getters = {
+            TokenType.FD: self._get_type, 
+            TokenType.BK: self._get_type, 
+            TokenType.RT: self._get_type, 
+            TokenType.LT: self._get_type, 
+            TokenType.MAKE: self._get_type
+        }
 
     def get_type(self):
         if not self._logo_type:
@@ -81,13 +90,14 @@ class Command(Node):
 
         return self._type_getters.get(self.type, lambda: self._logo_type)()
 
-    def _get_fd_type(self):
+    def _get_type(self):
         self._logo_type = LogoType.VOID
         return self._logo_type
 
-    def _check_fd_types(self):
+    def _check_move_types(self):
         if len(self.children) != 1:
-            self._logger.console.write("Wrong amount of arguments for FD")
+            # TODO logokoodi ja testi alla olevalle errorille. -Jusa
+            self._logger.error_handler.add_error(2009, row=self.position.get_pos()[0], command=self.type.value)
             return
 
         child = self.children[0]
@@ -95,12 +105,14 @@ class Command(Node):
         if child_type == LogoType.UNKNOWN:
             child.set_type(LogoType.FLOAT)
         elif child_type != LogoType.FLOAT:
-            self._logger.console.write("Type should be float, not " + child.get_type().value)
+            self._logger.error_handler.add_error(
+                2010, 
+                row=self.position.get_pos()[0], 
+                command=self.type.value, 
+                curr_type=child_type.value,
+                expected_type=LogoType.FLOAT.value
+                )
         child.check_types()
-
-    def _get_make_type(self):
-        self._logo_type = LogoType.VOID
-        return self._logo_type
 
     def _check_make_types(self):
         if len(self.children) != 1 or not self.leaf:
