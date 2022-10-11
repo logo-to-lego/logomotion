@@ -66,38 +66,23 @@ class StatementList(Node):
             child.check_types()
 
 
-class Command(Node):
+class Move(Node):
+    """FD, BK, LT, RT"""
+
     def __init__(self, node_type, children=None, leaf=None, **dependencies):
         super().__init__(node_type, children, leaf, **dependencies)
-        self._type_checkers = {
-            TokenType.FD: self._check_move_types,
-            TokenType.BK: self._check_move_types,
-            TokenType.RT: self._check_move_types,
-            TokenType.LT: self._check_move_types,
-            TokenType.MAKE: self._check_make_types,
-        }
-        self._type_getters = {
-            TokenType.FD: self._get_type, 
-            TokenType.BK: self._get_type, 
-            TokenType.RT: self._get_type, 
-            TokenType.LT: self._get_type, 
-            TokenType.MAKE: self._get_type
-        }
 
     def get_type(self):
         if not self._logo_type:
-            self._logo_type = LogoType.UNKNOWN
-
-        return self._type_getters.get(self.type, lambda: self._logo_type)()
-
-    def _get_type(self):
-        self._logo_type = LogoType.VOID
+            self._logo_type = LogoType.VOID
         return self._logo_type
 
-    def _check_move_types(self):
+    def check_types(self):
         if len(self.children) != 1:
             # TODO logokoodi ja testi alla olevalle errorille. -Jusa
-            self._logger.error_handler.add_error(2009, row=self.position.get_pos()[0], command=self.type.value)
+            self._logger.error_handler.add_error(
+                2009, row=self.position.get_pos()[0], command=self.type.value
+            )
             return
 
         child = self.children[0]
@@ -106,15 +91,25 @@ class Command(Node):
             child.set_type(LogoType.FLOAT)
         elif child_type != LogoType.FLOAT:
             self._logger.error_handler.add_error(
-                2010, 
-                row=self.position.get_pos()[0], 
-                command=self.type.value, 
+                2010,
+                row=self.position.get_pos()[0],
+                command=self.type.value,
                 curr_type=child_type.value,
-                expected_type=LogoType.FLOAT.value
-                )
+                expected_type=LogoType.FLOAT.value,
+            )
         child.check_types()
 
-    def _check_make_types(self):
+
+class Make(Node):
+    def __init__(self, node_type, children=None, leaf=None, **dependencies):
+        super().__init__(node_type, children, leaf, **dependencies)
+
+    def get_type(self):
+        if not self._logo_type:
+            self._logo_type = LogoType.VOID
+        return self._logo_type
+
+    def check_types(self):
         if len(self.children) != 1 or not self.leaf:
             self._logger.console.write("Wrong amount of arguments for MAKE")
             return
@@ -156,14 +151,47 @@ class Command(Node):
                 symbol = Variable(name.leaf, value.get_type())
                 self._symbol_tables.variables.insert(name.leaf, symbol)
 
+
+class Output(Node):
+    def __init__(self, node_type, children=None, leaf=None, **dependencies):
+        super().__init__(node_type, children, leaf, **dependencies)
+
+    def get_type(self):
+        pass
+
     def check_types(self):
-        """Checks that the args given to the procedure are of correct type and that there are
-        only as many arguments as the procedure takes in."""
-        checker = self._type_checkers.get(
-            self.type,
-            lambda: self._logger.console.write("No type checker found for " + self.type.value),
-        )
-        checker()
+        pass
+
+
+class Show(Node):
+    def __init__(self, node_type, children=None, leaf=None, **dependencies):
+        super().__init__(node_type, children, leaf, **dependencies)
+
+    def get_type(self):
+        if not self._logo_type:
+            self._logo_type = LogoType.VOID
+        return self._logo_type
+
+    def check_types(self):
+        pass
+
+
+class Bye(Node):
+    def __init__(self, node_type, children=None, leaf=None, **dependencies):
+        super().__init__(node_type, children, leaf, **dependencies)
+
+    def get_type(self):
+        if not self._logo_type:
+            self._logo_type = LogoType.VOID
+        return self._logo_type
+
+    def check_types(self):
+        pass
+
+
+class Command(Node):
+    def __init__(self, node_type, children=None, leaf=None, **dependencies):
+        super().__init__(node_type, children, leaf, **dependencies)
 
 
 class BinOp(Node):
