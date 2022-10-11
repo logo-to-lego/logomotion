@@ -161,16 +161,16 @@ class TestErrorHandler(unittest.TestCase):
         )
 
         eng_expected_msg1 = (
-            "In Row 3 the parameter of 'FD' was type STRING, even though it should be FLOAT."
+            "In row 3 the parameter of 'FD' was type STRING, even though it should be FLOAT."
         )
         eng_expected_msg2 = (
-            "In Row 4 the parameter of 'BK' was type BOOL, even though it should be FLOAT."
+            "In row 4 the parameter of 'BK' was type BOOL, even though it should be FLOAT."
         )
         eng_expected_msg3 = (
-            "In Row 5 the parameter of 'LT' was type BOOL, even though it should be FLOAT."
+            "In row 5 the parameter of 'LT' was type BOOL, even though it should be FLOAT."
         )
         eng_expected_msg4 = (
-            "In Row 6 the parameter of 'RT' was type STRING, even though it should be FLOAT."
+            "In row 6 the parameter of 'RT' was type STRING, even though it should be FLOAT."
         )
 
         ast = self.parser.parse(test_string)
@@ -188,3 +188,49 @@ class TestErrorHandler(unittest.TestCase):
 
         self.assertEqual(self.error_handler.get_error_messages()[3]["FIN"], fin_expected_msg4)
         self.assertEqual(self.error_handler.get_error_messages()[3]["ENG"], eng_expected_msg4)
+
+    def test_make_only_accepts_string_as_variable_name(self):
+        test_string = """
+            make true "abc
+            make 123 456
+            make "foo "bar
+        """
+        fin_expected_msg1 = "Rivillä 2 komennon 'MAKE' parametri on tyyppiä BOOL, vaikka sen pitäisi olla STRING."
+        fin_expected_msg2 = "Rivillä 3 komennon 'MAKE' parametri on tyyppiä FLOAT, vaikka sen pitäisi olla STRING."
+        
+        eng_expected_msg1 = "In row 2 the parameter of 'MAKE' was type BOOL, even though it should be STRING."
+        eng_expected_msg2 = "In row 3 the parameter of 'MAKE' was type FLOAT, even though it should be STRING."
+        
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 2)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg1)
+
+        self.assertEqual(self.error_handler.get_error_messages()[1]["FIN"], fin_expected_msg2)
+        self.assertEqual(self.error_handler.get_error_messages()[1]["ENG"], eng_expected_msg2)
+
+    def test_make_only_accepts_same_type_as_new_value(self):
+        test_string = """
+            make "a 123
+            make "a "abc
+            make "a true
+            make "a 456
+        """
+        fin_expected_msg1 = "Rivillä 3 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä STRING tyyppiin FLOAT."
+        fin_expected_msg2 = "Rivillä 4 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä BOOL tyyppiin FLOAT."
+        
+        eng_expected_msg1 = "In row 3 variable 'a' has type STRING which cannot be changed to type FLOAT."
+        eng_expected_msg2 = "In row 4 variable 'a' has type BOOL which cannot be changed to type FLOAT."
+        
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 2)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg1)
+
+        self.assertEqual(self.error_handler.get_error_messages()[1]["FIN"], fin_expected_msg2)
+        self.assertEqual(self.error_handler.get_error_messages()[1]["ENG"], eng_expected_msg2)
+

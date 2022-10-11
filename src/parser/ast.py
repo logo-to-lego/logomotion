@@ -110,46 +110,61 @@ class Make(Node):
         return self._logo_type
 
     def check_types(self):
+        # Check for right amount of params
         if len(self.children) != 1 or not self.leaf:
-            self._logger.console.write("Wrong amount of arguments for MAKE")
+            self._logger.error_handler.add_error(
+                2009,
+                row=self.position.get_pos()[0],
+                command=self.type.value)
             return
 
-        # Check first argument type, variable name
-        print(self.leaf)
-        name = self.leaf
-        name_type = name.get_type()
+        # Check first argument type and variable name
+        var_name = self.leaf
+        var_name_type = var_name.get_type()
 
-        if name_type == LogoType.UNKNOWN:
-            name.set_type(LogoType.STRING)
-        elif name.get_type() != LogoType.STRING:
-            self._logger.console.write(
-                "Type should be string literal, not " + name.get_type().value
+        if var_name_type == LogoType.UNKNOWN:
+            var_name.set_type(LogoType.STRING)
+        elif var_name.get_type() != LogoType.STRING:
+            self._logger.error_handler.add_error(
+                2010,
+                row=self.position.get_pos()[0],
+                command=self.type.value,
+                curr_type=var_name.get_type().value,
+                expected_type=LogoType.STRING.value
             )
-        name.check_types()
+        var_name.check_types()
 
         # Check second argument type, assignment value
         value = self.children[0]
         value_type = value.get_type()
 
         if value_type == LogoType.VOID:
-            self._logger.console.write("Type should not be VOID")
+            # TODO logokoodi ja testi alla olevalle errorille. -Jusa
+            self._logger.error_handler.add_error(
+                2011,
+                row=self.position.get_pos()[0],
+                command=self.type.value,
+                value_type=value_type.value,
+            )
         value.check_types()
 
-        if name.get_type() == LogoType.STRING:
-            symbol = self._symbol_tables.variables.lookup(name.leaf)
-            if symbol:
-                if symbol.type == LogoType.UNKNOWN:
-                    symbol.type = value.get_type()
-                elif value.get_type() == LogoType.UNKNOWN:
-                    value.set_type(symbol.type)
-                elif value.get_type() != symbol.type:
-                    self._logger.console.write(
-                        f"Variable type cannot be changed, was {symbol.type.value}"
-                        + f", trying to change to {value.get_type().value}"
-                    )
-            else:
-                symbol = Variable(name.leaf, value.get_type())
-                self._symbol_tables.variables.insert(name.leaf, symbol)
+        # Check if var_name has symbol in symbol table
+        symbol = self._symbol_tables.variables.lookup(var_name.leaf)
+        if symbol:
+            if symbol.type == LogoType.UNKNOWN:
+                symbol.type = value.get_type()
+            elif value.get_type() == LogoType.UNKNOWN:
+                value.set_type(symbol.type)
+            elif value.get_type() != symbol.type:
+                self._logger.error_handler.add_error(
+                    2012,
+                    row=self.position.get_pos()[0],
+                    var_name=var_name.leaf,
+                    curr_type=value.get_type().value,
+                    expected_type=symbol.type.value)
+        else:
+            symbol = Variable(var_name.leaf, value.get_type())
+            self._symbol_tables.variables.insert(var_name.leaf, symbol)
 
 
 class Output(Node):

@@ -41,11 +41,19 @@
         "ENG": "Variable '@var' has type @curr_type, even though it should be @expected_type."
     },
     "2009": {
-        "FIN": "Rivillä @row komennolle '@command' on liikaa argumentteja.",
-        "ENG": "In row @row command '@command' has too many arguments."
+        "FIN": "Rivillä @row komennolle '@command' on väärä määrä argumentteja.",
+        "ENG": "In row @row command '@command' has wrong amount arguments."
     },
     "2010": {
         "FIN": "Rivillä @row komennon '@command' parametri on tyyppiä @curr_type, vaikka sen pitäisi olla @expected_type.",
-        "ENG": "In Row @row the parameter of '@command' was type @curr_type, even though it should be @expected_type."
+        "ENG": "In row @row the parameter of '@command' was type @curr_type, even though it should be @expected_type."
+    },
+    "2011": {
+        "FIN": "Rivillä @row komento '@command' ei voi ottaa tyyppiä @value_type parametriksi.",
+        "ENG": "In row @row command '@command' cannot take type @value_type as its parameter."
+    },
+    "2012": {
+        "FIN": "Rivillä @row muuttujan '@var_name' tyyppiä ei voi vaihtaa tyypistä @curr_type tyyppiin @expected_type.",
+        "ENG": "In row @row variable '@var_name' has type @curr_type which cannot be changed to type @expected_type."
     }
 }
