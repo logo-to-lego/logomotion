@@ -113,9 +113,8 @@ class Make(Node):
         # Check for right amount of params
         if len(self.children) != 1 or not self.leaf:
             self._logger.error_handler.add_error(
-                2009,
-                row=self.position.get_pos()[0],
-                command=self.type.value)
+                2009, row=self.position.get_pos()[0], command=self.type.value
+            )
             return
 
         # Check first argument type and variable name
@@ -130,7 +129,7 @@ class Make(Node):
                 row=self.position.get_pos()[0],
                 command=self.type.value,
                 curr_type=var_name.get_type().value,
-                expected_type=LogoType.STRING.value
+                expected_type=LogoType.STRING.value,
             )
         var_name.check_types()
 
@@ -161,7 +160,8 @@ class Make(Node):
                     row=self.position.get_pos()[0],
                     var_name=var_name.leaf,
                     curr_type=value.get_type().value,
-                    expected_type=symbol.type.value)
+                    expected_type=symbol.type.value,
+                )
         else:
             symbol = Variable(var_name.leaf, value.get_type())
             self._symbol_tables.variables.insert(var_name.leaf, symbol)
@@ -188,7 +188,23 @@ class Show(Node):
         return self._logo_type
 
     def check_types(self):
-        pass
+        # Must have at least 1 param
+        print(self.type.value)
+        if len(self.children) == 0:
+            self._logger.error_handler.add_error(2013, row=self.position.get_pos()[0])
+
+        # Cannot be function call that returns VOID
+        for child in self.children:
+            logo_type = child.get_type()
+            if logo_type == LogoType.VOID:
+                # TODO Tee testi tälle. -Jusa
+                self._logger.error_handler.add_error(
+                    2014,
+                    row=self.position.get_pos()[0],
+                    command=self.type.value,
+                    return_type=LogoType.VOID.value,
+                )
+            child.check_types()
 
 
 class Bye(Node):
@@ -226,8 +242,7 @@ class BinOp(Node):
             if child_type == LogoType.UNKNOWN:
                 child.set_type(LogoType.FLOAT)
             elif child_type != LogoType.FLOAT:
-                pos = child.position.get_pos()
-                self._logger.error_handler.add_error(2002, row=pos[0])
+                self._logger.error_handler.add_error(2002, row=child.position.get_pos()[0])
             child.check_types()
 
 
@@ -341,11 +356,11 @@ class Deref(Node):
         return self._symbol_tables.variables.lookup(self.leaf)
 
     def check_types(self):
+        print("DEREF CHECK TYPES", self.leaf)
         symbol = self._get_symbol()
-
         if not symbol:
             self._logger.error_handler.add_error(2007, var=self.leaf)
-        elif symbol.type != self._logo_type:
+        elif symbol.type != self.get_type():
             self._logger.error_handler.add_error(
                 2008,
                 var=self.leaf,

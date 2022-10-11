@@ -195,12 +195,20 @@ class TestErrorHandler(unittest.TestCase):
             make 123 456
             make "foo "bar
         """
-        fin_expected_msg1 = "Rivillä 2 komennon 'MAKE' parametri on tyyppiä BOOL, vaikka sen pitäisi olla STRING."
-        fin_expected_msg2 = "Rivillä 3 komennon 'MAKE' parametri on tyyppiä FLOAT, vaikka sen pitäisi olla STRING."
-        
-        eng_expected_msg1 = "In row 2 the parameter of 'MAKE' was type BOOL, even though it should be STRING."
-        eng_expected_msg2 = "In row 3 the parameter of 'MAKE' was type FLOAT, even though it should be STRING."
-        
+        fin_expected_msg1 = (
+            "Rivillä 2 komennon 'MAKE' parametri on tyyppiä BOOL, vaikka sen pitäisi olla STRING."
+        )
+        fin_expected_msg2 = (
+            "Rivillä 3 komennon 'MAKE' parametri on tyyppiä FLOAT, vaikka sen pitäisi olla STRING."
+        )
+
+        eng_expected_msg1 = (
+            "In row 2 the parameter of 'MAKE' was type BOOL, even though it should be STRING."
+        )
+        eng_expected_msg2 = (
+            "In row 3 the parameter of 'MAKE' was type FLOAT, even though it should be STRING."
+        )
+
         ast = self.parser.parse(test_string)
         ast.check_types()
 
@@ -218,12 +226,20 @@ class TestErrorHandler(unittest.TestCase):
             make "a true
             make "a 456
         """
-        fin_expected_msg1 = "Rivillä 3 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä STRING tyyppiin FLOAT."
-        fin_expected_msg2 = "Rivillä 4 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä BOOL tyyppiin FLOAT."
-        
-        eng_expected_msg1 = "In row 3 variable 'a' has type STRING which cannot be changed to type FLOAT."
-        eng_expected_msg2 = "In row 4 variable 'a' has type BOOL which cannot be changed to type FLOAT."
-        
+        fin_expected_msg1 = (
+            "Rivillä 3 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä STRING tyyppiin FLOAT."
+        )
+        fin_expected_msg2 = (
+            "Rivillä 4 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä BOOL tyyppiin FLOAT."
+        )
+
+        eng_expected_msg1 = (
+            "In row 3 variable 'a' has type STRING which cannot be changed to type FLOAT."
+        )
+        eng_expected_msg2 = (
+            "In row 4 variable 'a' has type BOOL which cannot be changed to type FLOAT."
+        )
+
         ast = self.parser.parse(test_string)
         ast.check_types()
 
@@ -233,4 +249,3 @@ class TestErrorHandler(unittest.TestCase):
 
         self.assertEqual(self.error_handler.get_error_messages()[1]["FIN"], fin_expected_msg2)
         self.assertEqual(self.error_handler.get_error_messages()[1]["ENG"], eng_expected_msg2)
-

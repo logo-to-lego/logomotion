@@ -55,5 +55,13 @@
     "2012": {
         "FIN": "Rivillä @row muuttujan '@var_name' tyyppiä ei voi vaihtaa tyypistä @curr_type tyyppiin @expected_type.",
         "ENG": "In row @row variable '@var_name' has type @curr_type which cannot be changed to type @expected_type."
+    },
+    "2013": {
+        "FIN": "Rivillä @row komennolla '@command' on oltava ainakin yksi parametri.",
+        "ENG": "In row @row command '@command' must have at least one parameter."
+    },
+    "2014": {
+        "FIN": "Rivillä @row komento '@command' ei voi ottaa parametrina funktiokutsua, joka palauttaa @return_type.",
+        "ENG": "In row @row command '@command' cannot take a function call as parameter that returns @return_type."
     }
 }
