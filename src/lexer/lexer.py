@@ -17,6 +17,9 @@ class Lexer:
         "miten": TokenType.TO,
         "end": TokenType.END,
         "valmis": TokenType.END,
+        "output": TokenType.OUTPUT,
+        "anna": TokenType.OUTPUT,
+        "op": TokenType.OUTPUT,
         "fd": TokenType.FD,
         "forward": TokenType.FD,
         "et": TokenType.FD,
@@ -75,7 +78,11 @@ class Lexer:
         TokenType.LBRACE: r"\{",
         TokenType.RBRACE: r"\}",
         TokenType.EQUALS: r"\=",
-        TokenType.STRINGLITERAL: r"\"" + VARIABLE_NAME,
+        TokenType.LESSTHAN: r"\<",
+        TokenType.GREATERTHAN: r"\>",
+        TokenType.LTEQUALS: r"\<\=",
+        TokenType.GTEQUALS: r"\>\=",
+        TokenType.STRINGLITERAL: r"[\"\']" + VARIABLE_NAME,
         TokenType.DEREF: r"\:" + VARIABLE_NAME,
         TokenType.COMMA: r",",
     }
@@ -109,7 +116,7 @@ class Lexer:
 
     @TOKEN(r"\d+")
     def t_NUMBER(self, token):
-        token.value = int(token.value)
+        token.value = float(token.value)
         return token
 
     # Ignored tokens, do not put these in the tokens-list.
@@ -151,7 +158,8 @@ class Lexer:
 
     def tokenize_input(self, code):
         """Turns input code into a list of tokens."""
-        self.build()
+        if not self._ply_lexer:
+            self.build()
         self.reset()
 
         self._ply_lexer.input(code)

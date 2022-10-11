@@ -62,11 +62,10 @@ list
 from parser import ast
 from parser.globals import *
 from parser.command import *
-from parser.value import *
 from parser.expression import *
 from ply import yacc
 from lexer.lexer import Lexer
-from utils.console_io import default_console_io as console
+from utils.console_io import default_console_io
 
 
 def p_start(prod):
@@ -95,21 +94,26 @@ def p_empty(prod):
 
 # pylint: disable-next=missing-function-docstring
 def p_error(prod):
-    lineno = lexer.ply.lineno
-    colpos = lexer.ply.lexpos - lexer.ply.linestartpos
+    lineno = shared.ply_lexer.lineno
+    colpos = shared.ply_lexer.lexpos - shared.ply_lexer.linestartpos
 
     if prod:
-        console.write(f"Syntax error at '{prod.value}' ({lineno}, {colpos})")
+        shared.error_handler.add_error(2000, row=lineno, column=colpos, prodval=prod.value)
     else:
-        console.write(f"Syntax error at {lineno}, {colpos}")
+        shared.error_handler.add_error(2001, row=lineno, column=colpos)
 
 
 class Parser:
     """Wrapper class for parser functionality. Used to transform source code into AST."""
 
-    def __init__(self, current_lexer: Lexer) -> None:
+    def __init__(
+        self,
+        current_lexer: Lexer,
+        console_io=default_console_io,
+        error_handler=None
+    ) -> None:
         self._current_lexer = current_lexer
-        lexer.update(current_lexer)
+        shared.update(current_lexer, console_io, error_handler)
         globals()["tokens"] = current_lexer.tokens
         self._parser = None
 
@@ -130,7 +134,7 @@ class Parser:
         ply_parser = self.get_ply_parser()
         ply_lexer = self._current_lexer.get_ply_lexer()
 
-        start_node = ply_parser.parse(code, lexer=ply_lexer, **kwargs)
+        start_node = ply_parser.parse(code, lexer=ply_lexer, tracking=True, **kwargs)
 
         return start_node
 

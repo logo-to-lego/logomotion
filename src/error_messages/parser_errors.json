@@ -1,0 +1,12 @@
+{
+    "2000": 
+    {
+        "FIN": "En saanut selvää komennosta '@prodval'. Löysin tämän riviltä @row ja sarakkeelta @column.",
+        "ENG": "I could not understand '@prodval'. I found this on row @row and column @column."
+    },
+    "2001":
+    {
+        "FIN": "En saanut selvää rivillä @row ja sarakkeella @column olevasta koodista.",
+        "ENG": "I could not understand the code in row @row and column @column."
+    }
+}

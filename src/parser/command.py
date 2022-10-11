@@ -3,6 +3,7 @@
 """
 from parser.globals import *
 from parser import ast
+from lexer.token_types import TokenType
 
 
 def p_command(prod):
@@ -14,79 +15,106 @@ def p_command(prod):
     | make
     | bye
     | if
-    | ifelse"""
+    | ifelse
+    | proc_decl
+    | output
+    | proc_call"""
     prod[0] = prod[1]
 
 
 def p_fd(prod):
     "fd : FD expression"
-    prod[0] = ast.Command(lexer.reserved_words[prod[1]], [prod[2]])
+    prod[0] = ast.Command(shared.reserved_words[prod[1]], [prod[2]])
 
 
 def p_fd_paren(prod):
     "fd : LPAREN FD expression RPAREN"
-    prod[0] = ast.Command(lexer.reserved_words[prod[2]], [prod[3]])
-    print("prod[0]", prod[0].type)
+    prod[0] = ast.Command(shared.reserved_words[prod[2]], [prod[3]])
 
 
 def p_bk(prod):
     "bk : BK expression"
-    prod[0] = ast.Command(lexer.reserved_words[prod[1]], [prod[2]])
+    prod[0] = ast.Command(shared.reserved_words[prod[1]], [prod[2]])
 
 
 def p_bk_paren(prod):
     "bk : LPAREN BK expression RPAREN"
-    prod[0] = ast.Command(lexer.reserved_words[prod[2]], [prod[3]])
+    prod[0] = ast.Command(shared.reserved_words[prod[2]], [prod[3]])
 
 
 def p_lt(prod):
     "lt : LT expression"
-    prod[0] = ast.Command(lexer.reserved_words[prod[1]], [prod[2]])
+    prod[0] = ast.Command(shared.reserved_words[prod[1]], [prod[2]])
 
 
 def p_lt_paren(prod):
     "lt : LPAREN LT expression RPAREN"
-    prod[0] = ast.Command(lexer.reserved_words[prod[2]], [prod[3]])
+    prod[0] = ast.Command(shared.reserved_words[prod[2]], [prod[3]])
 
 
 def p_rt(prod):
     "rt : RT expression"
-    prod[0] = ast.Command(lexer.reserved_words[prod[1]], [prod[2]])
+    prod[0] = ast.Command(shared.reserved_words[prod[1]], [prod[2]])
 
 
 def p_rt_paren(prod):
     "rt : LPAREN RT expression RPAREN"
-    prod[0] = ast.Command(lexer.reserved_words[prod[2]], [prod[3]])
+    prod[0] = ast.Command(shared.reserved_words[prod[2]], [prod[3]])
 
 
 def p_show(prod):
-    "show : SHOW value"
-    prod[0] = ast.Command(lexer.reserved_words[prod[1]], [prod[2]])
+    "show : SHOW expression"
+    prod[0] = ast.Command(shared.reserved_words[prod[1]], [prod[2]])
 
 
 def p_show_paren(prod):
-    "show : LPAREN SHOW value values RPAREN"
-    prod[0] = ast.Command(lexer.reserved_words[prod[2]], [prod[3]] + prod[4])
+    "show : LPAREN SHOW expression expressions RPAREN"
+    prod[0] = ast.Command(shared.reserved_words[prod[2]], [prod[3]] + prod[4])
 
 
 def p_make(prod):
-    """make : MAKE STRINGLITERAL value"""
-    prod[0] = ast.Command(lexer.reserved_words[prod[1]], children=[prod[3]], leaf=prod[2][1:])
+    """make : MAKE expression expression"""
+    prod[0] = ast.Command(shared.reserved_words[prod[1]], children=[prod[3]], leaf=prod[2])
 
 
 def p_make_paren(prod):
-    "make : LPAREN MAKE STRINGLITERAL value RPAREN"
-    prod[0] = ast.Command(lexer.reserved_words[prod[2]], children=[prod[4]], leaf=prod[3][1:])
+    "make : LPAREN MAKE expression expression RPAREN"
+    prod[0] = ast.Command(shared.reserved_words[prod[2]], children=[prod[4]], leaf=prod[3])
+
+
+def p_proc_decl(prod):
+    "proc_decl : TO IDENT proc_args statement_list END"
+    prod[0] = ast.ProcDecl([prod[3], prod[4]], prod[2])
+
+
+def p_proc_args(prod):
+    "proc_args : proc_args DEREF"
+    prod[0] = ast.ProcArgs(prod[1].children + [prod[2]])
+
+
+def p_output(prod):
+    "output : OUTPUT expression"
+    prod[0] = ast.Command(shared.reserved_words[prod[1]], [prod[2]])
+
+
+def p_proc_args_empty(prod):
+    "proc_args : empty"
+    prod[0] = ast.ProcArgs()
+
+
+def p_proc_call(prod):
+    "proc_call : LPAREN IDENT expressions RPAREN"
+    prod[0] = ast.Command(TokenType.IDENT, prod[3], prod[2])
 
 
 def p_bye(prod):
     "bye : BYE"
-    prod[0] = ast.Command(lexer.reserved_words[prod[1]])
+    prod[0] = ast.Command(shared.reserved_words[prod[1]])
 
 
 def p_bye_paren(prod):
     "bye : LPAREN BYE RPAREN"
-    prod[0] = ast.Command(lexer.reserved_words[prod[2]])
+    prod[0] = ast.Command(shared.reserved_words[prod[2]])
 
 
 def p_if(prod):
@@ -102,7 +130,6 @@ def p_if_paren(prod):
 def p_if_without_braces(prod):
     "if : IF expression LBRACE statement_list RBRACE"
     prod[0] = ast.If(children=[prod[4]], leaf=prod[2])
-    prod[0].eval()
 
 
 def p_if_without_braces_paren(prod):

@@ -3,14 +3,17 @@
 import sys
 from parser.parser import Parser
 from lexer.lexer import Lexer
-#from entities.symbol_table import SymbolTable
-from utils.console_io import default_console_io as io
+from utils.console_io import ConsoleIO
+from entities.error_handler import ErrorHandler
 
 
-lexer = Lexer()
+io = ConsoleIO(debug=True)
+error_handler = ErrorHandler(console_io=io, language="FIN")
+
+lexer = Lexer(console_io=io)
 lexer.build()
 
-parser = Parser(lexer)
+parser = Parser(lexer, console_io=io, error_handler=error_handler)
 parser.build()
 
 
@@ -37,6 +40,7 @@ def parser_ui():
         io.write("\n".join((str(token) for token in lexer.tokenize_input(code))) + "\n")
         io.write("AST Result:")
         io.write(parser.parse(code))
+        error_handler.write_errors_to_console()
 
 
 def load_file(filename):
@@ -62,7 +66,6 @@ def file_parser():
 
 
 if __name__ == "__main__":
-    print(sys.argv)
     if len(sys.argv) == 2:
         file_parser()
     else:
@@ -74,3 +77,4 @@ if __name__ == "__main__":
             PROG = """fd 2 bk 50 rt 1+2 lt :a"""
             ast = parser.parse(PROG)
             io.write(ast)
+            error_handler.write_errors_to_console()
