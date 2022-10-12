@@ -43,6 +43,16 @@ class Node:
 
         return result
 
+    def undefined_variables(self):
+        """Checks if the current scope has undefined variables
+        and returns a list of them.
+        """
+        undefined = []
+        for symbol in self._symbol_tables.variables.get_current_scope().values():
+            if symbol.type is LogoType.UNKNOWN:
+                undefined.append(symbol.name)
+        return undefined
+
 
 class Start(Node):
     def __init__(self, children=None, **dependencies):
@@ -63,6 +73,9 @@ class StatementList(Node):
         """Runs the check in given order."""
         for child in self.children:
             child.get_type()
+            child.check_types()
+
+        for child in reversed(self.children):
             child.check_types()
 
 
@@ -326,8 +339,9 @@ class If(Node):
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()
         self.children[0].check_types()
+        for variable in self.undefined_variables():
+            self._logger.error_handler.add_error(2007, var=variable)
         self._symbol_tables.variables.finalize_scope()
-
 
 class IfElse(Node):
     def __init__(self, children, leaf, **dependencies):
@@ -343,6 +357,8 @@ class IfElse(Node):
         self._symbol_tables.variables.initialize_scope()
         for child in self.children:
             child.check_types()
+        for variable in self.undefined_variables():
+            self._logger.error_handler.add_error(2007, var=variable)
         self._symbol_tables.variables.finalize_scope()
 
 
