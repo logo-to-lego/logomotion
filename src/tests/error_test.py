@@ -227,17 +227,17 @@ class TestErrorHandler(unittest.TestCase):
             make "a 456
         """
         fin_expected_msg1 = (
-            "Rivillä 3 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä STRING tyyppiin FLOAT."
+            "Rivillä 3 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä FLOAT tyyppiin STRING."
         )
         fin_expected_msg2 = (
-            "Rivillä 4 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä BOOL tyyppiin FLOAT."
+            "Rivillä 4 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä FLOAT tyyppiin BOOL."
         )
 
         eng_expected_msg1 = (
-            "In row 3 variable 'a' has type STRING which cannot be changed to type FLOAT."
+            "In row 3 variable 'a' has type FLOAT which cannot be changed to type STRING."
         )
         eng_expected_msg2 = (
-            "In row 4 variable 'a' has type BOOL which cannot be changed to type FLOAT."
+            "In row 4 variable 'a' has type FLOAT which cannot be changed to type BOOL."
         )
 
         ast = self.parser.parse(test_string)

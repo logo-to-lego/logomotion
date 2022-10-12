@@ -151,8 +151,8 @@ class Make(Node):
                     2012,
                     row=self.position.get_pos()[0],
                     var_name=var_name.leaf,
-                    curr_type=value.get_type().value,
-                    expected_type=symbol.type.value,
+                    curr_type=symbol.type.value,
+                    expected_type=value.get_type().value,
                 )
         else:
             symbol = Variable(var_name.leaf, value.get_type())
