@@ -3,7 +3,6 @@
 from entities.logotypes import LogoType
 from entities.symbol import Variable
 from entities.symbol_tables import SymbolTables, default_symbol_tables
-from lexer.token_types import TokenType
 from utils.logger import Logger, default_logger
 
 
@@ -79,28 +78,19 @@ class StatementList(Node):
             child.check_types()
 
 
-class Command(Node):
-    def __init__(self, node_type, children=None, leaf=None, **dependencies):
-        super().__init__(node_type, children, leaf, **dependencies)
-        self._type_checkers = {
-            TokenType.FD: self._check_fd_types,
-            TokenType.MAKE: self._check_make_types,
-        }
-        self._type_getters = {TokenType.FD: self._get_fd_type, TokenType.MAKE: self._get_make_type}
+class Move(Node):
+    """FD, BK, LT, RT"""
 
     def get_type(self):
         if not self._logo_type:
-            self._logo_type = LogoType.UNKNOWN
-
-        return self._type_getters.get(self.type, lambda: self._logo_type)()
-
-    def _get_fd_type(self):
-        self._logo_type = LogoType.VOID
+            self._logo_type = LogoType.VOID
         return self._logo_type
 
-    def _check_fd_types(self):
+    def check_types(self):
         if len(self.children) != 1:
-            self._logger.console.write("Wrong amount of arguments for FD")
+            self._logger.error_handler.add_error(
+                2009, row=self.position.get_pos()[0], command=self.type.value
+            )
             return
 
         child = self.children[0]
@@ -108,64 +98,128 @@ class Command(Node):
         if child_type == LogoType.UNKNOWN:
             child.set_type(LogoType.FLOAT)
         elif child_type != LogoType.FLOAT:
-            self._logger.console.write("Type should be float, not " + child.get_type().value)
+            self._logger.error_handler.add_error(
+                2010,
+                row=child.position.get_pos()[0],
+                command=self.type.value,
+                curr_type=child_type.value,
+                expected_type=LogoType.FLOAT.value,
+            )
         child.check_types()
 
-    def _get_make_type(self):
-        self._logo_type = LogoType.VOID
+
+class Make(Node):
+
+    def get_type(self):
+        if not self._logo_type:
+            self._logo_type = LogoType.VOID
         return self._logo_type
 
-    def _check_make_types(self):
+    def check_types(self):
+        # Check for right amount of params
         if len(self.children) != 1 or not self.leaf:
-            self._logger.console.write("Wrong amount of arguments for MAKE")
+            self._logger.error_handler.add_error(
+                2009, row=self.position.get_pos()[0], command=self.type.value
+            )
             return
 
-        # Check first argument type, variable name
-        print(self.leaf)
-        name = self.leaf
-        name_type = name.get_type()
+        # Check first argument type and variable name
+        var_name = self.leaf
+        var_name_type = var_name.get_type()
 
-        if name_type == LogoType.UNKNOWN:
-            name.set_type(LogoType.STRING)
-        elif name.get_type() != LogoType.STRING:
-            self._logger.console.write(
-                "Type should be string literal, not " + name.get_type().value
+        if var_name_type == LogoType.UNKNOWN:
+            var_name.set_type(LogoType.STRING)
+        elif var_name.get_type() != LogoType.STRING:
+            self._logger.error_handler.add_error(
+                2010,
+                row=self.position.get_pos()[0],
+                command=self.type.value,
+                curr_type=var_name.get_type().value,
+                expected_type=LogoType.STRING.value,
             )
-        name.check_types()
+        var_name.check_types()
 
         # Check second argument type, assignment value
         value = self.children[0]
         value_type = value.get_type()
 
         if value_type == LogoType.VOID:
-            self._logger.console.write("Type should not be VOID")
+            self._logger.error_handler.add_error(
+                2011,
+                row=self.position.get_pos()[0],
+                command=self.type.value,
+                value_type=value_type.value,
+            )
         value.check_types()
 
-        if name.get_type() == LogoType.STRING:
-            symbol = self._symbol_tables.variables.lookup(name.leaf)
-            if symbol:
-                if symbol.type == LogoType.UNKNOWN:
-                    symbol.type = value.get_type()
-                elif value.get_type() == LogoType.UNKNOWN:
-                    value.set_type(symbol.type)
-                elif value.get_type() != symbol.type:
-                    self._logger.console.write(
-                        f"Variable type cannot be changed, was {symbol.type.value}"
-                        + f", trying to change to {value.get_type().value}"
-                    )
-            else:
-                symbol = Variable(name.leaf, value.get_type())
-                self._symbol_tables.variables.insert(name.leaf, symbol)
+        # Check if var_name has symbol in symbol table
+        symbol = self._symbol_tables.variables.lookup(var_name.leaf)
+        if symbol:
+            if symbol.type == LogoType.UNKNOWN:
+                symbol.type = value.get_type()
+            elif value.get_type() == LogoType.UNKNOWN:
+                value.set_type(symbol.type)
+            elif value.get_type() != symbol.type:
+                self._logger.error_handler.add_error(
+                    2012,
+                    row=self.position.get_pos()[0],
+                    var_name=var_name.leaf,
+                    curr_type=symbol.type.value,
+                    expected_type=value.get_type().value,
+                )
+        else:
+            symbol = Variable(var_name.leaf, value.get_type())
+            self._symbol_tables.variables.insert(var_name.leaf, symbol)
+
+
+class Output(Node):
+
+    def get_type(self):
+        pass
 
     def check_types(self):
-        """Checks that the args given to the procedure are of correct type and that there are
-        only as many arguments as the procedure takes in."""
-        checker = self._type_checkers.get(
-            self.type,
-            lambda: self._logger.console.write("No type checker found for " + self.type.value),
-        )
-        checker()
+        pass
 
+
+class Show(Node):
+
+    def get_type(self):
+        if not self._logo_type:
+            self._logo_type = LogoType.VOID
+        return self._logo_type
+
+    def check_types(self):
+        # Must have at least 1 param
+        if len(self.children) == 0:
+            self._logger.error_handler.add_error(2013, row=self.position.get_pos()[0])
+
+        # Cannot be function call that returns VOID
+        for child in self.children:
+            logo_type = child.get_type()
+            if logo_type == LogoType.VOID:
+                self._logger.error_handler.add_error(
+                    2014,
+                    row=child.position.get_pos()[0],
+                    command=self.type.value,
+                    return_type=LogoType.VOID.value,
+                )
+            child.check_types()
+
+
+class Bye(Node):
+
+    def get_type(self):
+        if not self._logo_type:
+            self._logo_type = LogoType.VOID
+        return self._logo_type
+
+    def check_types(self):
+        if self.children:
+            self._logger.error_handler.add_error(2015, command = self.type.value)
+
+
+class Command(Node):
+    pass
 
 class BinOp(Node):
     def __init__(self, children, leaf, **dependencies):
@@ -184,8 +238,7 @@ class BinOp(Node):
             if child_type == LogoType.UNKNOWN:
                 child.set_type(LogoType.FLOAT)
             elif child_type != LogoType.FLOAT:
-                pos = child.position.get_pos()
-                self._logger.error_handler.add_error(2002, row=pos[0])
+                self._logger.error_handler.add_error(2002, row=child.position.get_pos()[0])
             child.check_types()
 
 
@@ -204,7 +257,10 @@ class UnaryOp(Node):
         unary_type = self.get_type()
         if unary_type != LogoType.FLOAT:
             self._logger.error_handler.add_error(
-                2003, curr_type=self._logo_type.value, expected_type=LogoType.FLOAT.value
+                2003,
+                row=self.position.get_pos()[0],
+                curr_type=self._logo_type.value,
+                expected_type=LogoType.FLOAT.value
             )
 
         # Check the type of the child of UnaryOp
@@ -212,7 +268,10 @@ class UnaryOp(Node):
             child_type = child.get_type()
             if child_type != LogoType.FLOAT:
                 self._logger.error_handler.add_error(
-                    2003, curr_type=child_type.value, expected_type=LogoType.FLOAT.value
+                    2003,
+                    row=child.position.get_pos()[0],
+                    curr_type=child_type.value,
+                    expected_type=LogoType.FLOAT.value
                 )
 
 
@@ -300,10 +359,9 @@ class Deref(Node):
 
     def check_types(self):
         symbol = self._get_symbol()
-
         if not symbol:
             self._logger.error_handler.add_error(2007, var=self.leaf)
-        elif symbol.type != self._logo_type:
+        elif symbol.type != self.get_type():
             self._logger.error_handler.add_error(
                 2008,
                 var=self.leaf,
@@ -375,11 +433,19 @@ class ProcDecl(Node):
     def check_types(self):
         if self._symbol_tables.functions.lookup(self.leaf):
             self._logger.console.write(f"Procedure {self.leaf} already declared")
+        self._symbol_tables.variables.initialize_scope()
+        for child in self.children:
+            child.check_types()
+        self._symbol_tables.variables.finalize_scope()
 
 
 class ProcArgs(Node):
     def __init__(self, children=None, **dependencies):
         super().__init__("ProcArgs", children, **dependencies)
+
+    def check_types(self):
+        for child in self.children:
+            child.check_types()
 
 
 class NodeFactory:
