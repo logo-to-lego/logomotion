@@ -1,6 +1,7 @@
 """symbol module"""
 from entities.logotypes import LogoType
 
+
 class Variable:
     "Class for symbol in symbol table"
 

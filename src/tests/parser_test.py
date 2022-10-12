@@ -4,15 +4,19 @@ from lexer.lexer import Lexer
 from parser.parser import Parser
 from parser import ast
 
+from utils.logger import Logger
+
 
 class TestParser(unittest.TestCase):
     """Test class for testing parser"""
 
     def setUp(self):
         self.console_mock = Mock()
-        self.lexer = Lexer(console_io=self.console_mock)
+        self.error_mock = Mock()
+        self.logger = Logger(self.console_mock, self.error_mock)
+        self.lexer = Lexer(self.logger)
         self.lexer.build()
-        self.parser = Parser(self.lexer, console_io=self.console_mock)
+        self.parser = Parser(self.lexer, self.logger)
         self.parser.build()
 
     def test_parser_start_node(self):
@@ -225,7 +229,7 @@ class TestParser(unittest.TestCase):
         ast = self.parser.parse(test_string)
         self.assertEqual(str(ast), expected)
 
-    def test_ifelse_paren(self):
+    def test_ifelse_paren_braces(self):
         test_string = "(ifelse {1+1 < 3} { show 1 } { show 2})"
         expected = "(Start, children: [(StatementList, children: [(IfElse, (RelOp, <, children: [(BinOp, +, children: [(Float, 1.0), (Float, 1.0)]), (Float, 3.0)]), children: [(StatementList, children: [(TokenType.SHOW, children: [(Float, 1.0)])]), (StatementList, children: [(TokenType.SHOW, children: [(Float, 2.0)])])])])])"
         ast = self.parser.parse(test_string)
