@@ -74,8 +74,8 @@ class StatementList(Node):
             child.get_type()
             child.check_types()
 
-        for child in reversed(self.children):
-            child.check_types()
+        #for child in reversed(self.children):
+        #    child.check_types()
 
 
 class Move(Node):
