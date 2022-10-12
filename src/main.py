@@ -2,18 +2,23 @@
 """
 import sys
 from parser.parser import Parser
+from entities.symbol_tables import SymbolTables
+from entities.symbol_table import SymbolTable
 from lexer.lexer import Lexer
 from utils.console_io import ConsoleIO
-from entities.error_handler import ErrorHandler
+from utils.error_handler import ErrorHandler
+from utils.logger import Logger
 
-
-io = ConsoleIO(debug=True)
+io = ConsoleIO()
 error_handler = ErrorHandler(console_io=io, language="FIN")
+logger = Logger(io, error_handler, debug=True)
 
-lexer = Lexer(console_io=io)
+lexer = Lexer(logger)
 lexer.build()
 
-parser = Parser(lexer, console_io=io, error_handler=error_handler)
+symbol_tables = SymbolTables()
+
+parser = Parser(lexer, logger, symbol_tables)
 parser.build()
 
 
@@ -38,9 +43,22 @@ def parser_ui():
         code = "\n".join(program)
         io.write("Lexer tokens:")
         io.write("\n".join((str(token) for token in lexer.tokenize_input(code))) + "\n")
+
         io.write("AST Result:")
-        io.write(parser.parse(code))
+        start_node = parser.parse(code)
+        io.write(start_node)
+        io.write("")
+
+        start_node.check_types()
+        io.write("Type checks:")
+        io.write(start_node)
+
         error_handler.write_errors_to_console()
+        error_handler.errors.clear()
+
+        # Clear symbol tables
+        symbol_tables.functions = SymbolTable()
+        symbol_tables.variables = SymbolTable()
 
 
 def load_file(filename):
@@ -62,7 +80,11 @@ def file_parser():
     io.write("Lexer tokens:")
     io.write("\n".join((str(token) for token in lexer.tokenize_input(code))) + "\n")
     io.write("Parser AST:")
-    io.write(parser.parse(code))
+    start_node = parser.parse(code)
+    io.write(start_node)
+    start_node.check_types()
+    io.write("\nType checks:")
+    io.write(start_node)
 
 
 if __name__ == "__main__":

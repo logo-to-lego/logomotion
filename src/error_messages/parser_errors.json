@@ -8,5 +8,64 @@
     {
         "FIN": "En saanut selvää rivillä @row ja sarakkeella @column olevasta koodista.",
         "ENG": "I could not understand the code in row @row and column @column."
+    },
+    "2002":
+    {
+        "FIN": "Rivillä @row yritit tehdä laskutoimituksen jollakin joka ei ole numero.",
+        "ENG": "In row @row you tried to calculate with something that is not a number."
+    },
+    "2003":
+    {
+        "FIN": "Rivillä @row negatiivisen luvun tyyppi on @curr_type, vaikka sen pitäisi olla @expected_type.",
+        "ENG": "In row @row the type of a negative number is @curr_type, even though it should be @expected_type."
+    },
+    "2004":
+    {
+        "FIN": "Rivillä @row en pystynyt päättelemään vertailuoperaattorin tyyppiä.",
+        "ENG": "In row @row I could not infer the type of the operand."
+    },
+    "2005": {
+        "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2. Katso, että tyypit ovat keskenään samat.",
+        "ENG": "In row @row you tried to compare types @type1 and @type2. Check that you are comparing the same types."
+    },
+    "2006": {
+        "FIN": "Ehtolause rivillä @row ei tuota totuusarvoa.",
+        "ENG": "If statement in line @row isn't boolean type."
+    },
+    "2007": {
+        "FIN": "Muuttujaa '@var' ei ole määritelty.",
+        "ENG": "Variable '@var' is not defined."
+    },
+    "2008": {
+        "FIN": "Muuttujan '@var' tyyppi on @curr_type, vaikka sen pitäisi olla @expected_type.",
+        "ENG": "Variable '@var' has type @curr_type, even though it should be @expected_type."
+    },
+    "2009": {
+        "FIN": "Rivillä @row komennolle '@command' on väärä määrä argumentteja.",
+        "ENG": "In row @row command '@command' has wrong amount arguments."
+    },
+    "2010": {
+        "FIN": "Rivillä @row komennon '@command' parametri on tyyppiä @curr_type, vaikka sen pitäisi olla @expected_type.",
+        "ENG": "In row @row the parameter of '@command' was type @curr_type, even though it should be @expected_type."
+    },
+    "2011": {
+        "FIN": "Rivillä @row komento '@command' ei voi ottaa tyyppiä @value_type parametriksi.",
+        "ENG": "In row @row command '@command' cannot take type @value_type as its parameter."
+    },
+    "2012": {
+        "FIN": "Rivillä @row muuttujan '@var_name' tyyppiä ei voi vaihtaa tyypistä @curr_type tyyppiin @expected_type.",
+        "ENG": "In row @row variable '@var_name' has type @curr_type which cannot be changed to type @expected_type."
+    },
+    "2013": {
+        "FIN": "Rivillä @row komennolla '@command' on oltava ainakin yksi parametri.",
+        "ENG": "In row @row command '@command' must have at least one parameter."
+    },
+    "2014": {
+        "FIN": "Rivillä @row komento '@command' ei voi ottaa parametrina funktiokutsua, joka palauttaa @return_type.",
+        "ENG": "In row @row command '@command' cannot take a function call as parameter that returns @return_type."
+    },
+    "2015": {
+        "FIN": "Komento '@command' ei ota parametreja.",
+        "ENG": "Command '@command' does not take parameters."
     }
 }
