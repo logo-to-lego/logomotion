@@ -75,7 +75,6 @@ class Move(Node):
 
     def check_types(self):
         if len(self.children) != 1:
-            # logokoodi ja testi alla olevalle errorille. -Jusa
             self._logger.error_handler.add_error(
                 2009, row=self.position.get_pos()[0], command=self.type.value
             )
@@ -88,7 +87,7 @@ class Move(Node):
         elif child_type != LogoType.FLOAT:
             self._logger.error_handler.add_error(
                 2010,
-                row=self.position.get_pos()[0],
+                row=child.position.get_pos()[0],
                 command=self.type.value,
                 curr_type=child_type.value,
                 expected_type=LogoType.FLOAT.value,
@@ -132,7 +131,6 @@ class Make(Node):
         value_type = value.get_type()
 
         if value_type == LogoType.VOID:
-            # logokoodi ja testi alla olevalle errorille. -Jusa
             self._logger.error_handler.add_error(
                 2011,
                 row=self.position.get_pos()[0],
@@ -186,10 +184,9 @@ class Show(Node):
         for child in self.children:
             logo_type = child.get_type()
             if logo_type == LogoType.VOID:
-                # Tee testi tälle. -Jusa
                 self._logger.error_handler.add_error(
                     2014,
-                    row=self.position.get_pos()[0],
+                    row=child.position.get_pos()[0],
                     command=self.type.value,
                     return_type=LogoType.VOID.value,
                 )
@@ -247,7 +244,10 @@ class UnaryOp(Node):
         unary_type = self.get_type()
         if unary_type != LogoType.FLOAT:
             self._logger.error_handler.add_error(
-                2003, curr_type=self._logo_type.value, expected_type=LogoType.FLOAT.value
+                2003,
+                row=self.position.get_pos()[0],
+                curr_type=self._logo_type.value,
+                expected_type=LogoType.FLOAT.value
             )
 
         # Check the type of the child of UnaryOp
@@ -255,7 +255,10 @@ class UnaryOp(Node):
             child_type = child.get_type()
             if child_type != LogoType.FLOAT:
                 self._logger.error_handler.add_error(
-                    2003, curr_type=child_type.value, expected_type=LogoType.FLOAT.value
+                    2003,
+                    row=child.position.get_pos()[0],
+                    curr_type=child_type.value,
+                    expected_type=LogoType.FLOAT.value
                 )
 
 

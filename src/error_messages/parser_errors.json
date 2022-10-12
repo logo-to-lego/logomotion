@@ -16,8 +16,8 @@
     },
     "2003":
     {
-        "FIN": "Negatiivisen luvun tyyppi on @curr_type, vaikka sen pitäisi olla @expected_type.",
-        "ENG": "The type of a negative number is @curr_type, even though it should be @expected_type."
+        "FIN": "Rivillä @row negatiivisen luvun tyyppi on @curr_type, vaikka sen pitäisi olla @expected_type.",
+        "ENG": "In row @row the type of a negative number is @curr_type, even though it should be @expected_type."
     },
     "2004":
     {
