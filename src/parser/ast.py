@@ -109,6 +109,13 @@ class Move(Node):
             )
         child.check_types()
 
+    def generate_code(self):
+        """Generate movement commands in Java."""
+        arg_var = self.children[0].generate_code()
+        code = f"robot.travel({arg_var})"
+        self._logger.debug(code)
+
+
 
 class Make(Node):
     def get_type(self):
