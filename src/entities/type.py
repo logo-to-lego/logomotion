@@ -4,12 +4,13 @@ from entities.logotypes import LogoType
 
 class Type():
     """Type class stores the LogoType of a variable. The instance of this class
-    can be then referenced to other variables"""
+    can be then referenced to other variables which have the same LogoType"""
     def __init__(self, logotype: LogoType = LogoType.UNKNOWN):
         self._logotype = logotype
 
     @property
     def type(self):
+        """Returns the LogoType enum of the Type class"""
         return self._logotype
 
     @type.setter
