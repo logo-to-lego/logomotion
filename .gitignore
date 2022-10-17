@@ -7,3 +7,4 @@ htmlcov
 *.pyc
 .idea
 coverage.xml
+.gradle
