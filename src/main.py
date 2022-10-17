@@ -56,6 +56,8 @@ def parser_ui():
         error_handler.write_errors_to_console()
         error_handler.errors.clear()
 
+        start_node.generate_code()
+
         # Clear symbol tables
         symbol_tables.functions = SymbolTable()
         symbol_tables.variables = SymbolTable()

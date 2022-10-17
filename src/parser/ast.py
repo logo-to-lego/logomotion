@@ -52,6 +52,11 @@ class Node:
                 undefined.append(symbol.name)
         return undefined
 
+    def generate_code(self):
+        """Calls generate_code recursively on all child nodes."""
+        for child in self.children:
+            child.generate_code()
+
 
 class Start(Node):
     def __init__(self, children=None, **dependencies):
@@ -73,9 +78,6 @@ class StatementList(Node):
         for child in self.children:
             child.get_type()
             child.check_types()
-
-        #for child in reversed(self.children):
-        #    child.check_types()
 
 
 class Move(Node):
@@ -109,7 +111,6 @@ class Move(Node):
 
 
 class Make(Node):
-
     def get_type(self):
         if not self._logo_type:
             self._logo_type = LogoType.VOID
@@ -173,7 +174,6 @@ class Make(Node):
 
 
 class Output(Node):
-
     def get_type(self):
         pass
 
@@ -182,7 +182,6 @@ class Output(Node):
 
 
 class Show(Node):
-
     def get_type(self):
         if not self._logo_type:
             self._logo_type = LogoType.VOID
@@ -207,7 +206,6 @@ class Show(Node):
 
 
 class Bye(Node):
-
     def get_type(self):
         if not self._logo_type:
             self._logo_type = LogoType.VOID
@@ -215,11 +213,12 @@ class Bye(Node):
 
     def check_types(self):
         if self.children:
-            self._logger.error_handler.add_error(2015, command = self.type.value)
+            self._logger.error_handler.add_error(2015, command=self.type.value)
 
 
 class Command(Node):
     pass
+
 
 class BinOp(Node):
     def __init__(self, children, leaf, **dependencies):
@@ -260,7 +259,7 @@ class UnaryOp(Node):
                 2003,
                 row=self.position.get_pos()[0],
                 curr_type=self._logo_type.value,
-                expected_type=LogoType.FLOAT.value
+                expected_type=LogoType.FLOAT.value,
             )
 
         # Check the type of the child of UnaryOp
@@ -271,7 +270,7 @@ class UnaryOp(Node):
                     2003,
                     row=child.position.get_pos()[0],
                     curr_type=child_type.value,
-                    expected_type=LogoType.FLOAT.value
+                    expected_type=LogoType.FLOAT.value,
                 )
 
 
@@ -400,6 +399,7 @@ class If(Node):
         for variable in self.undefined_variables():
             self._logger.error_handler.add_error(2007, var=variable)
         self._symbol_tables.variables.finalize_scope()
+
 
 class IfElse(Node):
     def __init__(self, children, leaf, **dependencies):
