@@ -322,7 +322,10 @@ class Float(Node):
         pass
 
     def generate_code(self):
-        pass
+        temp_var = self.generate_temp_var()
+        code = f"double {temp_var} = {self.leaf};"
+        self._logger.debug(code)
+        return temp_var
 
 
 class Bool(Node):
