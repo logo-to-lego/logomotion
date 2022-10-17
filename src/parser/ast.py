@@ -9,6 +9,8 @@ from utils.logger import Logger, default_logger
 class Node:
     """Base AST Node class"""
 
+    TEMP_VAR_INDEX = 0
+
     def __init__(self, node_type, children=None, leaf=None, **dependencies):
         self.type = node_type
         self.children = children if children else []
@@ -56,6 +58,10 @@ class Node:
         """Calls generate_code recursively on all child nodes."""
         for child in self.children:
             child.generate_code()
+
+    def generate_temp_var(self):
+        Node.TEMP_VAR_INDEX += 1
+        return f"temp{Node.TEMP_VAR_INDEX}"
 
 
 class Start(Node):
@@ -313,6 +319,9 @@ class Float(Node):
         return self._logo_type
 
     def check_types(self):
+        pass
+
+    def generate_code(self):
         pass
 
 
