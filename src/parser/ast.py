@@ -3,6 +3,7 @@
 from entities.logotypes import LogoType
 from entities.symbol import Variable
 from entities.symbol_tables import SymbolTables, default_symbol_tables
+from lexer.token_types import TokenType
 from utils.logger import Logger, default_logger
 
 
@@ -118,9 +119,13 @@ class Move(Node):
     def generate_code(self):
         """Generate movement commands in Java."""
         arg_var = self.children[0].generate_code()
-        code = f"robot.travel({arg_var})"
-        self._logger.debug(code)
 
+        if self.type == TokenType.FD:
+            code = f"robot.travel({arg_var});"
+        elif self.type == TokenType.BK:
+            code = f"robot.travel(-{arg_var});"
+
+        self._logger.debug(code)
 
 
 class Make(Node):
