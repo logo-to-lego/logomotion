@@ -1,13 +1,17 @@
-# pylint: disable=missing-class-docstring,missing-function-docstring, unused-argument
+# pylint: disable=missing-class-docstring,missing-function-docstring, unused-argument, too-many-instance-attributes
 """ Abstract Syntax Tree node definitions, returned by the parser. """
 from entities.logotypes import LogoType
 from entities.symbol import Variable
 from entities.symbol_tables import SymbolTables, default_symbol_tables
+from lexer.token_types import TokenType
+from utils.code_generator import default_code_generator
 from utils.logger import Logger, default_logger
 
 
 class Node:
     """Base AST Node class"""
+
+    TEMP_VAR_INDEX = 0
 
     def __init__(self, node_type, children=None, leaf=None, **dependencies):
         self.type = node_type
@@ -17,6 +21,7 @@ class Node:
         self._symbol_tables: SymbolTables = dependencies.get("symbol_tables", default_symbol_tables)
         self.position = dependencies.get("position", None)
         self._logo_type = None
+        self._code_generator = dependencies.get("code_generator", default_code_generator)
 
     def get_type(self) -> LogoType:
         return self._logo_type
@@ -52,6 +57,15 @@ class Node:
                 undefined.append(symbol.name)
         return undefined
 
+    def generate_code(self):
+        """Calls generate_code recursively on all child nodes."""
+        for child in self.children:
+            child.generate_code()
+
+    def generate_temp_var(self):
+        Node.TEMP_VAR_INDEX += 1
+        return f"temp{Node.TEMP_VAR_INDEX}"
+
 
 class Start(Node):
     def __init__(self, children=None, **dependencies):
@@ -73,9 +87,6 @@ class StatementList(Node):
         for child in self.children:
             child.get_type()
             child.check_types()
-
-        #for child in reversed(self.children):
-        #    child.check_types()
 
 
 class Move(Node):
@@ -107,9 +118,25 @@ class Move(Node):
             )
         child.check_types()
 
+    def generate_code(self):
+        """Generate movement commands in Java."""
+        arg_var = self.children[0].generate_code()
+
+        if self.type == TokenType.FD:
+            code = f"robot.travel({arg_var});"
+        elif self.type == TokenType.BK:
+            code = f"robot.travel(-{arg_var});"
+        elif self.type == TokenType.LT:
+            code = f"robot.rotate({arg_var});"
+        # Else refers to rotate RT. This has to be changed
+        # if other movement patterns are done.
+        else:
+            code = f"robot.rotate(-{arg_var});"
+
+        self._logger.debug(code)
+        self._code_generator.append_code(code)
 
 class Make(Node):
-
     def get_type(self):
         if not self._logo_type:
             self._logo_type = LogoType.VOID
@@ -173,7 +200,6 @@ class Make(Node):
 
 
 class Output(Node):
-
     def get_type(self):
         pass
 
@@ -182,7 +208,6 @@ class Output(Node):
 
 
 class Show(Node):
-
     def get_type(self):
         if not self._logo_type:
             self._logo_type = LogoType.VOID
@@ -207,7 +232,6 @@ class Show(Node):
 
 
 class Bye(Node):
-
     def get_type(self):
         if not self._logo_type:
             self._logo_type = LogoType.VOID
@@ -215,11 +239,12 @@ class Bye(Node):
 
     def check_types(self):
         if self.children:
-            self._logger.error_handler.add_error(2015, command = self.type.value)
+            self._logger.error_handler.add_error(2015, command=self.type.value)
 
 
 class Command(Node):
     pass
+
 
 class BinOp(Node):
     def __init__(self, children, leaf, **dependencies):
@@ -260,7 +285,7 @@ class UnaryOp(Node):
                 2003,
                 row=self.position.get_pos()[0],
                 curr_type=self._logo_type.value,
-                expected_type=LogoType.FLOAT.value
+                expected_type=LogoType.FLOAT.value,
             )
 
         # Check the type of the child of UnaryOp
@@ -271,7 +296,7 @@ class UnaryOp(Node):
                     2003,
                     row=child.position.get_pos()[0],
                     curr_type=child_type.value,
-                    expected_type=LogoType.FLOAT.value
+                    expected_type=LogoType.FLOAT.value,
                 )
 
 
@@ -315,6 +340,13 @@ class Float(Node):
 
     def check_types(self):
         pass
+
+    def generate_code(self):
+        temp_var = self.generate_temp_var()
+        code = f"double {temp_var} = {self.leaf};"
+        self._logger.debug(code)
+        self._code_generator.append_code(code)
+        return temp_var
 
 
 class Bool(Node):
@@ -401,6 +433,7 @@ class If(Node):
             self._logger.error_handler.add_error(2007, var=variable)
         self._symbol_tables.variables.finalize_scope()
 
+
 class IfElse(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("IfElse", children, leaf, **dependencies)
@@ -451,10 +484,17 @@ class ProcArgs(Node):
 class NodeFactory:
     """Used to create new AST nodes, injects logger and symbol table as dependencies."""
 
-    def __init__(self, logger=default_logger, symbol_tables=default_symbol_tables):
+    def __init__(self, logger=default_logger,
+            symbol_tables=default_symbol_tables,
+            code_generator=default_code_generator
+        ):
+
         self._logger = logger
         self._symbol_tables = symbol_tables
+        self._code_generator = code_generator
 
     def create_node(self, node_class: Node, **kwargs):
         """Creates a new node of node_class, with the given keyword arguments."""
-        return node_class(**kwargs, logger=self._logger, symbol_tables=self._symbol_tables)
+        return node_class(**kwargs, logger=self._logger,
+               symbol_tables=self._symbol_tables,
+               code_generator=self._code_generator)
