@@ -374,7 +374,7 @@ class Deref(Node):
         symbol = self._get_symbol()
 
         if symbol:
-            self._logo_type = symbol.type
+            self._logo_type = symbol.typeclass
 
         return self._logo_type
 
@@ -383,8 +383,8 @@ class Deref(Node):
 
         symbol = self._get_symbol()
 
-        if symbol and symbol.type == LogoType.UNKNOWN:
-            symbol.type = new_type
+        if symbol and symbol.typeclass == LogoType.UNKNOWN:
+            symbol.typeclass = new_type
 
     def _get_symbol(self) -> Variable:
         return self._symbol_tables.variables.lookup(self.leaf)
@@ -393,11 +393,11 @@ class Deref(Node):
         symbol = self._get_symbol()
         if not symbol:
             self._logger.error_handler.add_error(2007, var=self.leaf)
-        elif symbol.type != self.get_type():
+        elif symbol.typeclass != self.get_type():
             self._logger.error_handler.add_error(
                 2008,
                 var=self.leaf,
-                curr_type=symbol.type.value,
+                curr_type=symbol.typeclass.value,
                 expected_type=self._logo_type.value,
             )
 

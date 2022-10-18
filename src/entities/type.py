@@ -15,7 +15,7 @@ class Type():
 
     @type.setter
     def type(self, logotype: LogoType):
-        if self._logotype == LogoType.UNKNOWN:
+        if self._logotype == LogoType.UNKNOWN or self._logotype == LogoType.VOID:
             self._logotype = logotype
         else:
             raise Exception(f"LogoType was already defined as {self._logotype.value}")

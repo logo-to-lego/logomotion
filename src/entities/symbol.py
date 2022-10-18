@@ -25,12 +25,12 @@ class Variable:
         return self._name
 
     @property
-    def type(self):
+    def typeclass(self):
         """get symbols type"""
         return self._typeclass
 
-    @type.setter
-    def type(self, typeclass: Type):
+    @typeclass.setter
+    def typeclass(self, typeclass: Type):
         self._typeclass = typeclass
 
     def __str__(self):
@@ -41,6 +41,7 @@ class Function(Variable):
     "Class for functions in symbol table. Inherits Variable class"
 
     def __init__(self, name, params=None, typeclass=Type(LogoType.VOID)):
+        # TODO Halutaanko että defaulttaa VOID vai UNKNOWN
         """Constructor function for Function class
 
         Args:
