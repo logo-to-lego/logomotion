@@ -126,6 +126,12 @@ class Move(Node):
             code = f"robot.travel({arg_var});"
         elif self.type == TokenType.BK:
             code = f"robot.travel(-{arg_var});"
+        elif self.type == TokenType.LT:
+            code = f"robot.rotate({arg_var});"
+        # Else refers to rotate RT. This has to be changed
+        # if other movement patterns are done.
+        else:
+            code = f"robot.rotate(-{arg_var});"
 
         self._logger.debug(code)
         self._code_generator.append_code(code)
