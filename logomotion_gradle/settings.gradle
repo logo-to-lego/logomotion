@@ -14,4 +14,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'logomotion_gradle'
+rootProject.name = 'template_project_gradle'

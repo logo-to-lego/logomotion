@@ -21,6 +21,7 @@ repositories {
 dependencies {
     implementation("org.slf4j:slf4j-simple:1.7.25")
     implementation("com.github.ev3dev-lang-java:ev3dev-lang-java:2.6.2-SNAPSHOT")
+    implementation 'com.github.bdeneuter:lejos-ev3-api:0.9.1-beta'
 }
 
 compileJava.options.encoding = 'UTF-8'
