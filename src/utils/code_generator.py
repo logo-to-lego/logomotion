@@ -13,12 +13,10 @@ class CodeGenerator:
 
     def append_code(self, line: str):
         """append code line to generator"""
-        print("APPEND")
         self._code.append(line)
 
     def write(self):
         """write Java file"""
-        print("CODE", self._code)
         with open(self._name + ".java", mode="w", encoding="utf-8") as writer:
             writer.write(START)
             for line in self._code:
