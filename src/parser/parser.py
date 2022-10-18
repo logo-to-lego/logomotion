@@ -65,6 +65,7 @@ from parser.command import *
 from parser.expression import *
 from ply import yacc
 from lexer.lexer import Lexer
+from utils.code_generator import default_code_generator
 from utils.logger import default_logger
 from entities.symbol_tables import default_symbol_tables
 
@@ -111,9 +112,10 @@ class Parser:
         current_lexer: Lexer,
         logger=default_logger,
         symbol_tables=default_symbol_tables,
+        code_generator=default_code_generator
     ):
         self._current_lexer = current_lexer
-        shared.update(current_lexer, logger, symbol_tables)
+        shared.update(current_lexer, logger, symbol_tables, code_generator)
         globals()["tokens"] = current_lexer.tokens
         self._parser = None
 

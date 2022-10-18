@@ -1,9 +1,10 @@
-# pylint: disable=missing-class-docstring,missing-function-docstring, unused-argument
+# pylint: disable=missing-class-docstring,missing-function-docstring, unused-argument, too-many-instance-attributes
 """ Abstract Syntax Tree node definitions, returned by the parser. """
 from entities.logotypes import LogoType
 from entities.symbol import Variable
 from entities.symbol_tables import SymbolTables, default_symbol_tables
 from lexer.token_types import TokenType
+from utils.code_generator import default_code_generator
 from utils.logger import Logger, default_logger
 
 
@@ -20,6 +21,7 @@ class Node:
         self._symbol_tables: SymbolTables = dependencies.get("symbol_tables", default_symbol_tables)
         self.position = dependencies.get("position", None)
         self._logo_type = None
+        self._code_generator = dependencies.get("code_generator", default_code_generator)
 
     def get_type(self) -> LogoType:
         return self._logo_type
@@ -126,7 +128,7 @@ class Move(Node):
             code = f"robot.travel(-{arg_var});"
 
         self._logger.debug(code)
-
+        self._code_generator.append_code(code)
 
 class Make(Node):
     def get_type(self):
@@ -337,6 +339,7 @@ class Float(Node):
         temp_var = self.generate_temp_var()
         code = f"double {temp_var} = {self.leaf};"
         self._logger.debug(code)
+        self._code_generator.append_code(code)
         return temp_var
 
 
@@ -475,10 +478,17 @@ class ProcArgs(Node):
 class NodeFactory:
     """Used to create new AST nodes, injects logger and symbol table as dependencies."""
 
-    def __init__(self, logger=default_logger, symbol_tables=default_symbol_tables):
+    def __init__(self, logger=default_logger,
+            symbol_tables=default_symbol_tables,
+            code_generator=default_code_generator
+        ):
+
         self._logger = logger
         self._symbol_tables = symbol_tables
+        self._code_generator = code_generator
 
     def create_node(self, node_class: Node, **kwargs):
         """Creates a new node of node_class, with the given keyword arguments."""
-        return node_class(**kwargs, logger=self._logger, symbol_tables=self._symbol_tables)
+        return node_class(**kwargs, logger=self._logger,
+               symbol_tables=self._symbol_tables,
+               code_generator=self._code_generator)
