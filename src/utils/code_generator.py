@@ -5,6 +5,7 @@ START = "public class Logomotion { public static void main(string[] args) { "
 END = "} }"
 DEFAULT_NAME = "logomotion"
 
+
 class CodeGenerator:
     """A class for generating code"""
 
@@ -68,5 +69,6 @@ class CodeGenerator:
         except Exception as error:
             print(f"An error occurred when writing {self._name}.java file:\n{error}")
             raise
+
 
 default_code_generator = CodeGenerator()
