@@ -4,8 +4,6 @@ import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
 import ev3dev.robotics.tts.Espeak;
 import lejos.hardware.port.MotorPort;
 import lejos.utility.Delay;
-import lejos.hardware.motor.Motor;
-import lejos.hardware.port.*;
 
 public class SpinnyBot {
 
