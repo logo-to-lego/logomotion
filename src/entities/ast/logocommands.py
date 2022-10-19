@@ -1,6 +1,7 @@
 from entities.ast.node import Node
 from entities.logotypes import LogoType
 from entities.symbol import Variable
+from lexer.token_types import TokenType
 
 
 class Make(Node):
@@ -129,3 +130,16 @@ class Move(Node):
                 expected_type=LogoType.FLOAT.value,
             )
         child.check_types()
+
+    def generate_code(self):
+        """Generate movement commands in Java."""
+        arg_var = self.children[0].generate_code()
+
+        if self.type == TokenType.FD:
+            self._code_generator.move_forward(arg_var)
+        if self.type == TokenType.BK:
+            self._code_generator.move_backwards(arg_var)
+        if self.type == TokenType.LT:
+            self._code_generator.left_turn(arg_var)
+        if self.type == TokenType.RT:
+            self._code_generator.right_turn(arg_var)
