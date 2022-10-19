@@ -1,0 +1,49 @@
+//Gradle file library ev3dev-lang-java // Template project
+
+plugins {
+    id 'java'
+    id 'eclipse'
+    id 'idea'
+    id 'org.hidetake.ssh' version '2.10.1'
+    id "net.ossindex.audit" version "0.4.5-beta"
+    id "com.github.johnrengelman.shadow" version "4.0.3"
+}
+
+version = '2.6.0'
+
+// Project definitions
+
+repositories {
+    maven { url "https://jitpack.io" }
+    mavenCentral()
+}
+
+dependencies {
+    implementation("org.slf4j:slf4j-simple:1.7.25")
+    implementation("com.github.ev3dev-lang-java:ev3dev-lang-java:2.6.2-SNAPSHOT")
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+//Compile
+compileJava {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+}
+
+//Jar
+jar {
+    baseName = "${rootProject.name}"
+    manifest {
+        from file("${projectDir}/src/main/resources/META-INF/MANIFEST.MF")
+    }
+}
+
+task fatJar {
+    doLast {
+    }
+}
+fatJar.dependsOn shadowJar
+
+apply from: './config.gradle'
+apply from: './gradle/deploy.gradle'
