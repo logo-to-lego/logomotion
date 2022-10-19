@@ -59,13 +59,6 @@ list
 """
 
 
-from entities.ast.node import *
-from entities.ast.conditionals import *
-from entities.ast.functions import *
-from entities.ast.logocommands import *
-from entities.ast.operations import *
-from entities.ast.statementlist import *
-from entities.ast.variables import *
 
 from parser.globals import *
 from parser.command import *
@@ -76,6 +69,13 @@ from utils.code_generator import default_code_generator
 from utils.logger import default_logger
 from entities.symbol_tables import default_symbol_tables
 
+from entities.ast.node import *
+from entities.ast.conditionals import *
+from entities.ast.functions import *
+from entities.ast.logocommands import *
+from entities.ast.operations import *
+from entities.ast.statementlist import *
+from entities.ast.variables import *
 
 def p_start(prod):
     "start : statement_list"

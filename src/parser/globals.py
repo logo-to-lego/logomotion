@@ -1,11 +1,11 @@
 # pylint: disable=invalid-name, too-few-public-methods
 """Parsing rules and globals used by the parser"""
 
-from entities.ast.node import NodeFactory
 from lexer.lexer import Lexer
 from utils.code_generator import CodeGenerator
 from utils.logger import Logger
 from entities.symbol_tables import SymbolTables
+from entities.ast.node import NodeFactory
 
 precedence = (
     ("nonassoc", "EQUALS", "LESSTHAN", "GREATERTHAN", "LTEQUALS", "GTEQUALS"),
