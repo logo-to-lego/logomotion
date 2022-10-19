@@ -18,7 +18,7 @@ lexer = Lexer(logger)
 lexer.build()
 
 symbol_tables = SymbolTables()
-code_generator = CodeGenerator()
+code_generator = CodeGenerator(logger=logger)
 
 parser = Parser(lexer, logger, symbol_tables, code_generator)
 parser.build()

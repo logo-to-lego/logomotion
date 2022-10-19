@@ -17,11 +17,7 @@ class Float(Node):
         pass
 
     def generate_code(self):
-        temp_var = self.generate_temp_var()
-        code = f"double {temp_var} = {self.leaf};"
-        self._logger.debug(code)
-        self._code_generator.append_code(code)
-        return temp_var
+        return self._code_generator.float(self.leaf)
 
 
 class Bool(Node):
