@@ -1,4 +1,3 @@
-from logging import exception
 import unittest
 from entities.logotypes import LogoType
 from entities.symbol import Variable, Function
