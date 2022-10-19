@@ -1,7 +1,7 @@
 # pylint: disable=invalid-name, too-few-public-methods
 """Parsing rules and globals used by the parser"""
 
-from parser.ast import NodeFactory
+from entities.ast.node import NodeFactory
 from lexer.lexer import Lexer
 from utils.code_generator import CodeGenerator
 from utils.logger import Logger
@@ -49,12 +49,13 @@ class Shared:
         self.node_factory = None
         self.code_generator = None
 
-    def update(self,
-            current_lexer: Lexer,
-            logger: Logger,
-            symbol_tables: SymbolTables,
-            code_generator: CodeGenerator
-        ):
+    def update(
+        self,
+        current_lexer: Lexer,
+        logger: Logger,
+        symbol_tables: SymbolTables,
+        code_generator: CodeGenerator,
+    ):
         """Update parser-wide shared fields"""
         self.current_lexer = current_lexer
         self.ply_lexer = current_lexer.get_ply_lexer()

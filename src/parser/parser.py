@@ -59,7 +59,14 @@ list
 """
 
 
-from parser import ast
+from entities.ast.node import *
+from entities.ast.conditionals import *
+from entities.ast.functions import *
+from entities.ast.logocommands import *
+from entities.ast.operations import *
+from entities.ast.statementlist import *
+from entities.ast.variables import *
+
 from parser.globals import *
 from parser.command import *
 from parser.expression import *
@@ -72,21 +79,19 @@ from entities.symbol_tables import default_symbol_tables
 
 def p_start(prod):
     "start : statement_list"
-    prod[0] = shared.node_factory.create_node(
-        ast.Start, children=[prod[1]], position=Position(prod)
-    )
+    prod[0] = shared.node_factory.create_node(Start, children=[prod[1]], position=Position(prod))
 
 
 def p_statement_list(prod):
     "statement_list : statement statement_list"
     prod[0] = shared.node_factory.create_node(
-        ast.StatementList, children=[prod[1]] + prod[2].children, position=Position(prod)
+        StatementList, children=[prod[1]] + prod[2].children, position=Position(prod)
     )
 
 
 def p_statement_list_empty(prod):
     "statement_list : empty"
-    prod[0] = shared.node_factory.create_node(ast.StatementList, position=Position(prod))
+    prod[0] = shared.node_factory.create_node(StatementList, position=Position(prod))
 
 
 def p_empty(prod):
@@ -112,7 +117,7 @@ class Parser:
         current_lexer: Lexer,
         logger=default_logger,
         symbol_tables=default_symbol_tables,
-        code_generator=default_code_generator
+        code_generator=default_code_generator,
     ):
         self._current_lexer = current_lexer
         shared.update(current_lexer, logger, symbol_tables, code_generator)
