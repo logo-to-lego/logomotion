@@ -4,6 +4,7 @@ START = "public class Logomotion { public static void main(string[] args) { "
 END = " } }"
 DEFAULT_NAME = "logomotion"
 
+
 class CodeGenerator:
     """A class for generating code"""
 
@@ -22,5 +23,6 @@ class CodeGenerator:
             for line in self._code:
                 writer.write(line + " ")
             writer.write(END)
+
 
 default_code_generator = CodeGenerator()
