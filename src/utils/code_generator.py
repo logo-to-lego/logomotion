@@ -44,7 +44,7 @@ class CodeGenerator:
 
     def right_turn(self, arg_var):
         """create Java code for turning right"""
-        line = f"robot.rotate({arg_var});"
+        line = f"robot.rotate(-{arg_var});"
         self._code.append(line)
         self._logger.debug(line)
 
