@@ -2,7 +2,14 @@ import unittest
 from unittest.mock import Mock
 from lexer.lexer import Lexer
 from parser.parser import Parser
-from parser import ast
+
+from entities.ast.node import *
+from entities.ast.conditionals import *
+from entities.ast.functions import *
+from entities.ast.logocommands import *
+from entities.ast.operations import *
+from entities.ast.statementlist import *
+from entities.ast.variables import *
 
 from utils.logger import Logger
 
@@ -22,13 +29,13 @@ class TestParser(unittest.TestCase):
     def test_parser_start_node(self):
         test_string = 'show "ijsdijs'
         res = self.parser.parse(test_string)
-        start_instance = ast.Start()
+        start_instance = Start()
         self.assertEqual(type(res), type(start_instance))
 
     def test_parser_statementlist(self):
         test_string = "show (23+32*19)"
         res = self.parser.parse(test_string)
-        st_instance = ast.StatementList()
+        st_instance = StatementList()
         print(st_instance)
         print(type(st_instance))
         self.assertEqual(type(res.children[0]), type(st_instance))

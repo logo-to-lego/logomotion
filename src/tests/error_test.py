@@ -71,8 +71,12 @@ class TestErrorHandler(unittest.TestCase):
         ast = self.parser.parse(test_string)
         ast.check_types()
 
-        fin_expected_msg = "Rivillä 2 negatiivisen luvun tyyppi on BOOL, vaikka sen pitäisi olla FLOAT."
-        eng_expected_msg = "In row 2 the type of a negative number is BOOL, even though it should be FLOAT."
+        fin_expected_msg = (
+            "Rivillä 2 negatiivisen luvun tyyppi on BOOL, vaikka sen pitäisi olla FLOAT."
+        )
+        eng_expected_msg = (
+            "In row 2 the type of a negative number is BOOL, even though it should be FLOAT."
+        )
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
@@ -86,7 +90,9 @@ class TestErrorHandler(unittest.TestCase):
         ast = self.parser.parse(test_string)
         ast.check_types()
 
-        fin_expected_msg = "Rivillä 2 negatiivisen luvun tyyppi on STRING, vaikka sen pitäisi olla FLOAT."
+        fin_expected_msg = (
+            "Rivillä 2 negatiivisen luvun tyyppi on STRING, vaikka sen pitäisi olla FLOAT."
+        )
         eng_expected_msg = (
             "In row 2 the type of a negative number is STRING, even though it should be FLOAT."
         )
