@@ -40,14 +40,13 @@ class Variable:
 class Function(Variable):
     "Class for functions in symbol table. Inherits Variable class"
 
-    def __init__(self, name, params=None, typeclass=Type(LogoType.VOID)):
-        # TODO Halutaanko että defaulttaa VOID vai UNKNOWN
+    def __init__(self, name, params=None, typeclass=Type()):
         """Constructor function for Function class
 
         Args:
             name (str): Functions name
             params (dict, optional): Arguments given to function. Defaults to None.
-            typeclass (Type, optional): Functions return values type. Defaults to LogoType.VOID
+            typeclass (Type, optional): Functions return values type. Defaults to LogoType.UNKNOWN
         """
         super().__init__(name, typeclass)
         if not params:

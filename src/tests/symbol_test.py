@@ -22,7 +22,7 @@ class TestSymbol(unittest.TestCase):
 
     def test_symbols_default_logotypes_are_correct(self):
         self.assertEqual(self.var.typeclass.type, LogoType.UNKNOWN)
-        self.assertEqual(self.func.typeclass.type, LogoType.VOID)
+        self.assertEqual(self.func.typeclass.type, LogoType.UNKNOWN)
 
     def test_symbols_logotype_can_be_changed_with_setter(self):
         self.var.typeclass.type = LogoType.FLOAT
