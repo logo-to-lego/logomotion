@@ -1,10 +1,11 @@
 # pylint: disable=invalid-name, too-few-public-methods
 """Parsing rules and globals used by the parser"""
 
-from parser.ast import NodeFactory
 from lexer.lexer import Lexer
+from utils.code_generator import CodeGenerator
 from utils.logger import Logger
 from entities.symbol_tables import SymbolTables
+from entities.ast.node import NodeFactory
 
 precedence = (
     ("nonassoc", "EQUALS", "LESSTHAN", "GREATERTHAN", "LTEQUALS", "GTEQUALS"),
@@ -46,15 +47,23 @@ class Shared:
         self.logger = None
         self.symbol_tables = None
         self.node_factory = None
+        self.code_generator = None
 
-    def update(self, current_lexer: Lexer, logger: Logger, symbol_tables: SymbolTables):
+    def update(
+        self,
+        current_lexer: Lexer,
+        logger: Logger,
+        symbol_tables: SymbolTables,
+        code_generator: CodeGenerator,
+    ):
         """Update parser-wide shared fields"""
         self.current_lexer = current_lexer
         self.ply_lexer = current_lexer.get_ply_lexer()
         self.reserved_words = current_lexer.reserved_words
         self.logger = logger
         self.symbol_tables = symbol_tables
-        self.node_factory = NodeFactory(self.logger, self.symbol_tables)
+        self.code_generator = code_generator
+        self.node_factory = NodeFactory(self.logger, self.symbol_tables, self.code_generator)
 
 
 shared = Shared()

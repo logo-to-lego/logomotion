@@ -5,6 +5,7 @@ from parser.parser import Parser
 from entities.symbol_tables import SymbolTables
 from entities.symbol_table import SymbolTable
 from lexer.lexer import Lexer
+from utils.code_generator import CodeGenerator
 from utils.console_io import ConsoleIO
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
@@ -17,8 +18,9 @@ lexer = Lexer(logger)
 lexer.build()
 
 symbol_tables = SymbolTables()
+code_generator = CodeGenerator(logger=logger)
 
-parser = Parser(lexer, logger, symbol_tables)
+parser = Parser(lexer, logger, symbol_tables, code_generator)
 parser.build()
 
 
@@ -55,6 +57,9 @@ def parser_ui():
 
         error_handler.write_errors_to_console()
         error_handler.errors.clear()
+
+        start_node.generate_code()
+        code_generator.write()
 
         # Clear symbol tables
         symbol_tables.functions = SymbolTable()
