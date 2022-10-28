@@ -10,7 +10,6 @@ Muuttuja määritetään avainsanalla make tai tee, ja antamalla " ennen muuttuj
 Muuttujaan viitataan kaksoispisteellä. Esimerkiksi muuttujan x arvo tulostetaan avainsanalla show, print, sano tai tulosta
 `show :x`
 
-
 Muuttujan tyyppiä ei saa muuttaa myöhemmin. Alla oleva esimerkki tuottaa virheen:
 ```
 make "x 10
