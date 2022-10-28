@@ -1,13 +1,15 @@
 """Code Generator module"""
 from utils.logger import Logger, default_logger
 
-START = "public class Logomotion { public static void main(string[] args) { "
+START = "package logo; import classes.EV3MovePilot; " \
+        "public class Logo { public static void main(String[] args) { " \
+        "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
 END = "} }"
-DEFAULT_NAME = "logomotion"
-
+DEFAULT_NAME = "Logo"
+PATH = "logomotion_gradle/src/main/java/logo/"
 
 class CodeGenerator:
-    """A class for generating code"""
+    """A class for generating Java code"""
 
     def __init__(self, name=DEFAULT_NAME, **dependencies):
         self._code = []
@@ -63,7 +65,7 @@ class CodeGenerator:
     def write(self):
         """write a Java file"""
         try:
-            with open(self._name + ".java", mode="w", encoding="utf-8") as file:
+            with open(PATH + self._name + ".java", mode="w", encoding="utf-8") as file:
                 file.write(START)
                 for line in self._code:
                     file.write(line + " ")
