@@ -9,7 +9,6 @@ from utils.logger import Logger, default_logger
 class Node:
     """Base AST Node class"""
 
-    TEMP_VAR_INDEX = 0
 
     def __init__(self, node_type, children=None, leaf=None, **dependencies):
         self.type = node_type

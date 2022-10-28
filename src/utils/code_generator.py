@@ -20,6 +20,9 @@ class CodeGenerator:
         self._temp_var_index += 1
         return self._temp_var_index
 
+    def reset_temp_var_index(self):
+        self._temp_var_index = 0
+
     def _generate_temp_var(self):
         """create an unique temp variable name"""
         return f"temp{self._increase_temp_var_index()}"
