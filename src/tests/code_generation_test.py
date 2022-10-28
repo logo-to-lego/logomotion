@@ -16,7 +16,7 @@ class CodegenTest(unittest.TestCase):
         node_float = Float(leaf=100.0)
         node_fd = Move(node_type=TokenType.FD, children=[node_float])
         node_fd.generate_code()
-        node_list = node_fd._code_generator._code
+        node_list = default_code_generator.get_generated_code()
         self.assertIn("double temp1 = 100.0;", node_list)
         self.assertIn("robot.travel(temp1);", node_list)
 
@@ -24,7 +24,7 @@ class CodegenTest(unittest.TestCase):
         node_float = Float(leaf=100.0)
         node_bk = Move(node_type=TokenType.BK, children=[node_float])
         node_bk.generate_code()
-        node_list = node_bk._code_generator._code
+        node_list = default_code_generator.get_generated_code()
         self.assertIn("double temp1 = 100.0;", node_list)
         self.assertIn("robot.travel(-temp1);", node_list)
 
@@ -32,7 +32,7 @@ class CodegenTest(unittest.TestCase):
         node_float = Float(leaf=100.0)
         node_rt = Move(node_type=TokenType.RT, children=[node_float])
         node_rt.generate_code()
-        node_list = node_rt._code_generator._code
+        node_list = default_code_generator.get_generated_code()
         self.assertIn("double temp1 = 100.0;", node_list)
         self.assertIn("robot.rotate(-temp1);", node_list)
 
@@ -40,6 +40,6 @@ class CodegenTest(unittest.TestCase):
         node_float = Float(leaf=100.0)
         node_lt = Move(node_type=TokenType.LT, children=[node_float])
         node_lt.generate_code()
-        node_list = node_lt._code_generator._code
+        node_list = default_code_generator.get_generated_code()
         self.assertIn("double temp1 = 100.0;", node_list)
         self.assertIn("robot.rotate(temp1);", node_list)

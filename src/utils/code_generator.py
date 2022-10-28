@@ -73,5 +73,8 @@ class CodeGenerator:
             print(f"An error occurred when writing {self._name}.java file:\n{error}")
             raise
 
+    def get_generated_code(self):
+        return self._code
+
 
 default_code_generator = CodeGenerator()
