@@ -59,7 +59,6 @@ list
 """
 
 
-
 from parser.globals import *
 from parser.command import *
 from parser.expression import *
@@ -76,6 +75,7 @@ from entities.ast.logocommands import *
 from entities.ast.operations import *
 from entities.ast.statementlist import *
 from entities.ast.variables import *
+
 
 def p_start(prod):
     "start : statement_list"
