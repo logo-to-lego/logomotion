@@ -22,6 +22,11 @@ class BinOp(Node):
                 self._logger.error_handler.add_error(2002, row=child.position.get_pos()[0])
             child.check_types()
 
+    def generate_code(self):
+        """Generate binop to java"""
+        arg_var1 = self.children[0].generate_code()
+        arg_var2 = self.children[1].generate_code()
+        return self._code_generator.binop(arg_var1, arg_var2, self.leaf)
 
 class UnaryOp(Node):
     def __init__(self, children, leaf, **dependencies):

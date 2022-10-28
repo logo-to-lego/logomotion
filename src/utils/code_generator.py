@@ -56,6 +56,14 @@ class CodeGenerator:
         self._logger.debug(code)
         self._code.append(code)
         return temp_var
+    
+    def binop(self, value1, value2, op):
+        """create java code for binops and return variable name"""
+        temp_var = self._generate_temp_var()
+        code = f"double {temp_var} = {value1} {op} {value2};"
+        self._logger.debug(code)
+        self._code.append(code)
+        return temp_var
 
     def write(self):
         """write a Java file"""
