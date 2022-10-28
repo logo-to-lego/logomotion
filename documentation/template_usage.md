@@ -26,5 +26,5 @@
 <code>EV3MovePilot robot = new EV3MovePilot(wheel_size, wheel_distance);</code>
 - The project supplies gradle commands you can either
     - write gradle tasks, which should list them in the terminal
-    - Find them listed in logotmotion/logomotion_gradle/gradle/deploy.gradle
+    - Find them listed in logomotion/logomotion_gradle/gradle/deploy.gradle
     - Use gradle deployAndRun
