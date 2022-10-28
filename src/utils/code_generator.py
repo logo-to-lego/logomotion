@@ -1,4 +1,5 @@
 """Code Generator module"""
+import os
 from utils.logger import Logger, default_logger
 
 START = "package logo; import classes.EV3MovePilot; " \
@@ -6,7 +7,9 @@ START = "package logo; import classes.EV3MovePilot; " \
         "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
 END = "} }"
 DEFAULT_NAME = "Logo"
-PATH = "logomotion_gradle/src/main/java/logo/"
+PATH = os.path.join(
+            os.path.dirname(os.path.relpath(__file__)), "../../logomotion_gradle/src/main/java/logo/"
+        )
 
 class CodeGenerator:
     """A class for generating Java code"""
@@ -73,7 +76,7 @@ class CodeGenerator:
     def write(self):
         """write a Java file"""
         try:
-            with open(PATH + self._name + ".java", mode="w", encoding="utf-8") as file:
+            with open(PATH + self._name + ".java", mode="w+", encoding="utf-8") as file:
                 file.write(START)
                 for line in self._code:
                     file.write(line + " ")
