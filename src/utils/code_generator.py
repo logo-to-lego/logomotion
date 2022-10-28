@@ -2,14 +2,17 @@
 import os
 from utils.logger import Logger, default_logger
 
-START = "package logo; import classes.EV3MovePilot; " \
-        "public class Logo { public static void main(String[] args) { " \
-        "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
+START = (
+    "package logo; import classes.EV3MovePilot; "
+    "public class Logo { public static void main(String[] args) { "
+    "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
+)
 END = "} }"
 DEFAULT_NAME = "Logo"
 PATH = os.path.join(
-            os.path.dirname(os.path.relpath(__file__)), "../../logomotion_gradle/src/main/java/logo/"
-        )
+    os.path.dirname(os.path.relpath(__file__)), "../../logomotion_gradle/src/main/java/logo/"
+)
+
 
 class CodeGenerator:
     """A class for generating Java code"""
@@ -64,11 +67,11 @@ class CodeGenerator:
         self._logger.debug(code)
         self._code.append(code)
         return temp_var
-    
-    def binop(self, value1, value2, op):
+
+    def binop(self, value1, value2, operation):
         """create java code for binops and return variable name"""
         temp_var = self._generate_temp_var()
-        code = f"double {temp_var} = {value1} {op} {value2};"
+        code = f"double {temp_var} = {value1} {operation} {value2};"
         self._logger.debug(code)
         self._code.append(code)
         return temp_var

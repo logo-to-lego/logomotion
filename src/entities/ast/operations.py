@@ -28,6 +28,7 @@ class BinOp(Node):
         arg_var2 = self.children[1].generate_code()
         return self._code_generator.binop(arg_var1, arg_var2, self.leaf)
 
+
 class UnaryOp(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("UnaryOp", children, leaf, **dependencies)
