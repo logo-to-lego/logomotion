@@ -21,7 +21,7 @@
 ### Gradle project usage
 - Template project source https://github.com/ev3dev-lang-java/template-project-gradle
 - Set correct IP in /logomotion_gradle/config.gradle - once your brick has connection to internet, the IP should be at the top of the screen of your brick.
-    - This should be enough, but if you encounter problems check main class from manifest.
+    - The main class is by default set to be logo.Logo. If you decide to change the name of the class, you need to change it in logomotion/logomotion_gradle/src/main/resources/MANIFEST.MF header "Main-Class".
 - Wheel distance & wheel size ought to be set in logomotion/logomotion_gradle/src/main/java/logo line 9
 <code>EV3MovePilot robot = new EV3MovePilot(wheel_size, wheel_distance);</code>
 - The project supplies gradle commands you can either
