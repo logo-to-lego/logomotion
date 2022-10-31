@@ -34,7 +34,7 @@ class Variable:
         self._typeclass = typeclass
 
     def __str__(self):
-        return f"Variable {self._name}: type: {self._typeclass.type.value}"
+        return f"Variable {self._name}: Typeclass: ({self._typeclass})"
 
 
 class Function(Variable):

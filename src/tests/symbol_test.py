@@ -21,14 +21,14 @@ class TestSymbol(unittest.TestCase):
         self.assertEqual(variable.name, given_name)
 
     def test_symbols_default_logotypes_are_correct(self):
-        self.assertEqual(self.var.typeclass.type, LogoType.UNKNOWN)
-        self.assertEqual(self.func.typeclass.type, LogoType.UNKNOWN)
+        self.assertEqual(self.var.typeclass.logotype, LogoType.UNKNOWN)
+        self.assertEqual(self.func.typeclass.logotype, LogoType.UNKNOWN)
 
     def test_symbols_logotype_can_be_changed_with_setter(self):
-        self.var.typeclass.type = LogoType.FLOAT
-        self.func.typeclass.type = LogoType.FLOAT
-        self.assertEqual(self.var.typeclass.type, LogoType.FLOAT)
-        self.assertEqual(self.func.typeclass.type, LogoType.FLOAT)
+        self.var.typeclass.logotype = LogoType.FLOAT
+        self.func.typeclass.logotype = LogoType.FLOAT
+        self.assertEqual(self.var.typeclass.logotype, LogoType.FLOAT)
+        self.assertEqual(self.func.typeclass.logotype, LogoType.FLOAT)
 
     def test_variables_value_can_be_changed_with_setter(self):
         self.var.value = self.value2
