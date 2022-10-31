@@ -101,7 +101,7 @@ if __name__ == "__main__":
         if USE_UI:
             parser_ui()
         else:
-            PROG = """fd 2 bk 50 rt 1+2 lt :a"""
+            PROG = """fd 2 bk 50 rt 1+2 lt :a make :b 1<2"""
             ast = parser.parse(PROG)
             io.write(ast)
             error_handler.write_errors_to_console()

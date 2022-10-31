@@ -33,6 +33,9 @@ class Bool(Node):
     def check_types(self):
         pass
 
+    def generate_code(self):
+        return self._code_generator.boolean(self.leaf)
+
 
 class Deref(Node):
     def __init__(self, leaf, **dependencies):
