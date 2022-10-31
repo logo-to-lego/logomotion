@@ -82,3 +82,15 @@ class TestType(unittest.TestCase):
         self.assertEqual(id(typeclass_a), id(typeclass_b))
         self.assertEqual(id(typeclass_b), id(typeclass_c))
         self.assertEqual(id(typeclass_c), id(typeclass_d))
+
+    def test_variable_name_and_ref_do_not_get_mixed_up(self):
+        test_string = """
+            make "abc "def
+            make "b "abc
+        """
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+        
+        typeclass_abc = self.symbol_tables.variables.lookup("abc").typeclass
+        typeclass_b = self.symbol_tables.variables.lookup("b").typeclass
+        self.assertNotEqual(id(typeclass_abc), id(typeclass_b))

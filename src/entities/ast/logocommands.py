@@ -47,7 +47,9 @@ class Make(Node):
             )
 
         # Symbol reference e.g. 'make "b :a', where ref is 'a'
-        ref = self._symbol_tables.variables.lookup(value.leaf)
+        ref = None
+        if value.type == "Deref":
+            ref = self._symbol_tables.variables.lookup(value.leaf)
 
         # Check if the symbol has already been defined
         # e.g. 'make "a 2', where 'a' has been defined before this make statement
