@@ -1,6 +1,7 @@
+#pylint disable=fixme
 from entities.ast.node import Node
 from entities.logotypes import LogoType
-from entities.symbol import *
+from entities.symbol import Function, Variable
 
 
 class Output(Node):
@@ -28,14 +29,20 @@ class ProcDecl(Node):
     def check_types(self):
         if self._symbol_tables.functions.lookup(self.leaf):
             self._logger.error_handler.add_error(2016, proc=self.leaf)
-            self._logger.console.write(f"Procedure {self.leaf} already declared")
-        else:
-            self._symbol_tables.functions.insert(self.leaf, Function(self.leaf)) # lisää vielä loput argumentit
-        self._symbol_tables.variables.initialize_scope(
-            in_function=self._symbol_tables.functions.lookup(self.leaf)
-        )
+        self._symbol_tables.functions.insert(self.leaf, Function(self.leaf))
+        procedure = self._symbol_tables.functions.lookup(self.leaf)
+        self._symbol_tables.variables.initialize_scope(in_function=procedure)
         for child in self.children:
             child.check_types()
+        for parameter_name in procedure.parameters:
+            if self._symbol_tables.variables.lookup(parameter_name).type == LogoType.UNKNOWN:
+                self._logger.error_handler.add_error(
+                    2018,
+                    proc=procedure.name,
+                    param=parameter_name)
+
+        # funktion palautustyypin määrittäminen TODO
+
         self._symbol_tables.variables.finalize_scope()
 
 
@@ -52,4 +59,9 @@ class ProcArg(Node):
         super().__init__("ProgArg", children, **dependencies)
 
     def check_types(self):
-        self._symbol_tables.variables.insert(self.leaf, Variable(self.leaf, logotype=LogoType.UNKNOWN))
+        procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
+        if self._symbol_tables.variables.lookup(self.leaf):
+            self._logger.error_handler.add_error(2017, proc=procedure.name, param=self.leaf)
+        variable = Variable(self.leaf)
+        procedure.parameters[self.leaf] = variable
+        self._symbol_tables.variables.insert(self.leaf, variable)

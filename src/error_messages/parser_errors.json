@@ -69,7 +69,15 @@
         "ENG": "Command '@command' does not take parameters."
     },
     "2016": {
-        "FIN": "Procedure @proc already declared",
-        "ENG": "Funktio @proc on jo määritelty"
+        "FIN": "Funktio '@proc' on jo määritelty",
+        "ENG": "Procedure '@proc' already declared"
+    },
+    "2017": {
+        "FIN": "Funktion '@proc' parametri '@param' on jo määritelty",
+        "ENG": "Procedure @proc's parameter '@param' is already declared"
+    },
+    "2018": {
+        "FIN": "Funktion '@proc' parametrin '@param' tyyppi on tuntematon",
+        "ENG": "Procedure @proc's paratmeter @param's type is unknown"
     }
 }
