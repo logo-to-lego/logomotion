@@ -47,6 +47,20 @@ class TestType(unittest.TestCase):
         typeclass_b = self.symbol_tables.variables.lookup('b').typeclass
         self.assertNotEqual(id(typeclass_a), id(typeclass_b))
 
+    def test_two_separate_typeclasses_with_different_types_should_not_concatenate_into_one(self):
+        test_string = """
+            make "a 2
+            make "b "kissa
+            make "a :b
+        """
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+        
+        typeclass_a = self.symbol_tables.variables.lookup('a').typeclass
+        typeclass_b = self.symbol_tables.variables.lookup('b').typeclass
+
+        self.assertNotEqual(id(typeclass_a), id(typeclass_b))
+
     def test_two_separate_typeclasses_concatenate_into_one(self):
         test_string = """
             make "a 2
@@ -68,3 +82,5 @@ class TestType(unittest.TestCase):
         self.assertEqual(id(typeclass_a), id(typeclass_b))
         self.assertEqual(id(typeclass_b), id(typeclass_c))
         self.assertEqual(id(typeclass_c), id(typeclass_d))
+
+        

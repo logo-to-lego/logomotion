@@ -15,7 +15,7 @@ class Float(Node):
         return self._logo_type
 
     def check_types(self):
-        pass
+        self.get_type()
 
     def generate_code(self):
         return self._code_generator.float(self.leaf)
@@ -32,7 +32,7 @@ class Bool(Node):
         return self._logo_type
 
     def check_types(self):
-        pass
+        self.get_type()
 
 
 class Deref(Node):
@@ -95,4 +95,4 @@ class StringLiteral(Node):
         return self._logo_type
 
     def check_types(self):
-        pass
+        self.get_type()

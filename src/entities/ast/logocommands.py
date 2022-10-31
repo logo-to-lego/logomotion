@@ -20,14 +20,11 @@ class Make(Node):
             )
             return
 
-        # Check first argument type and variable name
+        # Check that variable name is string
         var_name_node = self.leaf
+        var_name_node.check_types()
         var_name = var_name_node.leaf
-        var_name_type = var_name_node.get_type()
-
-        if var_name_type == LogoType.UNKNOWN:
-            var_name_node.set_type(LogoType.STRING)
-        elif var_name_node.get_type() != LogoType.STRING:
+        if var_name_node.get_type() != LogoType.STRING:
             self._logger.error_handler.add_error(
                 2010,
                 row=self.position.get_pos()[0],
@@ -35,22 +32,36 @@ class Make(Node):
                 curr_type=var_name_node.get_type().value,
                 expected_type=LogoType.STRING.value,
             )
-        var_name_node.check_types()
 
         # Check second argument type, assignment value
         value = self.children[0]
+        value.check_types()
         logotype_of_value = value.get_type()
 
-        ref = self._symbol_tables.variables.lookup(value.leaf) # ref is if the symbol references to a defined variable
-        symbol = self._symbol_tables.variables.lookup(var_name_node.leaf)  # symbol is an already defined var thats value is going to be changed
+        # Check if value is type of void
+        if logotype_of_value == LogoType.VOID:
+            self._logger.error_handler.add_error(
+                2011,
+                row=self.position.get_pos()[0],
+                command=self.type.value,
+                value_type=logotype_of_value.value,
+            )
+
+        # Symbol reference e.g. make "a :b, where ref is :b
+        ref = self._symbol_tables.variables.lookup(value.leaf)
+
+        # Check if the symbol has already been defined. E.g. make "a 2, where :a has been defined before this make statement
+        symbol = self._symbol_tables.variables.lookup(var_name_node.leaf)
 
         # e.g. make "a 3, where :a has not been defined before
         if (not ref) and (not symbol):
+            print("1, 2")
             symbol = Variable(var_name, Type(logotype_of_value, variables={var_name}))
             self._symbol_tables.variables.insert(var_name, symbol)
 
         # e.g. make "b :a, where :b has not been defined before, but :a has been defined
         elif ref and not symbol:
+            print("5")
             if logotype_of_value in (LogoType.UNKNOWN, ref.typeclass.logotype):
                 ref.typeclass.add_variable(var_name)
                 symbol = Variable(var_name, ref.typeclass)
@@ -66,6 +77,7 @@ class Make(Node):
 
         # e.g. make "b 42, where :b has been defined before
         elif not ref and symbol:
+            print("3")
             if symbol.typeclass.logotype == LogoType.UNKNOWN:
                 symbol.typeclass.logotype = logotype_of_value
             elif logotype_of_value == LogoType.UNKNOWN:
@@ -80,6 +92,7 @@ class Make(Node):
                 )
         
         else: # ref and symbol
+            print("4")
             # e.g. make "b :a, where :b and :a have been defined earlier
             ref_type = ref.typeclass.logotype
             symbol_type = symbol.typeclass.logotype
@@ -96,15 +109,7 @@ class Make(Node):
                     expected_type=ref_type,
                 )
 
-        # Check if value is type of void
-        if logotype_of_value == LogoType.VOID:
-            self._logger.error_handler.add_error(
-                2011,
-                row=self.position.get_pos()[0],
-                command=self.type.value,
-                value_type=logotype_of_value.value,
-            )
-        value.check_types()
+
 
         print("END RESULT", symbol)
         print("\n••••")

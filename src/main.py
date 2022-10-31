@@ -103,13 +103,22 @@ if __name__ == "__main__":
         else:
             PROG = """
             make "a 2
+            make "b 5
+            make "b 6
             make "b :a
-
-            make "c 5
-            make "d :c
-
-            make "d :a
+            make "c :a
             """
+            
+            # PROG = """
+            # make "a 2
+            # make "b :a
+
+            # make "c 5
+            # make "d :c
+
+            # make "d :a
+            # """
+
             # PROG = """
             # make "x 2
             # make "y "kissa
@@ -127,12 +136,8 @@ if __name__ == "__main__":
 
             typeclass_a = symbol_tables.variables.lookup('a').typeclass
             typeclass_b = symbol_tables.variables.lookup('b').typeclass
-            typeclass_c = symbol_tables.variables.lookup('c').typeclass
-            typeclass_d = symbol_tables.variables.lookup('d').typeclass
             print("\n\ntypeclass_a: ", typeclass_a, id(typeclass_a), "")
             print("typeclass_b: ", typeclass_b, id(typeclass_b), "")
-            print("typeclass_c: ", typeclass_c, id(typeclass_c), "")
-            print("typeclass_d: ", typeclass_d, id(typeclass_d), "\n")
 
             #io.print_ast(ast)
             error_handler.write_errors_to_console()
