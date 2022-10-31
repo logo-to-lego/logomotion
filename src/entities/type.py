@@ -8,10 +8,10 @@ class Type:
     can be then referenced to other variables which have the same LogoType"""
 
     def __init__(
-        self, logotype: LogoType = LogoType.UNKNOWN, variables: set = {}
+        self, logotype: LogoType = LogoType.UNKNOWN, variables = None
     ):  # variables is a set of Symbol objects
         self._logotype = logotype
-        self._variables = variables
+        self._variables = variables if variables is not None else {}
 
     @property
     def logotype(self):
@@ -35,22 +35,25 @@ class Type:
 
     @staticmethod
     def concatenate(typeclass1: "Type", typeclass2: "Type") -> "Type":
+        logotype1 = typeclass1.logotype
+        logotype2 = typeclass2.logotype
+
         def get_new_logotype():
-            if typeclass1.logotype != LogoType.UNKNOWN:
-                return typeclass1.logotype
-            elif typeclass2.logotype != LogoType.UNKNOWN:
-                return typeclass2.logotype
+            if logotype1 != LogoType.UNKNOWN:
+                return logotype1
+            if logotype2 != LogoType.UNKNOWN:
+                return logotype2
             return LogoType.UNKNOWN
 
-        if (typeclass1.logotype != typeclass2.logotype) or (
-            (typeclass1.logotype != LogoType.UNKNOWN) or (typeclass2.logotype != LogoType.UNKNOWN)
-        ):
+        if (logotype1 != logotype2) and (
+            (logotype1 != LogoType.UNKNOWN) or
+            (logotype2 != LogoType.UNKNOWN)):
             raise Exception(
-                f"Logotypes do not match: {typeclass1.logotype.value} != {typeclass2.logotype.value}"
+                f"Logotypes do not match: {logotype1.value} != {logotype2.value}"
             )
 
-        vars = typeclass1.variables.union(typeclass2.variables)
-        return Type(logotype=get_new_logotype(), variables=vars)
+        variables = typeclass1.variables.union(typeclass2.variables)
+        return Type(logotype=get_new_logotype(), variables=variables)
 
     def __str__(self) -> str:
         return f"LogoType: {self._logotype}, Variables: {self._variables}"

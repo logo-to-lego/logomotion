@@ -1,5 +1,4 @@
 """symbol module"""
-from entities.logotypes import LogoType
 from entities.type import Type
 
 

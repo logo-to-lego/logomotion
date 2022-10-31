@@ -40,23 +40,16 @@ class Deref(Node):
         super().__init__("Deref", children=None, leaf=leaf, **dependencies)
 
     def get_type(self) -> LogoType:
-        # if not self._logo_type:
-        #     self._logo_type = LogoType.UNKNOWN
-
-        # symbol = self._get_symbol()
-
-        # if symbol:
-        #     self._logo_type = symbol.type
-
-        # return self._logo_type
         symbol = self._get_symbol()
         if symbol:
             return symbol.typeclass.logotype
+        return None
 
     def get_typeclass(self) -> Type:
         symbol = self._get_symbol()
         if symbol:
             return symbol.typeclass
+        return None
 
     # def set_type(self, new_type: LogoType):
     #     self._logo_type = new_type
@@ -70,6 +63,7 @@ class Deref(Node):
         symbol = self._symbol_tables.variables.lookup(self.leaf)
         if symbol:
             return symbol
+        return None
 
     def check_types(self):
         symbol = self._get_symbol()

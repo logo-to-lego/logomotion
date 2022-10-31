@@ -96,48 +96,12 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         file_parser()
     else:
-        USE_UI = False
+        USE_UI = True
 
         if USE_UI:
             parser_ui()
         else:
-            PROG = """
-            make "a 2
-            make "b 5
-            make "b 6
-            make "b :a
-            make "c :a
-            """
-
-            # PROG = """
-            # make "a 2
-            # make "b :a
-
-            # make "c 5
-            # make "d :c
-
-            # make "d :a
-            # """
-
-            # PROG = """
-            # make "x 2
-            # make "y "kissa
-
-            # make "a :x
-            # make "b :a
-
-            # make "c :y
-            # make "d :c
-
-            # make "a :d
-            # """
+            PROG = """fd 2 bk 50 rt 1+2 lt :a"""
             ast = parser.parse(PROG)
-            ast.check_types()
-
-            typeclass_a = symbol_tables.variables.lookup("a").typeclass
-            typeclass_b = symbol_tables.variables.lookup("b").typeclass
-            print("\n\ntypeclass_a: ", typeclass_a, id(typeclass_a), "")
-            print("typeclass_b: ", typeclass_b, id(typeclass_b), "")
-
-            # io.print_ast(ast)
+            io.write(ast)
             error_handler.write_errors_to_console()
