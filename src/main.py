@@ -103,5 +103,6 @@ if __name__ == "__main__":
         else:
             PROG = """fd 2 bk 50 rt 1+2 lt :a make :b 1<2"""
             ast = parser.parse(PROG)
-            io.write(ast)
+            ast.check_types()
+            io.print_ast(ast)
             error_handler.write_errors_to_console()
