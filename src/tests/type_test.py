@@ -30,9 +30,9 @@ class TestType(unittest.TestCase):
         """
         ast = self.parser.parse(test_string)
         ast.check_types()
-        
-        typeclass_a = self.symbol_tables.variables.lookup('a').typeclass
-        typeclass_b = self.symbol_tables.variables.lookup('b').typeclass
+
+        typeclass_a = self.symbol_tables.variables.lookup("a").typeclass
+        typeclass_b = self.symbol_tables.variables.lookup("b").typeclass
         self.assertEqual(id(typeclass_a), id(typeclass_b))
 
     def test_two_variables_have_different_instance_of_typeclass(self):
@@ -42,9 +42,9 @@ class TestType(unittest.TestCase):
         """
         ast = self.parser.parse(test_string)
         ast.check_types()
-        
-        typeclass_a = self.symbol_tables.variables.lookup('a').typeclass
-        typeclass_b = self.symbol_tables.variables.lookup('b').typeclass
+
+        typeclass_a = self.symbol_tables.variables.lookup("a").typeclass
+        typeclass_b = self.symbol_tables.variables.lookup("b").typeclass
         self.assertNotEqual(id(typeclass_a), id(typeclass_b))
 
     def test_two_separate_typeclasses_with_different_types_should_not_concatenate_into_one(self):
@@ -55,9 +55,9 @@ class TestType(unittest.TestCase):
         """
         ast = self.parser.parse(test_string)
         ast.check_types()
-        
-        typeclass_a = self.symbol_tables.variables.lookup('a').typeclass
-        typeclass_b = self.symbol_tables.variables.lookup('b').typeclass
+
+        typeclass_a = self.symbol_tables.variables.lookup("a").typeclass
+        typeclass_b = self.symbol_tables.variables.lookup("b").typeclass
 
         self.assertNotEqual(id(typeclass_a), id(typeclass_b))
 
@@ -73,14 +73,12 @@ class TestType(unittest.TestCase):
         """
         ast = self.parser.parse(test_string)
         ast.check_types()
-        
-        typeclass_a = self.symbol_tables.variables.lookup('a').typeclass
-        typeclass_b = self.symbol_tables.variables.lookup('b').typeclass
-        typeclass_c = self.symbol_tables.variables.lookup('c').typeclass
-        typeclass_d = self.symbol_tables.variables.lookup('d').typeclass
+
+        typeclass_a = self.symbol_tables.variables.lookup("a").typeclass
+        typeclass_b = self.symbol_tables.variables.lookup("b").typeclass
+        typeclass_c = self.symbol_tables.variables.lookup("c").typeclass
+        typeclass_d = self.symbol_tables.variables.lookup("d").typeclass
 
         self.assertEqual(id(typeclass_a), id(typeclass_b))
         self.assertEqual(id(typeclass_b), id(typeclass_c))
         self.assertEqual(id(typeclass_c), id(typeclass_d))
-
-        

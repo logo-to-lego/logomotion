@@ -12,7 +12,6 @@ class Make(Node):
         return self._logo_type
 
     def check_types(self):
-        print("\nMAKE CHECK TYPES", self.leaf.leaf, "\n")
         # Check for right amount of params
         if len(self.children) != 1 or not self.leaf:
             self._logger.error_handler.add_error(
@@ -55,13 +54,11 @@ class Make(Node):
 
         # e.g. make "a 3, where :a has not been defined before
         if (not ref) and (not symbol):
-            print("1, 2")
             symbol = Variable(var_name, Type(logotype_of_value, variables={var_name}))
             self._symbol_tables.variables.insert(var_name, symbol)
 
         # e.g. make "b :a, where :b has not been defined before, but :a has been defined
         elif ref and not symbol:
-            print("5")
             if logotype_of_value in (LogoType.UNKNOWN, ref.typeclass.logotype):
                 ref.typeclass.add_variable(var_name)
                 symbol = Variable(var_name, ref.typeclass)
@@ -77,7 +74,6 @@ class Make(Node):
 
         # e.g. make "b 42, where :b has been defined before
         elif not ref and symbol:
-            print("3")
             if symbol.typeclass.logotype == LogoType.UNKNOWN:
                 symbol.typeclass.logotype = logotype_of_value
             elif logotype_of_value == LogoType.UNKNOWN:
@@ -90,14 +86,17 @@ class Make(Node):
                     curr_type=symbol.typeclass.logotype.value,
                     expected_type=value.get_type().value,
                 )
-        
-        else: # ref and symbol
-            print("4")
+
+        else:  # ref and symbol
             # e.g. make "b :a, where :b and :a have been defined earlier
             ref_type = ref.typeclass.logotype
             symbol_type = symbol.typeclass.logotype
 
-            if (ref_type == LogoType.UNKNOWN) or (symbol_type == LogoType.UNKNOWN) or (ref_type == symbol_type):
+            if (
+                (ref_type == LogoType.UNKNOWN)
+                or (symbol_type == LogoType.UNKNOWN)
+                or (ref_type == symbol_type)
+            ):
                 # concatenate typeclasses
                 self._symbol_tables.variables.concatenate_typeclasses(ref, symbol)
             else:
@@ -108,12 +107,6 @@ class Make(Node):
                     curr_type=symbol_type,
                     expected_type=ref_type,
                 )
-
-
-
-        print("END RESULT", symbol)
-        print("\n••••")
-        
 
 
 class Show(Node):

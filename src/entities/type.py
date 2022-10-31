@@ -2,6 +2,7 @@
 
 from entities.logotypes import LogoType
 
+
 class Type:
     """Type class stores the LogoType of a variable. The instance of this class
     can be then referenced to other variables which have the same LogoType"""
@@ -34,13 +35,22 @@ class Type:
 
     @staticmethod
     def concatenate(typeclass1: "Type", typeclass2: "Type") -> "Type":
-        if typeclass1.logotype != typeclass2.logotype:
+        def get_new_logotype():
+            if typeclass1.logotype != LogoType.UNKNOWN:
+                return typeclass1.logotype
+            elif typeclass2.logotype != LogoType.UNKNOWN:
+                return typeclass2.logotype
+            return LogoType.UNKNOWN
+
+        if (typeclass1.logotype != typeclass2.logotype) or (
+            (typeclass1.logotype != LogoType.UNKNOWN) or (typeclass2.logotype != LogoType.UNKNOWN)
+        ):
             raise Exception(
                 f"Logotypes do not match: {typeclass1.logotype.value} != {typeclass2.logotype.value}"
             )
 
         vars = typeclass1.variables.union(typeclass2.variables)
-        return Type(logotype=typeclass1.logotype, variables=vars)
+        return Type(logotype=get_new_logotype(), variables=vars)
 
     def __str__(self) -> str:
         return f"LogoType: {self._logotype}, Variables: {self._variables}"

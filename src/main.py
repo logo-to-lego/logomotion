@@ -108,7 +108,7 @@ if __name__ == "__main__":
             make "b :a
             make "c :a
             """
-            
+
             # PROG = """
             # make "a 2
             # make "b :a
@@ -134,10 +134,10 @@ if __name__ == "__main__":
             ast = parser.parse(PROG)
             ast.check_types()
 
-            typeclass_a = symbol_tables.variables.lookup('a').typeclass
-            typeclass_b = symbol_tables.variables.lookup('b').typeclass
+            typeclass_a = symbol_tables.variables.lookup("a").typeclass
+            typeclass_b = symbol_tables.variables.lookup("b").typeclass
             print("\n\ntypeclass_a: ", typeclass_a, id(typeclass_a), "")
             print("typeclass_b: ", typeclass_b, id(typeclass_b), "")
 
-            #io.print_ast(ast)
+            # io.print_ast(ast)
             error_handler.write_errors_to_console()

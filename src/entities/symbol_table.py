@@ -69,7 +69,7 @@ class SymbolTable:
         """Return the current in-scope function's symbol,
         or None when not currently in a function scope."""
         return self._in_function
-    
+
     def concatenate_typeclasses(self, symbol1, symbol2):
         """Takes two symbols (variable or function) as parameters and
         concatenates their typeclasses
