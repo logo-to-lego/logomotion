@@ -45,13 +45,6 @@ class Type:
                 return logotype2
             return LogoType.UNKNOWN
 
-        if (logotype1 != logotype2) and (
-            (logotype1 != LogoType.UNKNOWN) or
-            (logotype2 != LogoType.UNKNOWN)):
-            raise Exception(
-                f"Logotypes do not match: {logotype1.value} != {logotype2.value}"
-            )
-
         variables = typeclass1.variables.union(typeclass2.variables)
         return Type(logotype=get_new_logotype(), variables=variables)
 
