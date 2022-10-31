@@ -2,6 +2,7 @@
 from collections import deque
 
 from entities.symbol import Variable
+from entities.type import Type
 
 
 class SymbolTable:
@@ -68,6 +69,15 @@ class SymbolTable:
         """Return the current in-scope function's symbol,
         or None when not currently in a function scope."""
         return self._in_function
+    
+    def concatenate_typeclasses(self, symbol1, symbol2):
+        """Takes two symbols (variable or function) as parameters and
+        concatenates their typeclasses
+        """
+        new_typeclass = Type.concatenate(symbol1.typeclass, symbol2.typeclass)
+        for var in new_typeclass.variables:
+            symbol = self.lookup(var)
+            symbol.typeclass = new_typeclass
 
 
 default_variable_table = SymbolTable()

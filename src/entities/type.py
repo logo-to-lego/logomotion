@@ -2,9 +2,6 @@
 
 from entities.logotypes import LogoType
 
-# from entities.symbol import Variable
-
-
 class Type:
     """Type class stores the LogoType of a variable. The instance of this class
     can be then referenced to other variables which have the same LogoType"""
@@ -43,10 +40,7 @@ class Type:
             )
 
         vars = typeclass1.variables.union(typeclass2.variables)
-        new_typeclass = Type(logotype=typeclass1.logotype, variables=vars)
-        for var in vars:
-            # update typeclass ref
-            var.typeclass = new_typeclass
+        return Type(logotype=typeclass1.logotype, variables=vars)
 
     def __str__(self) -> str:
         return f"LogoType: {self._logotype}, Variables: {self._variables}"

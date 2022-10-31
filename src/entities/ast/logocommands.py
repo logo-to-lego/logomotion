@@ -40,29 +40,17 @@ class Make(Node):
         # Check second argument type, assignment value
         value = self.children[0]
         logotype_of_value = value.get_type()
-        print("LOGOTYPE OF VALUE", logotype_of_value)
 
-        # Check if variable uses another variable as value, e.g. 'make "a :b'
-        ref = self._symbol_tables.variables.lookup(value.leaf)
-        symbol = self._symbol_tables.variables.lookup(var_name_node.leaf)  # instance of Variable
+        ref = self._symbol_tables.variables.lookup(value.leaf) # ref is if the symbol references to a defined variable
+        symbol = self._symbol_tables.variables.lookup(var_name_node.leaf)  # symbol is an already defined var thats value is going to be changed
 
-        if ref and symbol:
-            ref_type = ref.typeclass.logotype
-            symbol_type = symbol.typeclass.logotype
-            # pitäis kattoa unknownit
-            if ref_type != symbol_type:
-                self._logger.error_handler.add_error(
-                    2012,
-                    row=self.position.get_pos()[0],
-                    var_name=var_name,
-                    curr_type=symbol_type,
-                    expected_type=ref_type,
-                )
-            else:
-                # konkatenoi tyyppiluokat
-                pass
+        # e.g. make "a 3, where :a has not been defined before
+        if (not ref) and (not symbol):
+            symbol = Variable(var_name, Type(logotype_of_value, variables={var_name}))
+            self._symbol_tables.variables.insert(var_name, symbol)
 
-        if ref and not symbol:
+        # e.g. make "b :a, where :b has not been defined before, but :a has been defined
+        elif ref and not symbol:
             if logotype_of_value in (LogoType.UNKNOWN, ref.typeclass.logotype):
                 ref.typeclass.add_variable(var_name)
                 symbol = Variable(var_name, ref.typeclass)
@@ -75,15 +63,9 @@ class Make(Node):
                     curr_type=logotype_of_value,
                     expected_type=ref.typeclass.logotype,
                 )
-            print("END RESULT", symbol)
-            print("\n••••")
-            return
 
-        # Check if var_name has symbol in symbol table
-        if symbol and not ref:
-            print("SYMBOL", symbol)
-            print("VALUE", value)
-            print()
+        # e.g. make "b 42, where :b has been defined before
+        elif not ref and symbol:
             if symbol.typeclass.logotype == LogoType.UNKNOWN:
                 symbol.typeclass.logotype = logotype_of_value
             elif logotype_of_value == LogoType.UNKNOWN:
@@ -96,9 +78,23 @@ class Make(Node):
                     curr_type=symbol.typeclass.logotype.value,
                     expected_type=value.get_type().value,
                 )
-        else:
-            symbol = Variable(var_name, Type(logotype_of_value, variables={var_name}))
-            self._symbol_tables.variables.insert(var_name, symbol)
+        
+        else: # ref and symbol
+            # e.g. make "b :a, where :b and :a have been defined earlier
+            ref_type = ref.typeclass.logotype
+            symbol_type = symbol.typeclass.logotype
+
+            if (ref_type == LogoType.UNKNOWN) or (symbol_type == LogoType.UNKNOWN) or (ref_type == symbol_type):
+                # concatenate typeclasses
+                self._symbol_tables.variables.concatenate_typeclasses(ref, symbol)
+            else:
+                self._logger.error_handler.add_error(
+                    2012,
+                    row=self.position.get_pos()[0],
+                    var_name=var_name,
+                    curr_type=symbol_type,
+                    expected_type=ref_type,
+                )
 
         # Check if value is type of void
         if logotype_of_value == LogoType.VOID:
@@ -112,6 +108,7 @@ class Make(Node):
 
         print("END RESULT", symbol)
         print("\n••••")
+        
 
 
 class Show(Node):
@@ -168,7 +165,10 @@ class Move(Node):
         child.check_types()
         child_type = child.get_type()
 
-        if child_type != None and child_type != LogoType.FLOAT:
+        if child_type is None:
+            return
+
+        if child_type != LogoType.FLOAT:
             self._logger.error_handler.add_error(
                 2010,
                 row=child.position.get_pos()[0],
