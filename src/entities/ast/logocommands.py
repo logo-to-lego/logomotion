@@ -55,12 +55,12 @@ class Make(Node):
         # e.g. 'make "a 2', where 'a' has been defined before this make statement
         symbol = self._symbol_tables.variables.lookup(var_name_node.leaf)
 
-        if (not ref) and (not symbol):
+        if (not symbol) and (not ref):
             # e.g. 'make "a 2', where 'a' has not been defined before
             symbol = Variable(var_name, Type(value_logotype, variables={var_name}))
             self._symbol_tables.variables.insert(var_name, symbol)
 
-        elif ref and not symbol:
+        elif not symbol and ref:
             # e.g. 'make "b :a', where 'b' has not been defined before, but 'a' has been defined
             if value_logotype in (LogoType.UNKNOWN, ref.typeclass.logotype):
                 ref.typeclass.add_variable(var_name)
@@ -75,7 +75,7 @@ class Make(Node):
                     expected_type=ref.typeclass.logotype,
                 )
 
-        elif not ref and symbol:
+        elif symbol and not ref:
             # e.g. 'make "b 42', where 'b' has already been defined
             if symbol.typeclass.logotype == LogoType.UNKNOWN:
                 symbol.typeclass.logotype = value_logotype
@@ -90,7 +90,7 @@ class Make(Node):
                     expected_type=value.get_type().value,
                 )
 
-        else:  # ref and symbol
+        else:  # symbol and ref
             # e.g. 'make "b :a', where 'a' and 'b' have been defined earlier
             ref_type = ref.typeclass.logotype
             symbol_type = symbol.typeclass.logotype
