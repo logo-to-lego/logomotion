@@ -68,10 +68,27 @@ class CodeGenerator:
         self._code.append(code)
         return temp_var
 
+    def boolean(self, value):
+        """create Java code for defining boolean variable with given value
+        and return the variable name"""
+        temp_var = self._generate_temp_var()
+        code = f"boolean {temp_var} = {value};"
+        self._logger.debug(code)
+        self._logger.append(code)
+        return temp_var
+
     def binop(self, value1, value2, operation):
         """create java code for binops and return variable name"""
         temp_var = self._generate_temp_var()
         code = f"double {temp_var} = {value1} {operation} {value2};"
+        self._logger.debug(code)
+        self._code.append(code)
+        return temp_var
+
+    def relop(self, value1, value2, operation):
+        """create java code for relops and return variable name"""
+        temp_var = self._generate_temp_var()
+        code = f"boolean {temp_var}  = {value1} {operation} {value2}"
         self._logger.debug(code)
         self._code.append(code)
         return temp_var
