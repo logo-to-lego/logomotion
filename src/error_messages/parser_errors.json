@@ -67,5 +67,9 @@
     "2015": {
         "FIN": "Komento '@command' ei ota parametreja.",
         "ENG": "Command '@command' does not take parameters."
+    },
+    "2016": {
+        "FIN": "Procedure @proc already declared",
+        "ENG": "Funktio @proc on jo määritelty"
     }
 }

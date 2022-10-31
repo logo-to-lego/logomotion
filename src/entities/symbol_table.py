@@ -60,7 +60,7 @@ class SymbolTable:
         """return current scope as dict"""
         return self._stack[0]
 
-    def get_in_scope_fuction_symbol(self):
+    def get_in_scope_function_symbol(self):
         """Return the current in-scope function's symbol,
         or None when not currently in a function scope."""
         return self._in_function
