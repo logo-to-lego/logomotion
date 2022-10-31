@@ -1,12 +1,18 @@
 """Code Generator module"""
+import os
 from utils.logger import Logger, default_logger
 
-START = "package logo; import classes.EV3MovePilot; " \
-        "public class Logo { public static void main(String[] args) { " \
-        "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
+START = (
+    "package logo; import classes.EV3MovePilot; "
+    "public class Logo { public static void main(String[] args) { "
+    "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
+)
 END = "} }"
 DEFAULT_NAME = "Logo"
-PATH = "logomotion_gradle/src/main/java/logo/"
+PATH = os.path.join(
+    os.path.dirname(os.path.relpath(__file__)), "../../logomotion_gradle/src/main/java/logo/"
+)
+
 
 class CodeGenerator:
     """A class for generating Java code"""
@@ -21,6 +27,9 @@ class CodeGenerator:
         """increase index for temp variables"""
         self._temp_var_index += 1
         return self._temp_var_index
+
+    def reset_temp_var_index(self):
+        self._temp_var_index = 0
 
     def _generate_temp_var(self):
         """create an unique temp variable name"""
@@ -59,10 +68,18 @@ class CodeGenerator:
         self._code.append(code)
         return temp_var
 
+    def binop(self, value1, value2, operation):
+        """create java code for binops and return variable name"""
+        temp_var = self._generate_temp_var()
+        code = f"double {temp_var} = {value1} {operation} {value2};"
+        self._logger.debug(code)
+        self._code.append(code)
+        return temp_var
+
     def write(self):
         """write a Java file"""
         try:
-            with open(PATH + self._name + ".java", mode="w", encoding="utf-8") as file:
+            with open(PATH + self._name + ".java", mode="w+", encoding="utf-8") as file:
                 file.write(START)
                 for line in self._code:
                     file.write(line + " ")
@@ -71,6 +88,9 @@ class CodeGenerator:
         except Exception as error:
             print(f"An error occurred when writing {self._name}.java file:\n{error}")
             raise
+
+    def get_generated_code(self):
+        return self._code
 
 
 default_code_generator = CodeGenerator()
