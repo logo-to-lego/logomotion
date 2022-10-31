@@ -13,7 +13,9 @@ class SymbolTable:
         self._stack.appendleft({})
         self._in_function = None
 
-    def insert(self, key, value: Variable): # varsinaista arvoa ei tallenneta TODO Ota Variable pois 
+    def insert(
+        self, key, value: Variable
+    ):  # varsinaista arvoa ei tallenneta TODO Ota Variable pois
         """Inserts a new entry to the symbol table"""
         self._stack[0][key] = value
 

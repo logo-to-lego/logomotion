@@ -44,7 +44,7 @@ class Make(Node):
 
         # Check if variable uses another variable as value, e.g. 'make "a :b'
         ref = self._symbol_tables.variables.lookup(value.leaf)
-        symbol = self._symbol_tables.variables.lookup(var_name_node.leaf) # instance of Variable
+        symbol = self._symbol_tables.variables.lookup(var_name_node.leaf)  # instance of Variable
 
         if ref and symbol:
             ref_type = ref.typeclass.logotype
@@ -61,7 +61,7 @@ class Make(Node):
             else:
                 # konkatenoi tyyppiluokat
                 pass
-        
+
         if ref and not symbol:
             if logotype_of_value in (LogoType.UNKNOWN, ref.typeclass.logotype):
                 ref.typeclass.add_variable(var_name)
@@ -97,10 +97,8 @@ class Make(Node):
                     expected_type=value.get_type().value,
                 )
         else:
-            symbol = Variable(var_name, Type(
-                logotype_of_value, variables={var_name}))
+            symbol = Variable(var_name, Type(logotype_of_value, variables={var_name}))
             self._symbol_tables.variables.insert(var_name, symbol)
-
 
         # Check if value is type of void
         if logotype_of_value == LogoType.VOID:
@@ -125,8 +123,7 @@ class Show(Node):
     def check_types(self):
         # Must have at least 1 param
         if len(self.children) == 0:
-            self._logger.error_handler.add_error(
-                2013, row=self.position.get_pos()[0])
+            self._logger.error_handler.add_error(2013, row=self.position.get_pos()[0])
 
         # Cannot be function call that returns VOID
         for child in self.children:
@@ -168,10 +165,10 @@ class Move(Node):
             return
 
         child = self.children[0]
+        child.check_types()
         child_type = child.get_type()
-        if child_type == LogoType.UNKNOWN:
-            child.set_type(LogoType.FLOAT)
-        elif child_type != LogoType.FLOAT:
+
+        if child_type != None and child_type != LogoType.FLOAT:
             self._logger.error_handler.add_error(
                 2010,
                 row=child.position.get_pos()[0],
@@ -179,7 +176,6 @@ class Move(Node):
                 curr_type=child_type.value,
                 expected_type=LogoType.FLOAT.value,
             )
-        child.check_types()
 
     def generate_code(self):
         """Generate movement commands in Java."""

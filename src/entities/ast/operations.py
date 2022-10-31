@@ -70,6 +70,9 @@ class RelOp(Node):
         child1 = self.children[0]
         child2 = self.children[1]
 
+        child1.check_types()
+        child2.check_types()
+
         child1_type = child1.get_type()
         child2_type = child2.get_type()
 

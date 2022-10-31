@@ -101,24 +101,22 @@ if __name__ == "__main__":
         if USE_UI:
             parser_ui()
         else:
-            # PROG = """
-            # make "a 2
-            # make "b :a
-            # make "b "kissa
-            # """
             PROG = """
-            make "x 2
-            make "y "kissa
-
-            make "a :x
-            make "b :a
-            
-            make "c :y
-            make "d :c
-
-            make "a :d
+            fd :x
             """
+            # PROG = """
+            # make "x 2
+            # make "y "kissa
+
+            # make "a :x
+            # make "b :a
+
+            # make "c :y
+            # make "d :c
+
+            # make "a :d
+            # """
             ast = parser.parse(PROG)
             ast.check_types()
-            #io.print_ast(ast)
+            io.print_ast(ast)
             error_handler.write_errors_to_console()
