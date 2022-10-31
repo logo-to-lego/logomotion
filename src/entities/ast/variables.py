@@ -51,14 +51,6 @@ class Deref(Node):
             return symbol.typeclass
         return None
 
-    # def set_type(self, new_type: LogoType):
-    #     self._logo_type = new_type
-
-    #     symbol = self._get_symbol()
-
-    #     if symbol and symbol.type == LogoType.UNKNOWN:
-    #         symbol.type = new_type
-
     def _get_symbol(self) -> Variable:
         symbol = self._symbol_tables.variables.lookup(self.leaf)
         if symbol:
@@ -69,14 +61,7 @@ class Deref(Node):
         symbol = self._get_symbol()
         if not symbol:
             self._logger.error_handler.add_error(2007, var=self.leaf)
-        # elif symbol.typeclass.logotype != self.get_type():
-        #     self._logger.error_handler.add_error(
-        #         2008,
-        #         var=self.leaf,
-        #         curr_type=symbol.type.value,
-        #         expected_type=self._logo_type.value,
-        #     )
-
+        return None
 
 class StringLiteral(Node):
     def __init__(self, leaf, **dependencies):
