@@ -48,7 +48,7 @@ class Function(Variable):
         """
         super().__init__(name, logotype)
         if not params:
-            self._parameters = {}
+            self._parameters = []
         else:
             self._parameters = params
 

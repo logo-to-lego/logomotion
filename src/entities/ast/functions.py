@@ -12,8 +12,45 @@ class Output(Node):
         pass
 
 
-class Command(Node):
-    pass
+class ProcCall(Node):
+    def __init__(self, children, leaf, **dependencies):
+        super().__init__("ProcCall", children, leaf, **dependencies)
+
+    def get_type(self):
+        return self._logo_type
+
+    def check_types(self):
+        procedure = self._symbol_tables.functions.lookup(self.leaf)
+        if not procedure:
+            self._logger.error_handler.add_error(
+                2019,
+                proc=self.leaf,
+                row=self.position.get_pos()[0]
+            )
+            return
+        if len(procedure.parameters) != len(self.children):
+            self._logger.error_handler.add_error(
+                2020,
+                proc=self.leaf,
+                row=self.position.get_pos()[0],
+                args=len(self.children),
+                params=len(procedure.parameters)
+            )
+        for index in range(len(self.children)):
+            self.children[index].check_types()
+            if index >= len(procedure.parameters):
+                continue
+            argument_type = self.children[index].type
+            parameter_type = procedure.parameters[index].type.value
+            if argument_type != parameter_type:
+                self._logger.error_handler.add_error(
+                    2021,
+                    proc=self.leaf,
+                    arg=self.children[index].leaf,
+                    atype=argument_type,
+                    ptype=parameter_type,
+                    row=self.position.get_pos()[0]
+                )
 
 
 class ProcDecl(Node):
@@ -23,7 +60,6 @@ class ProcDecl(Node):
     def get_type(self):
         if not self._logo_type:
             self._logo_type = LogoType.UNKNOWN
-
         return self._logo_type
 
     def check_types(self):
@@ -34,12 +70,12 @@ class ProcDecl(Node):
         self._symbol_tables.variables.initialize_scope(in_function=procedure)
         for child in self.children:
             child.check_types()
-        for parameter_name in procedure.parameters:
-            if self._symbol_tables.variables.lookup(parameter_name).type == LogoType.UNKNOWN:
+        for parameter in procedure.parameters:
+            if parameter.type == LogoType.UNKNOWN:
                 self._logger.error_handler.add_error(
                     2018,
                     proc=procedure.name,
-                    param=parameter_name)
+                    param=parameter.name)
 
         # funktion palautustyypin määrittäminen TODO
 
@@ -63,5 +99,5 @@ class ProcArg(Node):
         if self._symbol_tables.variables.lookup(self.leaf):
             self._logger.error_handler.add_error(2017, proc=procedure.name, param=self.leaf)
         variable = Variable(self.leaf)
-        procedure.parameters[self.leaf] = variable
+        procedure.parameters.append(variable)
         self._symbol_tables.variables.insert(self.leaf, variable)

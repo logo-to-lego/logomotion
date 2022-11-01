@@ -182,8 +182,7 @@ def p_proc_args_empty(prod):
 def p_proc_call(prod):
     "proc_call : LPAREN IDENT expressions RPAREN"
     prod[0] = shared.node_factory.create_node(
-        Command,
-        node_type=TokenType.IDENT,
+        ProcCall,
         children=prod[3],
         leaf=prod[2],
         position=Position(prod),

@@ -77,7 +77,19 @@
         "ENG": "Procedure @proc's parameter '@param' is already declared"
     },
     "2018": {
-        "FIN": "Funktion '@proc' parametrin '@param' tyyppi on tuntematon",
+        "FIN": "Funktion '@proc' parametrin '@param' tyyppi on tuntematon.",
         "ENG": "Procedure @proc's paratmeter @param's type is unknown"
+    },
+    "2019": {
+        "FIN": "Kutsuttua funktiota '@proc' rivillä @row ei ole määritelty.",
+        "ENG": "Called procedure '@proc' on row @row has not been defined."
+    },
+    "2020": {
+        "FIN": "Rivillä @row funktiokutsussa @proc on argumentteja @args kappaletta, vaikka niitä kuuluisi olla @params.",
+        "ENG": "Procedure call '@proc' at row @row has @args arguments even thought it should have @params arguments."
+    },
+    "2021": {
+        "FIN": "Rivillä @row funktiokutsun '@proc' argumentin '@arg' tyyppi on @atype, vaikka sen kuuluisi olla @ptype.",
+        "ENG": "At row @row procedure call @proc's argument '@arg' is type @atype even thought it should be type @ptype."
     }
 }
