@@ -76,6 +76,9 @@ class RelOp(Node):
         child1 = self.children[0]
         child2 = self.children[1]
 
+        child1.check_types()
+        child2.check_types()
+
         child1_type = child1.get_type()
         child2_type = child2.get_type()
 
@@ -88,3 +91,9 @@ class RelOp(Node):
             self._logger.error_handler.add_error(
                 2005, row=row, type1=child1_type.value, type2=child2_type.value
             )
+
+    def generate_code(self):
+        """Generate relop to java"""
+        arg_var1 = self.children[0].generate_code()
+        arg_var2 = self.children[1].generate_code()
+        return self._code_generator.relop(arg_var1, arg_var2, self.leaf)

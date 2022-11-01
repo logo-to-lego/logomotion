@@ -1,6 +1,7 @@
 from entities.ast.node import Node
 from entities.logotypes import LogoType
 from entities.symbol import Variable
+from entities.type import Type
 from lexer.token_types import TokenType
 
 
@@ -18,53 +19,95 @@ class Make(Node):
             )
             return
 
-        # Check first argument type and variable name
-        var_name = self.leaf
-        var_name_type = var_name.get_type()
-
-        if var_name_type == LogoType.UNKNOWN:
-            var_name.set_type(LogoType.STRING)
-        elif var_name.get_type() != LogoType.STRING:
+        # Check that variable name is string
+        var_name_node = self.leaf
+        var_name_node.check_types()
+        var_name = var_name_node.leaf
+        if var_name_node.get_type() != LogoType.STRING:
             self._logger.error_handler.add_error(
                 2010,
                 row=self.position.get_pos()[0],
                 command=self.type.value,
-                curr_type=var_name.get_type().value,
+                curr_type=var_name_node.get_type().value,
                 expected_type=LogoType.STRING.value,
             )
-        var_name.check_types()
 
-        # Check second argument type, assignment value
+        # Check second argument type (assignment value)
         value = self.children[0]
-        value_type = value.get_type()
+        value.check_types()
+        value_logotype = value.get_type()
 
-        if value_type == LogoType.VOID:
+        # Check if value type is of void
+        if value_logotype == LogoType.VOID:
             self._logger.error_handler.add_error(
                 2011,
                 row=self.position.get_pos()[0],
                 command=self.type.value,
-                value_type=value_type.value,
+                value_type=value_logotype.value,
             )
-        value.check_types()
 
-        # Check if var_name has symbol in symbol table
-        symbol = self._symbol_tables.variables.lookup(var_name.leaf)
-        if symbol:
-            if symbol.type == LogoType.UNKNOWN:
-                symbol.type = value.get_type()
-            elif value.get_type() == LogoType.UNKNOWN:
-                value.set_type(symbol.type)
-            elif value.get_type() != symbol.type:
+        # Symbol reference e.g. 'make "b :a', where ref is 'a'
+        ref = None
+        if value.type == "Deref":
+            ref = self._symbol_tables.variables.lookup(value.leaf)
+
+        # Check if the symbol has already been defined
+        # e.g. 'make "a 2', where 'a' has been defined before this make statement
+        symbol = self._symbol_tables.variables.lookup(var_name_node.leaf)
+
+        if (not symbol) and (not ref):
+            # e.g. 'make "a 2', where 'a' has not been defined before
+            symbol = Variable(var_name, Type(value_logotype, variables={var_name}))
+            self._symbol_tables.variables.insert(var_name, symbol)
+
+        elif not symbol and ref:
+            # e.g. 'make "b :a', where 'b' has not been defined before, but 'a' has been defined
+            if value_logotype in (LogoType.UNKNOWN, ref.typeclass.logotype):
+                ref.typeclass.add_variable(var_name)
+                symbol = Variable(var_name, ref.typeclass)
+                self._symbol_tables.variables.insert(var_name, symbol)
+            else:
                 self._logger.error_handler.add_error(
                     2012,
                     row=self.position.get_pos()[0],
-                    var_name=var_name.leaf,
-                    curr_type=symbol.type.value,
+                    var_name=var_name,
+                    curr_type=value_logotype,
+                    expected_type=ref.typeclass.logotype,
+                )
+
+        elif symbol and not ref:
+            # e.g. 'make "b 42', where 'b' has already been defined
+            if symbol.typeclass.logotype == LogoType.UNKNOWN:
+                symbol.typeclass.logotype = value_logotype
+            elif value_logotype == LogoType.UNKNOWN:
+                value.set_type(symbol.typeclass.logotype)
+            elif value.get_type() != symbol.typeclass.logotype:
+                self._logger.error_handler.add_error(
+                    2012,
+                    row=self.position.get_pos()[0],
+                    var_name=var_name,
+                    curr_type=symbol.typeclass.logotype.value,
                     expected_type=value.get_type().value,
                 )
-        else:
-            symbol = Variable(var_name.leaf, value.get_type())
-            self._symbol_tables.variables.insert(var_name.leaf, symbol)
+
+        else:  # symbol and ref
+            # e.g. 'make "b :a', where 'a' and 'b' have been defined earlier
+            ref_type = ref.typeclass.logotype
+            symbol_type = symbol.typeclass.logotype
+            if (
+                (ref_type == LogoType.UNKNOWN) or
+                (symbol_type == LogoType.UNKNOWN) or
+                (ref_type == symbol_type)
+            ):
+                self._symbol_tables.variables.concatenate_typeclasses(ref, symbol)
+            else:
+                self._logger.error_handler.add_error(
+                    2012,
+                    row=self.position.get_pos()[0],
+                    var_name=var_name,
+                    curr_type=symbol_type,
+                    expected_type=ref_type,
+                )
 
 
 class Show(Node):
@@ -118,10 +161,13 @@ class Move(Node):
             return
 
         child = self.children[0]
+        child.check_types()
         child_type = child.get_type()
-        if child_type == LogoType.UNKNOWN:
-            child.set_type(LogoType.FLOAT)
-        elif child_type != LogoType.FLOAT:
+
+        if child_type is None:
+            return
+
+        if child_type != LogoType.FLOAT:
             self._logger.error_handler.add_error(
                 2010,
                 row=child.position.get_pos()[0],
@@ -129,7 +175,6 @@ class Move(Node):
                 curr_type=child_type.value,
                 expected_type=LogoType.FLOAT.value,
             )
-        child.check_types()
 
     def generate_code(self):
         """Generate movement commands in Java."""

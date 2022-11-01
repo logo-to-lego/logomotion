@@ -101,18 +101,22 @@ class TestErrorHandler(unittest.TestCase):
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
         self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg)
 
-    def test_relop_raises_error_with_unknown_type(self):
+    def test_relop_raises_error_with_undefined_variables(self):
         test_string = """make "c :a >= :b"""
 
         ast = self.parser.parse(test_string)
         ast.check_types()
 
-        fin_expected_msg = "Rivillä 1 en pystynyt päättelemään vertailuoperaattorin tyyppiä."
-        eng_expected_msg = "In row 1 I could not infer the type of the operand."
+        fin_expected_msg1 = "Muuttujaa 'a' ei ole määritelty."
+        eng_expected_msg1 = "Variable 'a' is not defined."
+        fin_expected_msg2 = "Muuttujaa 'b' ei ole määritelty."
+        eng_expected_msg2 = "Variable 'b' is not defined."
 
-        self.assertEqual(len(self.error_handler.get_error_messages()), 1)
-        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
-        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg)
+        self.assertEqual(len(self.error_handler.get_error_messages()), 2)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg1)
+        self.assertEqual(self.error_handler.get_error_messages()[1]["FIN"], fin_expected_msg2)
+        self.assertEqual(self.error_handler.get_error_messages()[1]["ENG"], eng_expected_msg2)
 
     def test_relop_raises_error_with_non_comparable_types(self):
         test_string = """
