@@ -25,25 +25,25 @@ class Make(Node):
                 expected_type=LogoType.STRING.value,
             )
 
-    def _check_parameter_node(self, parameter_node):
-        # Check type of parameter/second argument/assignment value
-        parameter_node.check_types()
-        param_logotype = parameter_node.get_type()
+    def _check_argument_node(self, argument_node):
+        # Check type of argument
+        argument_node.check_types()
+        arg_logotype = argument_node.get_type()
 
-        if param_logotype == LogoType.VOID:
+        if arg_logotype == LogoType.VOID:
             self._logger.error_handler.add_error(
                 2011,
                 row=self.position.get_pos()[0],
                 command=self.type.value,
-                value_type=param_logotype.value,
+                value_type=arg_logotype.value,
             )
 
     def _create_new_variable(self, name, logotype):
         symbol = Variable(name, Type(logotype, variables={name}))
         self._symbol_tables.variables.insert(name, symbol)
 
-    def _create_new_variable_with_referenced_value(self, name, param_logotype, typeclass):
-        if param_logotype in (LogoType.UNKNOWN, typeclass.logotype):
+    def _create_new_variable_with_referenced_value(self, name, arg_logotype, typeclass):
+        if arg_logotype in (LogoType.UNKNOWN, typeclass.logotype):
             typeclass.add_variable(name)
             symbol = Variable(name, typeclass)
             self._symbol_tables.variables.insert(name, symbol)
@@ -52,22 +52,22 @@ class Make(Node):
                 2012,
                 row=self.position.get_pos()[0],
                 var_name=name,
-                curr_type=param_logotype,
+                curr_type=arg_logotype,
                 expected_type=typeclass.logotype,
             )
 
-    def _update_variable_type(self, name, param_node, symbol_logotype, param_logotype):
+    def _update_variable_type(self, name, arg_node, symbol_logotype, arg_logotype):
         if symbol_logotype == LogoType.UNKNOWN:
-            symbol_logotype = param_logotype
-        elif param_logotype == LogoType.UNKNOWN:
-            param_node.set_type(symbol_logotype)
-        elif param_node.get_type() != symbol_logotype:
+            symbol_logotype = arg_logotype
+        elif arg_logotype == LogoType.UNKNOWN:
+            arg_node.set_type(symbol_logotype)
+        elif arg_node.get_type() != symbol_logotype:
             self._logger.error_handler.add_error(
                 2012,
                 row=self.position.get_pos()[0],
                 var_name=name,
                 curr_type=symbol_logotype.value,
-                expected_type=param_node.get_type().value,
+                expected_type=arg_node.get_type().value,
             )
 
     def _update_variable_type_with_referenced_value(self, name, reference_node, symbol_node):
@@ -89,46 +89,46 @@ class Make(Node):
                 expected_type=ref_type,
             )
 
-    def _check_references(self, var_node, param_node):
+    def _check_references(self, var_node, arg_node):
         # Check if the symbol has already been defined
         var_name = var_node.leaf
         var_symbol = self._symbol_tables.variables.lookup(var_name)
 
         # Check if referenced value has already been defined.
         # e.g. 'make "b :a', where the referenced value is 'a'
-        param_symbol = None
-        if param_node.type == "Deref":
-            param_name = param_node.leaf
-            param_symbol = self._symbol_tables.variables.lookup(param_name)
+        arg_symbol = None
+        if arg_node.type == "Deref":
+            arg_name = arg_node.leaf
+            arg_symbol = self._symbol_tables.variables.lookup(arg_name)
 
-        param_logotype = param_node.get_type()
+        arg_logotype = arg_node.get_type()
 
-        if not var_symbol and not param_symbol:
+        if not var_symbol and not arg_symbol:
             # e.g. 'make "a 2', where 'a' has not been defined before
-            self._create_new_variable(var_name, param_logotype)
+            self._create_new_variable(var_name, arg_logotype)
 
-        elif not var_symbol and param_symbol:
+        elif not var_symbol and arg_symbol:
             # e.g. 'make "b :a', where 'b' has not been defined before, but 'a' has been defined
             self._create_new_variable_with_referenced_value(
                 var_name,
-                param_logotype,
-                param_symbol.typeclass)
+                arg_logotype,
+                arg_symbol.typeclass)
 
-        elif var_symbol and not param_symbol:
+        elif var_symbol and not arg_symbol:
             # e.g. 'make "b 42', where 'b' has already been defined
             self._update_variable_type(
                 var_name,
-                param_node,
+                arg_node,
                 var_symbol.typeclass.logotype,
-                param_logotype)
+                arg_logotype)
 
-        else:  # var_symbol and param_symbol
+        else:  # var_symbol and arg_symbol
             # e.g. 'make "b :a', where 'a' and 'b' have been defined earlier
             self._update_variable_type_with_referenced_value(
-                var_name, param_symbol, var_symbol)
+                var_name, arg_symbol, var_symbol)
 
     def check_types(self):
-        # Check for right amount of params
+        # Check for right amount of arguments
         if len(self.children) != 1 or not self.leaf:
             self._logger.error_handler.add_error(
                 2009, row=self.position.get_pos()[0], command=self.type.value
@@ -136,11 +136,11 @@ class Make(Node):
             return
 
         variable_node = self.leaf
-        parameter_node = self.children[0]
+        argument_node = self.children[0]
 
         self._check_variable_node(variable_node)
-        self._check_parameter_node(parameter_node)
-        self._check_references(variable_node, parameter_node)
+        self._check_argument_node(argument_node)
+        self._check_references(variable_node, argument_node)
 
 
 class Show(Node):
@@ -150,7 +150,7 @@ class Show(Node):
         return self._logo_type
 
     def check_types(self):
-        # Must have at least 1 param
+        # Must have at least 1 argument
         if len(self.children) == 0:
             self._logger.error_handler.add_error(
                 2013, row=self.position.get_pos()[0])
