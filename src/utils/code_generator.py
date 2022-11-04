@@ -93,6 +93,18 @@ class CodeGenerator:
         self._code.append(code)
         return temp_var
 
+    def if_statement(self, conditional):
+        """Create Java code for if statements"""
+        code = f"if ({conditional}) " + "{"
+        self._logger.debug(code)
+        self._code.append(code)
+
+    def if_end(self):
+        """Generate the closing bracket for Java if statement"""
+        code = "}"
+        self._logger.debug(code)
+        self._code.append(code)
+
     def write(self):
         """write a Java file"""
         try:

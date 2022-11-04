@@ -19,6 +19,14 @@ class If(Node):
             self._logger.error_handler.add_error(2007, var=variable)
         self._symbol_tables.variables.finalize_scope()
 
+    def generate_code(self):
+        """Generate if statement to Java"""
+        condition = self.leaf.generate_code()
+        self._code_generator.if_statement(condition)
+        for child in self.children:
+            child.generate_code()
+        self._code_generator.if_end()
+
 
 class IfElse(Node):
     def __init__(self, children, leaf, **dependencies):
