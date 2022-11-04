@@ -11,58 +11,55 @@ class Make(Node):
             self._logo_type = LogoType.VOID
         return self._logo_type
 
-    def check_types(self):
-        # Check for right amount of params
-        if len(self.children) != 1 or not self.leaf:
-            self._logger.error_handler.add_error(
-                2009, row=self.position.get_pos()[0], command=self.type.value
-            )
-            return
-
+    def _check_variable_node(self, variable_node):
         # Check that variable name is string
-        var_name_node = self.leaf
-        var_name_node.check_types()
-        var_name = var_name_node.leaf
-        if var_name_node.get_type() != LogoType.STRING:
+        variable_node.check_types()
+        variable_logotype = variable_node.get_type()
+
+        if variable_logotype != LogoType.STRING:
             self._logger.error_handler.add_error(
                 2010,
                 row=self.position.get_pos()[0],
                 command=self.type.value,
-                curr_type=var_name_node.get_type().value,
+                curr_type=variable_node.get_type().value,
                 expected_type=LogoType.STRING.value,
             )
 
-        # Check second argument type (assignment value)
-        value = self.children[0]
-        value.check_types()
-        value_logotype = value.get_type()
 
-        # Check if value type is of void
-        if value_logotype == LogoType.VOID:
+    def _check_parameter_node(self, parameter_node):
+        # Check type of parameter/second argument/assignment value
+        parameter_node.check_types()
+        param_logotype = parameter_node.get_type()
+
+        if param_logotype == LogoType.VOID:
             self._logger.error_handler.add_error(
                 2011,
                 row=self.position.get_pos()[0],
                 command=self.type.value,
-                value_type=value_logotype.value,
+                value_type=param_logotype.value,
             )
+
+    def _check_references(self, var_node, param_node):
+        var_name = var_node.leaf
+        param_logotype = param_node.get_type()
 
         # Symbol reference e.g. 'make "b :a', where ref is 'a'
         ref = None
-        if value.type == "Deref":
-            ref = self._symbol_tables.variables.lookup(value.leaf)
+        if param_node.type == "Deref":
+            ref = self._symbol_tables.variables.lookup(param_node.leaf)
 
         # Check if the symbol has already been defined
         # e.g. 'make "a 2', where 'a' has been defined before this make statement
-        symbol = self._symbol_tables.variables.lookup(var_name_node.leaf)
+        symbol = self._symbol_tables.variables.lookup(var_node.leaf)
 
         if (not symbol) and (not ref):
             # e.g. 'make "a 2', where 'a' has not been defined before
-            symbol = Variable(var_name, Type(value_logotype, variables={var_name}))
+            symbol = Variable(var_name, Type(param_logotype, variables={var_name}))
             self._symbol_tables.variables.insert(var_name, symbol)
 
         elif not symbol and ref:
             # e.g. 'make "b :a', where 'b' has not been defined before, but 'a' has been defined
-            if value_logotype in (LogoType.UNKNOWN, ref.typeclass.logotype):
+            if param_logotype in (LogoType.UNKNOWN, ref.typeclass.logotype):
                 ref.typeclass.add_variable(var_name)
                 symbol = Variable(var_name, ref.typeclass)
                 self._symbol_tables.variables.insert(var_name, symbol)
@@ -71,23 +68,23 @@ class Make(Node):
                     2012,
                     row=self.position.get_pos()[0],
                     var_name=var_name,
-                    curr_type=value_logotype,
+                    curr_type=param_logotype,
                     expected_type=ref.typeclass.logotype,
                 )
 
         elif symbol and not ref:
             # e.g. 'make "b 42', where 'b' has already been defined
             if symbol.typeclass.logotype == LogoType.UNKNOWN:
-                symbol.typeclass.logotype = value_logotype
-            elif value_logotype == LogoType.UNKNOWN:
-                value.set_type(symbol.typeclass.logotype)
-            elif value.get_type() != symbol.typeclass.logotype:
+                symbol.typeclass.logotype = param_logotype
+            elif param_logotype == LogoType.UNKNOWN:
+                param_node.set_type(symbol.typeclass.logotype)
+            elif param_node.get_type() != symbol.typeclass.logotype:
                 self._logger.error_handler.add_error(
                     2012,
                     row=self.position.get_pos()[0],
                     var_name=var_name,
                     curr_type=symbol.typeclass.logotype.value,
-                    expected_type=value.get_type().value,
+                    expected_type=param_node.get_type().value,
                 )
 
         else:  # symbol and ref
@@ -108,6 +105,22 @@ class Make(Node):
                     curr_type=symbol_type,
                     expected_type=ref_type,
                 )
+
+
+    def check_types(self):
+        # Check for right amount of params
+        if len(self.children) != 1 or not self.leaf:
+            self._logger.error_handler.add_error(
+                2009, row=self.position.get_pos()[0], command=self.type.value
+            )
+            return
+
+        variable_node = self.leaf
+        parameter_node = self.children[0]
+        
+        self._check_variable_node(variable_node)
+        self._check_parameter_node(parameter_node)
+        self._check_references(variable_node, parameter_node)
 
 
 class Show(Node):
