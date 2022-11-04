@@ -77,3 +77,6 @@ class StringLiteral(Node):
 
     def check_types(self):
         self.get_type()
+
+    def generate_code(self):
+        return self._code_generator.string(self.leaf)

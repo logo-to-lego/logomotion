@@ -92,8 +92,14 @@ class RelOp(Node):
                 2005, row=row, type1=child1_type.value, type2=child2_type.value
             )
 
+        if (child1_type or child2_type == LogoType.STRING) and self.leaf not in ('<>', '='):
+            self._logger.error_handler.add_error(
+                2016, row=row, type1=child1_type.value, type2=child2_type.value
+            )
+
     def generate_code(self):
         """Generate relop to java"""
         arg_var1 = self.children[0].generate_code()
         arg_var2 = self.children[1].generate_code()
+
         return self._code_generator.relop(arg_var1, arg_var2, self.leaf)
