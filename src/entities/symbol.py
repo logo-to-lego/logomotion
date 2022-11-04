@@ -35,6 +35,9 @@ class Variable:
     def __str__(self):
         return f"Variable {self._name}: Typeclass: ({self._typeclass})"
 
+    def get_logotype(self):
+        return self._typeclass.logotype
+
 
 class Function(Variable):
     "Class for functions in symbol table. Inherits Variable class"

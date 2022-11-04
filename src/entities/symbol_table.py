@@ -1,7 +1,5 @@
 """Symbol table module"""
 from collections import deque
-
-from entities.symbol import Variable
 from entities.type import Type
 
 
@@ -14,9 +12,7 @@ class SymbolTable:
         self._stack.appendleft({})
         self._in_function = None
 
-    def insert(
-        self, key, value: Variable
-    ):  # varsinaista arvoa ei tallenneta TODO Ota Variable pois
+    def insert(self, key, value):
         """Inserts a new entry to the symbol table"""
         self._stack[0][key] = value
 

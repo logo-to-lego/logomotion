@@ -9,15 +9,26 @@ class Output(Node):
         pass
 
     def check_types(self):
-        pass
+        self.children[0].check_types()
+        output = self.children[0]
+        procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
+        if not procedure:
+            # virhe: ei olla funktion sisällä
+            self._logger.error_handler.add_error(2023, row=self.position.get_pos()[0])
+        else:
+            if procedure.get_logotype() == LogoType.UNKNOWN:
+                # aseta funktion tyypiksi palautusarvon tyyppi
+                procedure.typeclass.logotype = output.get_type()
+            else:
+                # tarkista, että palautustyyppi on sama
+                if procedure.get_logotype() != output.get_type():
+                    # virhe: funktion palautusarvo ei ole oikeaa, jo aiemmin määriteltyä tyyppiä
+                    self._logger.error_handler.add_error(2024, proc=procedure.name)
 
 
 class ProcCall(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("ProcCall", children, leaf, **dependencies)
-
-    def get_type(self):
-        return self._logo_type
 
     def check_types(self):
         # Check the procedure has been declarated
@@ -43,15 +54,16 @@ class ProcCall(Node):
             child.check_types()
             if index >= len(procedure.parameters):
                 continue
-            argument_type = child.type
-            parameter_type = procedure.parameters[index].type.value
+            argument_type = child.get_type()
+            parameter_type = procedure.parameters[index].get_logotype()
+            print(argument_type, type(argument_type), parameter_type, type(parameter_type))
             if argument_type != parameter_type:
                 self._logger.error_handler.add_error(
                     2021,
                     proc=self.leaf,
                     arg=child.leaf,
-                    atype=argument_type,
-                    ptype=parameter_type,
+                    atype=argument_type.value,
+                    ptype=parameter_type.value,
                     row=self.position.get_pos()[0]
                 )
 
@@ -67,7 +79,7 @@ class ProcDecl(Node):
         return self._logo_type
 
     def check_types(self):
-        # Check the procedure hasn't been already declarated
+        # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
             self._logger.error_handler.add_error(2016, proc=self.leaf)
         self._symbol_tables.functions.insert(self.leaf, Function(self.leaf))
@@ -78,7 +90,7 @@ class ProcDecl(Node):
 
         # Check the procedure doesn't have unknown type parameters
         for parameter in procedure.parameters:
-            if parameter.type == LogoType.UNKNOWN:
+            if parameter.get_logotype() == LogoType.UNKNOWN:
                 self._logger.error_handler.add_error(
                     2018,
                     proc=procedure.name,

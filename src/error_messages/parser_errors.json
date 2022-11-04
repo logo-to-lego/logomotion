@@ -85,11 +85,23 @@
         "ENG": "Called procedure '@proc' on row @row has not been defined."
     },
     "2020": {
-        "FIN": "Rivillä @row funktiokutsussa @proc on argumentteja @args kappaletta, vaikka niitä kuuluisi olla @params.",
+        "FIN": "Rivillä @row funktiokutsussa '@proc' on argumentteja @args kappaletta, vaikka niitä kuuluisi olla @params.",
         "ENG": "Procedure call '@proc' at row @row has @args arguments even thought it should have @params arguments."
     },
     "2021": {
         "FIN": "Rivillä @row funktiokutsun '@proc' argumentin '@arg' tyyppi on @atype, vaikka sen kuuluisi olla @ptype.",
         "ENG": "At row @row procedure call @proc's argument '@arg' is type @atype even thought it should be type @ptype."
+    },
+    "2022": {
+        "FIN": "Funktion '@proc' palautusarvon tyyppiä ei ole määritelty",
+        "ENG": ""
+    },
+    "2023": {
+        "FIN": "Anna/Output-komento ei ole funktion sisällä rivillä @row",
+        "ENG": ""
+    },
+    "2024": {
+        "FIN": "Funktion '@proc' palautusarvo ei ole oikeaa tyyppiä",
+        "ENG": ""
     }
 }
