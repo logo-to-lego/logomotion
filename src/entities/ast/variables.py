@@ -9,10 +9,7 @@ class Float(Node):
         super().__init__("Float", children=None, leaf=leaf, **dependencies)
 
     def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.FLOAT
-
-        return self._logo_type
+        return LogoType.FLOAT
 
     def check_types(self):
         self.get_type()
@@ -26,10 +23,7 @@ class Bool(Node):
         super().__init__("Bool", children=None, leaf=leaf, **dependencies)
 
     def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.BOOL
-
-        return self._logo_type
+        return LogoType.BOOL
 
     def check_types(self):
         self.get_type()
@@ -70,10 +64,7 @@ class StringLiteral(Node):
         super().__init__("StringLiteral", children=None, leaf=leaf, **dependencies)
 
     def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.STRING
-
-        return self._logo_type
+        return LogoType.STRING
 
     def check_types(self):
         self.get_type()

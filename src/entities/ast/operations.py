@@ -7,11 +7,8 @@ class BinOp(Node):
         super().__init__("BinOp", children, leaf, **dependencies)
 
     def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.FLOAT
-
-        return self._logo_type
-
+        return LogoType.FLOAT
+    
     def check_types(self):
         """Checks that the types of both operands is LogoFloat"""
         for child in self.children:
@@ -34,10 +31,7 @@ class UnaryOp(Node):
         super().__init__("UnaryOp", children, leaf, **dependencies)
 
     def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.FLOAT
-
-        return self._logo_type
+        return LogoType.FLOAT
 
     def check_types(self):
         # Check UnaryOp type
@@ -46,7 +40,7 @@ class UnaryOp(Node):
             self._logger.error_handler.add_error(
                 2003,
                 row=self.position.get_pos()[0],
-                curr_type=self._logo_type.value,
+                curr_type=self.get_type()   #_logo_type.value,
                 expected_type=LogoType.FLOAT.value,
             )
 
@@ -67,10 +61,7 @@ class RelOp(Node):
         super().__init__("RelOp", children, leaf, **dependencies)
 
     def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.BOOL
-
-        return self._logo_type
+        return LogoType.BOOL
 
     def check_types(self):
         child1 = self.children[0]

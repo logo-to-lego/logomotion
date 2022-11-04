@@ -19,10 +19,7 @@ class ProcDecl(Node):
         super().__init__("ProcDecl", children, leaf, **dependencies)
 
     def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.UNKNOWN
-
-        return self._logo_type
+        return None
 
     def check_types(self):
         if self._symbol_tables.functions.lookup(self.leaf):
