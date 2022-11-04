@@ -55,7 +55,6 @@ def parser_ui():
         io.write("Type checks:")
         io.write(start_node)
 
-
         error_handler.write_errors_to_console()
         error_handler.errors.clear()
         start_node.generate_code()

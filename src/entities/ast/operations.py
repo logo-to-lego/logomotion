@@ -92,7 +92,7 @@ class RelOp(Node):
                 2005, row=row, type1=child1_type.value, type2=child2_type.value
             )
 
-        if (child1_type or child2_type == LogoType.STRING) and self.leaf not in ('<>', '='):
+        if (child1_type and child2_type == LogoType.STRING) and self.leaf not in ("<>", "="):
             self._logger.error_handler.add_error(
                 2016, row=row, type1=child1_type.value, type2=child2_type.value
             )

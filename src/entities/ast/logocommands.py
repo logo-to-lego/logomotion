@@ -95,9 +95,9 @@ class Make(Node):
             ref_type = ref.typeclass.logotype
             symbol_type = symbol.typeclass.logotype
             if (
-                (ref_type == LogoType.UNKNOWN) or
-                (symbol_type == LogoType.UNKNOWN) or
-                (ref_type == symbol_type)
+                (ref_type == LogoType.UNKNOWN)
+                or (symbol_type == LogoType.UNKNOWN)
+                or (ref_type == symbol_type)
             ):
                 self._symbol_tables.variables.concatenate_typeclasses(ref, symbol)
             else:
