@@ -17,9 +17,9 @@ class ConsoleIO:
     @staticmethod
     def print_ast(ast, indent=""):
         """Prints ast as formatted string"""
-        print(indent + "Type: " + str(ast.type))
+        print(indent + "Type: " + str(ast.node_type))
         print(indent + "Leaf: " + str(ast.leaf))
-        print(indent + "Logotype: " + str(ast.get_type()))
+        print(indent + "Logotype: " + str(ast.get_logotype()))
         print(indent + "Children: ")
         for child in ast.children:
             default_console_io.print_ast(child, indent + "\t")
