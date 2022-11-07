@@ -108,6 +108,12 @@ class CodeGenerator:
         self._logger.debug(code)
         self._code.append(code)
 
+    def else_statement(self):
+        """Create Java code to start an else statement in Java."""
+        code = "else {"
+        self._logger.debug(code)
+        self._code.append(code)
+
     def closing_brace(self):
         """Generate a closing curly bracket"""
         code = "}"
