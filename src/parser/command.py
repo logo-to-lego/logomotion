@@ -204,56 +204,68 @@ def p_bye_paren(prod):
 
 
 def p_if(prod):
-    "if : IF LBRACE expression RBRACE LBRACE statement_list RBRACE"
+    "if : IF LBRACE expression RBRACE block"
     prod[0] = shared.node_factory.create_node(
-        If, children=[prod[6]], leaf=prod[3], position=Position(prod)
+        If, children=prod[5].children, leaf=prod[3], position=Position(prod)
     )
 
 
 def p_if_paren(prod):
-    "if : LPAREN IF LBRACE expression RBRACE LBRACE statement_list RBRACE RPAREN"
+    "if : LPAREN IF LBRACE expression RBRACE block RPAREN"
     prod[0] = shared.node_factory.create_node(
-        If, children=[prod[7]], leaf=prod[4], position=Position(prod)
+        If, children=prod[6].children, leaf=prod[4], position=Position(prod)
     )
 
 
 def p_if_without_braces(prod):
-    "if : IF expression LBRACE statement_list RBRACE"
+    "if : IF expression block"
     prod[0] = shared.node_factory.create_node(
-        If, children=[prod[4]], leaf=prod[2], position=Position(prod)
+        If, children=prod[3].children, leaf=prod[2], position=Position(prod)
     )
 
 
 def p_if_without_braces_paren(prod):
-    "if : LPAREN IF expression LBRACE statement_list RBRACE RPAREN"
+    "if : LPAREN IF expression block RPAREN"
     prod[0] = shared.node_factory.create_node(
-        If, children=[prod[5]], leaf=prod[3], position=Position(prod)
+        If, children=prod[4].children, leaf=prod[3], position=Position(prod)
     )
 
 
 def p_ifelse(prod):
-    "ifelse : IFELSE LBRACE expression RBRACE LBRACE statement_list RBRACE LBRACE statement_list RBRACE"
+    "ifelse : IFELSE LBRACE expression RBRACE block block"
     prod[0] = shared.node_factory.create_node(
-        IfElse, children=[prod[6], prod[9]], leaf=prod[3], position=Position(prod)
+        IfElse,
+        children=[prod[5].children[0], prod[6].children[0]],
+        leaf=prod[3],
+        position=Position(prod),
     )
 
 
 def p_ifelse_paren(prod):
-    "ifelse : LPAREN IFELSE LBRACE expression RBRACE LBRACE statement_list RBRACE LBRACE statement_list RBRACE RPAREN"
+    "ifelse : LPAREN IFELSE LBRACE expression RBRACE block block RPAREN"
     prod[0] = shared.node_factory.create_node(
-        IfElse, children=[prod[7], prod[10]], leaf=prod[4], position=Position(prod)
+        IfElse,
+        children=[prod[6].children[0], prod[7].children[0]],
+        leaf=prod[4],
+        position=Position(prod),
     )
 
 
 def p_ifelse_without_braces(prod):
-    "ifelse : IFELSE expression LBRACE statement_list RBRACE LBRACE statement_list RBRACE"
+    "ifelse : IFELSE expression block block"
     prod[0] = shared.node_factory.create_node(
-        IfElse, children=[prod[4], prod[7]], leaf=prod[2], position=Position(prod)
+        IfElse,
+        children=[prod[3].children[0], prod[4].children[0]],
+        leaf=prod[2],
+        position=Position(prod),
     )
 
 
 def p_ifelse_without_braces_paren(prod):
-    "ifelse : LPAREN IFELSE expression LBRACE statement_list RBRACE LBRACE statement_list RBRACE RPAREN"
+    "ifelse : LPAREN IFELSE expression block block RPAREN"
     prod[0] = shared.node_factory.create_node(
-        IfElse, children=[prod[5], prod[8]], leaf=prod[3], position=Position(prod)
+        IfElse,
+        children=[prod[4].children[0], prod[5].children[0]],
+        leaf=prod[3],
+        position=Position(prod),
     )
