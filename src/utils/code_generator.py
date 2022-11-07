@@ -1,6 +1,7 @@
 """Code Generator module"""
 import os
 from utils.logger import Logger, default_logger
+from lexer.token_types import TokenType
 
 START = (
     "package logo; import classes.EV3MovePilot; "
@@ -28,7 +29,8 @@ class CodeGenerator:
         self._temp_var_index += 1
         return self._temp_var_index
 
-    def reset_temp_var_index(self):
+    def reset(self):
+        self._code = []
         self._temp_var_index = 0
 
     def _generate_temp_var(self):
@@ -72,6 +74,10 @@ class CodeGenerator:
         """create Java code for defining boolean variable with given value
         and return the variable name"""
         temp_var = self._generate_temp_var()
+        if value == TokenType.TRUE:
+            value = "true"
+        else:
+            value = "false"
         code = f"boolean {temp_var} = {value};"
         self._logger.debug(code)
         self._code.append(code)
@@ -79,7 +85,7 @@ class CodeGenerator:
 
     def string(self, value):
         temp_var = self._generate_temp_var()
-        code = f"String {temp_var} = {value};"
+        code = f'String {temp_var} = "{value}";'
         self._logger.debug(code)
         self._code.append(code)
         return temp_var
