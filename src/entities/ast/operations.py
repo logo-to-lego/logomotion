@@ -8,12 +8,12 @@ class BinOp(Node):
 
     def get_logotype(self):
         return LogoType.FLOAT
-    
+
     def check_types(self):
         """Checks that the types of both operands is LogoFloat"""
         for child in self.children:
             child_type = child.get_logotype()
-            #if child_type == LogoType.UNKNOWN:
+            # if child_type == LogoType.UNKNOWN:
             #    child.set_type(LogoType.FLOAT)
             if child_type != LogoType.FLOAT:
                 self._logger.error_handler.add_error(2002, row=child.position.get_pos()[0])
@@ -40,7 +40,7 @@ class UnaryOp(Node):
             self._logger.error_handler.add_error(
                 2003,
                 row=self.position.get_pos()[0],
-                curr_type=self.get_logotype(),   #_logo_type.value,
+                curr_type=self.get_logotype(),  # _logo_type.value,
                 expected_type=LogoType.FLOAT.value,
             )
 

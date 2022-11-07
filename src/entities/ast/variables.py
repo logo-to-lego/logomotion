@@ -68,8 +68,7 @@ class StringLiteral(Node):
         return LogoType.STRING
 
     def check_types(self):
-         self.get_logotype()
+        self.get_logotype()
 
     def generate_code(self):
         return self._code_generator.string(self.leaf)
-
