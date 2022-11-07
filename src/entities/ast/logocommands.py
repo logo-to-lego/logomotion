@@ -6,8 +6,8 @@ from lexer.token_types import TokenType
 
 
 class Make(Node):
-    def get_type(self):
-        return LogoType.VOID
+    #def get_logotype(self):
+    #    return LogoType.VOID
 
     def check_types(self):
         # Check for right amount of params
@@ -21,19 +21,19 @@ class Make(Node):
         var_name_node = self.leaf
         var_name_node.check_types()
         var_name = var_name_node.leaf
-        if var_name_node.get_type() != LogoType.STRING:
+        if var_name_node.get_logotype() != LogoType.STRING:
             self._logger.error_handler.add_error(
                 2010,
                 row=self.position.get_pos()[0],
                 command=self.node_type.value,
-                curr_type=var_name_node.get_type().value,
+                curr_type=var_name_node.get_logotype().value,
                 expected_type=LogoType.STRING.value,
             )
 
         # Check second argument type (assignment value)
         value = self.children[0]
         value.check_types()
-        value_logotype = value.get_type()
+        value_logotype = value.get_logotype()
 
         # Check if value type is of void
         if value_logotype == LogoType.VOID:
@@ -46,7 +46,7 @@ class Make(Node):
 
         # Symbol reference e.g. 'make "b :a', where ref is 'a'
         ref = None
-        if value.type == "Deref":
+        if value.node_type == "Deref":
             ref = self._symbol_tables.variables.lookup(value.leaf)
 
         # Check if the symbol has already been defined
@@ -77,15 +77,15 @@ class Make(Node):
             # e.g. 'make "b 42', where 'b' has already been defined
             if symbol.typeclass.logotype == LogoType.UNKNOWN:
                 symbol.typeclass.logotype = value_logotype
-            elif value_logotype == LogoType.UNKNOWN:
-                value.set_type(symbol.typeclass.logotype)
-            elif value.get_type() != symbol.typeclass.logotype:
+            #elif value_logotype == LogoType.UNKNOWN:
+            #    value.set_type(symbol.typeclass.logotype)
+            elif value.get_logotype() != symbol.typeclass.logotype:
                 self._logger.error_handler.add_error(
                     2012,
                     row=self.position.get_pos()[0],
                     var_name=var_name,
                     curr_type=symbol.typeclass.logotype.value,
-                    expected_type=value.get_type().value,
+                    expected_type=value.get_logotype().value,
                 )
 
         else:  # symbol and ref
@@ -109,8 +109,8 @@ class Make(Node):
 
 
 class Show(Node):
-    def get_type(self):
-        return LogoType.VOID
+    #def get_logotype(self):
+    #    return LogoType.VOID
 
     def check_types(self):
         # Must have at least 1 param
@@ -119,7 +119,7 @@ class Show(Node):
 
         # Cannot be function call that returns VOID
         for child in self.children:
-            logo_type = child.get_type()
+            logo_type = child.get_logotype()
             if logo_type == LogoType.VOID:
                 self._logger.error_handler.add_error(
                     2014,
@@ -131,8 +131,8 @@ class Show(Node):
 
 
 class Bye(Node):
-    def get_type(self):
-        return LogoType.VOID
+    #def get_logotype(self):
+    #    return LogoType.VOID
 
     def check_types(self):
         if self.children:
@@ -142,8 +142,8 @@ class Bye(Node):
 class Move(Node):
     """FD, BK, LT, RT"""
 
-    def get_type(self):
-        return LogoType.VOID
+    #def get_logotype(self):
+    #    return LogoType.VOID
 
     def check_types(self):
         if len(self.children) != 1:
@@ -154,7 +154,7 @@ class Move(Node):
 
         child = self.children[0]
         child.check_types()
-        child_type = child.get_type()
+        child_type = child.get_logotype()
 
         if child_type is None:
             return

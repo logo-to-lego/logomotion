@@ -19,11 +19,11 @@ class Node:
         #self._logo_type = None
         self._code_generator = dependencies.get("code_generator", default_code_generator)
 
-    #def get_type(self) -> LogoType:
-    #    return self._logo_type
+    def get_logotype(self) -> LogoType:
+        return None
 
-    def set_type(self, new_type: LogoType):
-        self._logo_type = new_type
+    #def set_type(self, new_type: LogoType):
+    #    self._logo_type = new_type
 
     def __str__(self):
         result = f"({self.node_type}"
@@ -31,8 +31,8 @@ class Node:
         if self.leaf:
             result += f", {self.leaf if self.leaf else 'None'}"
 
-        if self._logo_type:
-            result += f", logo type: {self._logo_type.value}"
+        if self.get_logotype():
+            result += f", logo type: {self.get_logotype()}"
 
         if self.children:
             result += ", children: ["
@@ -62,6 +62,9 @@ class Node:
 class Start(Node):
     def __init__(self, children=None, **dependencies):
         super().__init__("Start", children, **dependencies)
+        
+    def get_logotype(self):
+        return None
 
     def check_types(self):
         """Runs semantic analysis on the AST nodes to find type errors, undefined

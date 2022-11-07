@@ -6,16 +6,16 @@ class BinOp(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("BinOp", children, leaf, **dependencies)
 
-    def get_type(self):
+    def get_logotype(self):
         return LogoType.FLOAT
     
     def check_types(self):
         """Checks that the types of both operands is LogoFloat"""
         for child in self.children:
-            child_type = child.get_type()
-            if child_type == LogoType.UNKNOWN:
-                child.set_type(LogoType.FLOAT)
-            elif child_type != LogoType.FLOAT:
+            child_type = child.get_logotype()
+            #if child_type == LogoType.UNKNOWN:
+            #    child.set_type(LogoType.FLOAT)
+            if child_type != LogoType.FLOAT:
                 self._logger.error_handler.add_error(2002, row=child.position.get_pos()[0])
             child.check_types()
 
@@ -30,23 +30,23 @@ class UnaryOp(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("UnaryOp", children, leaf, **dependencies)
 
-    def get_type(self):
+    def get_logotype(self):
         return LogoType.FLOAT
 
     def check_types(self):
         # Check UnaryOp type
-        unary_type = self.get_type()
+        unary_type = self.get_logotype()
         if unary_type != LogoType.FLOAT:
             self._logger.error_handler.add_error(
                 2003,
                 row=self.position.get_pos()[0],
-                curr_type=self.get_type()   #_logo_type.value,
+                curr_type=self.get_logotype(),   #_logo_type.value,
                 expected_type=LogoType.FLOAT.value,
             )
 
         # Check the type of the child of UnaryOp
         for child in self.children:
-            child_type = child.get_type()
+            child_type = child.get_logotype()
             if child_type != LogoType.FLOAT:
                 self._logger.error_handler.add_error(
                     2003,
@@ -60,7 +60,7 @@ class RelOp(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("RelOp", children, leaf, **dependencies)
 
-    def get_type(self):
+    def get_logotype(self):
         return LogoType.BOOL
 
     def check_types(self):
@@ -70,8 +70,8 @@ class RelOp(Node):
         child1.check_types()
         child2.check_types()
 
-        child1_type = child1.get_type()
-        child2_type = child2.get_type()
+        child1_type = child1.get_logotype()
+        child2_type = child2.get_logotype()
 
         row = child1.position.get_pos()[0]
 

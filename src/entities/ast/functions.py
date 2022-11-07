@@ -3,7 +3,7 @@ from entities.logotypes import LogoType
 
 
 class Output(Node):
-    def get_type(self):
+    def get_logotype(self):
         pass
 
     def check_types(self):
@@ -18,7 +18,7 @@ class ProcDecl(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("ProcDecl", children, leaf, **dependencies)
 
-    def get_type(self):
+    def get_logotype(self):
         return None
 
     def check_types(self):
