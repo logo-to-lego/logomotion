@@ -11,9 +11,6 @@ class Float(Node):
     def get_logotype(self):
         return LogoType.FLOAT
 
-    def check_types(self):
-        self.get_logotype()
-
     def generate_code(self):
         return self._code_generator.float(self.leaf)
 
@@ -24,9 +21,6 @@ class Bool(Node):
 
     def get_logotype(self):
         return LogoType.BOOL
-
-    def check_types(self):
-        self.get_logotype()
 
     def generate_code(self):
         return self._code_generator.boolean(self.leaf)
@@ -66,9 +60,6 @@ class StringLiteral(Node):
 
     def get_logotype(self):
         return LogoType.STRING
-
-    def check_types(self):
-        self.get_logotype()
 
     def generate_code(self):
         return self._code_generator.string(self.leaf)

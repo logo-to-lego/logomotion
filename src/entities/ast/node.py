@@ -21,6 +21,9 @@ class Node:
 
     def get_logotype(self) -> LogoType:
         return None
+    
+    def check_types(self):
+        return
 
     # def set_type(self, new_type: LogoType):
     #    self._logo_type = new_type
