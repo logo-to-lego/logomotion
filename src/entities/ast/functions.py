@@ -28,10 +28,7 @@ class Output(Node):
                 output_typeclass = deref_symbol.typeclass
                 procedure_typeclass = procedure.typeclass
 
-                new_typeclass = Type.concatenate(output_typeclass, procedure_typeclass)
-
-                deref_symbol.typeclass = new_typeclass
-                procedure.typeclass = new_typeclass
+                self._symbol_tables.concatenate_typeclasses(output_typeclass, procedure_typeclass)
                 
             else:
                 procedure.typeclass.logotype = output_value.get_type()
