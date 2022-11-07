@@ -41,6 +41,14 @@ class Bool(Node):
 class Deref(Node):
     def __init__(self, leaf, **dependencies):
         super().__init__("Deref", children=None, leaf=leaf, **dependencies)
+        self._symbol: Variable = None
+
+    def set_symbol(self, symbol: Variable):
+        if symbol != self._get_symbol():
+            raise Exception(
+                (f"Bug: variable symbol param {symbol} and the symbol defined"
+                f"in symbol_table {self._get_symbol} do not match"))
+        self._symbol = symbol
 
     def get_type(self) -> LogoType:
         symbol = self._get_symbol()

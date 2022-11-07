@@ -99,6 +99,7 @@ class Make(Node):
         if arg_node.type == "Deref":
             arg_name = arg_node.leaf
             arg_symbol = self._symbol_tables.variables.lookup(arg_name)
+            arg_node.set_symbol(arg_symbol)
 
         arg_logotype = arg_node.get_type()
 
