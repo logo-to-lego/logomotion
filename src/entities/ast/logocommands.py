@@ -12,14 +12,14 @@ class Make(Node):
     def _check_variable_node(self, variable_node):
         # Check that variable name is string
         variable_node.check_types()
-        variable_logotype = variable_node.get_type()
+        variable_logotype = variable_node.get_logotype()
 
         if variable_logotype != LogoType.STRING:
             self._logger.error_handler.add_error(
                 2010,
                 row=self.position.get_pos()[0],
-                command=self.type.value,
-                curr_type=variable_node.get_type().value,
+                command=self.node_type.value,
+                curr_type=variable_node.get_logotype().value,
                 expected_type=LogoType.STRING.value,
             )
 
@@ -59,13 +59,13 @@ class Make(Node):
             symbol_logotype = arg_logotype
         elif arg_logotype == LogoType.UNKNOWN:
             arg_node.set_type(symbol_logotype)
-        elif arg_node.get_type() != symbol_logotype:
+        elif arg_node.get_logotype() != symbol_logotype:
             self._logger.error_handler.add_error(
                 2012,
                 row=self.position.get_pos()[0],
                 var_name=name,
                 curr_type=symbol_logotype.value,
-                expected_type=arg_node.get_type().value,
+                expected_type=arg_node.get_logotype().value,
             )
 
     def _update_variable_type_with_referenced_value(self, name, reference_node, symbol_node):
@@ -94,11 +94,11 @@ class Make(Node):
         # Check if referenced value has already been defined.
         # e.g. 'make "b :a', where the referenced value is 'a'
         arg_symbol = None
-        if arg_node.type == "Deref":
+        if arg_node.node_type == "Deref":
             arg_name = arg_node.leaf
             arg_symbol = self._symbol_tables.variables.lookup(arg_name)
 
-        arg_logotype = arg_node.get_type()
+        arg_logotype = arg_node.get_logotype()
 
         if not var_symbol and not arg_symbol:
             # e.g. 'make "a 2', where 'a' has not been defined before
@@ -124,7 +124,7 @@ class Make(Node):
         # Check for right amount of arguments
         if len(self.children) != 1 or not self.leaf:
             self._logger.error_handler.add_error(
-                2009, row=self.position.get_pos()[0], command=self.type.value
+                2009, row=self.position.get_pos()[0], command=self.node_type.value
             )
             return
 
