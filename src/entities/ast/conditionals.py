@@ -6,11 +6,11 @@ class If(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("If", children, leaf, **dependencies)
 
-    def get_type(self):
+    def get_logotype(self):
         return None
 
     def check_types(self):
-        if self.leaf.get_type() is not LogoType.BOOL:
+        if self.leaf.get_logotype() is not LogoType.BOOL:
             self._logger.error_handler.add_error(2006, row=self.position.get_pos()[0])
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()
@@ -19,16 +19,24 @@ class If(Node):
             self._logger.error_handler.add_error(2007, var=variable)
         self._symbol_tables.variables.finalize_scope()
 
+    def generate_code(self):
+        """Generate if statement to Java"""
+        condition = self.leaf.generate_code()
+        self._code_generator.if_statement(condition)
+        for child in self.children:
+            child.generate_code()
+        self._code_generator.closing_brace()
+
 
 class IfElse(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("IfElse", children, leaf, **dependencies)
 
-    def get_type(self):
+    def get_logotype(self):
         return None
 
     def check_types(self):
-        if self.leaf.get_type() is not LogoType.BOOL:
+        if self.leaf.get_logotype() is not LogoType.BOOL:
             self._logger.error_handler.add_error(2006, row=self.position.get_pos()[0])
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()
@@ -37,3 +45,12 @@ class IfElse(Node):
         for variable in self.undefined_variables():
             self._logger.error_handler.add_error(2007, var=variable)
         self._symbol_tables.variables.finalize_scope()
+
+    def generate_code(self):
+        condition = self.leaf.generate_code()
+        self._code_generator.if_statement(condition)
+        self.children[0].generate_code()
+        self._code_generator.closing_brace()
+        self._code_generator.else_statement()
+        self.children[1].generate_code()
+        self._code_generator.closing_brace()

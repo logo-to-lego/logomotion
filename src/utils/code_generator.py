@@ -4,7 +4,7 @@ from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
 START = (
-    "package logo; import classes.EV3MovePilot; "
+    "package logo; import classes.EV3MovePilot; import java.lang.Runnable;"
     "public class Logo { public static void main(String[] args) { "
     "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
 )
@@ -85,7 +85,7 @@ class CodeGenerator:
 
     def string(self, value):
         temp_var = self._generate_temp_var()
-        code = f'String {temp_var} = "{value}";'
+        code = f"String {temp_var} = \"{value}\";"
         self._logger.debug(code)
         self._code.append(code)
         return temp_var
@@ -107,6 +107,44 @@ class CodeGenerator:
         self._logger.debug(code)
         self._code.append(code)
         return temp_var
+
+    def if_statement(self, conditional):
+        """Create Java code to start an if statement in Java."""
+        code = f"if ({conditional}) " + "{"
+        self._logger.debug(code)
+        self._code.append(code)
+
+    def else_statement(self):
+        """Create Java code to start an else statement in Java."""
+        code = "else {"
+        self._logger.debug(code)
+        self._code.append(code)
+
+    def closing_brace(self):
+        """Generate a closing curly bracket"""
+        code = "}"
+        self._logger.debug(code)
+        self._code.append(code)
+
+    def if_statement_lambda(self, conditional, lambda_variable):
+        """Create Java code for if statements utilising Java's lambda"""
+        code = f"if ({conditional}) {lambda_variable}.run();"
+        self._logger.debug(code)
+        self._code.append(code)
+
+    def lambda_no_param_start(self):
+        """Generate the start of a paramless Java lambda, return lambda variable's name"""
+        temp_var = self._generate_temp_var()
+        code = f"Runnable {temp_var} = () -> " + "{"
+        self._logger.debug(code)
+        self._code.append(code)
+        return temp_var
+
+    def lambda_end(self):
+        """Generate the closing bracket for Java lambda"""
+        code = "};"
+        self._logger.debug(code)
+        self._code.append(code)
 
     def write(self):
         """write a Java file"""
