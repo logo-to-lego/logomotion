@@ -56,7 +56,7 @@ class Lexer:
         "heippa": TokenType.BYE,
     }
 
-    OPERATORS = r"+\-\/\*\<\>\="
+    OPERATORS = r"+\-\/\*\<\>\=\<>"
     BRACKETS = r"\[\]\(\)\{\}"
     FORBIDDEN_CHARS = r" \"\'\:\;\n\r" + OPERATORS + BRACKETS
 
@@ -78,6 +78,7 @@ class Lexer:
         TokenType.LBRACE: r"\{",
         TokenType.RBRACE: r"\}",
         TokenType.EQUALS: r"\=",
+        TokenType.NOTEQUALS: r"\<>",
         TokenType.LESSTHAN: r"\<",
         TokenType.GREATERTHAN: r"\>",
         TokenType.LTEQUALS: r"\<\=",

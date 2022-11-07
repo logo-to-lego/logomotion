@@ -74,12 +74,11 @@ class Make(Node):
         ref_type = reference_node.typeclass.logotype
         symbol_type = symbol_node.typeclass.logotype
         if (
-            (ref_type == LogoType.UNKNOWN) or
-            (symbol_type == LogoType.UNKNOWN) or
-            (ref_type == symbol_type)
+            (ref_type == LogoType.UNKNOWN)
+            or (symbol_type == LogoType.UNKNOWN)
+            or (ref_type == symbol_type)
         ):
-            self._symbol_tables.variables.concatenate_typeclasses(
-                reference_node, symbol_node)
+            self._symbol_tables.variables.concatenate_typeclasses(reference_node, symbol_node)
         else:
             self._logger.error_handler.add_error(
                 2012,
@@ -110,22 +109,18 @@ class Make(Node):
         elif not var_symbol and arg_symbol:
             # e.g. 'make "b :a', where 'b' has not been defined before, but 'a' has been defined
             self._create_new_variable_with_referenced_value(
-                var_name,
-                arg_logotype,
-                arg_symbol.typeclass)
+                var_name, arg_logotype, arg_symbol.typeclass
+            )
 
         elif var_symbol and not arg_symbol:
             # e.g. 'make "b 42', where 'b' has already been defined
             self._update_variable_type(
-                var_name,
-                arg_node,
-                var_symbol.typeclass.logotype,
-                arg_logotype)
+                var_name, arg_node, var_symbol.typeclass.logotype, arg_logotype
+            )
 
         else:  # var_symbol and arg_symbol
             # e.g. 'make "b :a', where 'a' and 'b' have been defined earlier
-            self._update_variable_type_with_referenced_value(
-                var_name, arg_symbol, var_symbol)
+            self._update_variable_type_with_referenced_value(var_name, arg_symbol, var_symbol)
 
     def check_types(self):
         # Check for right amount of arguments
@@ -152,8 +147,7 @@ class Show(Node):
     def check_types(self):
         # Must have at least 1 argument
         if len(self.children) == 0:
-            self._logger.error_handler.add_error(
-                2013, row=self.position.get_pos()[0])
+            self._logger.error_handler.add_error(2013, row=self.position.get_pos()[0])
 
         # Cannot be function call that returns VOID
         for child in self.children:

@@ -8,7 +8,7 @@ class Type:
     can be then referenced to other variables which have the same LogoType"""
 
     def __init__(
-        self, logotype: LogoType = LogoType.UNKNOWN, variables = None
+        self, logotype: LogoType = LogoType.UNKNOWN, variables=None
     ):  # variables is a set of Symbol objects
         self._logotype = logotype
         self._variables = variables if variables is not None else {}
