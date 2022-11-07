@@ -95,9 +95,9 @@ class Make(Node):
             ref_type = ref.typeclass.logotype
             symbol_type = symbol.typeclass.logotype
             if (
-                (ref_type == LogoType.UNKNOWN) or
-                (symbol_type == LogoType.UNKNOWN) or
-                (ref_type == symbol_type)
+                (ref_type == LogoType.UNKNOWN)
+                or (symbol_type == LogoType.UNKNOWN)
+                or (ref_type == symbol_type)
             ):
                 self._symbol_tables.variables.concatenate_typeclasses(ref, symbol)
             else:
@@ -108,6 +108,11 @@ class Make(Node):
                     curr_type=symbol_type,
                     expected_type=ref_type,
                 )
+
+    def generate_code(self):
+        """Generates MAKE command into target code."""
+        value_var_name = self.children[0].generate_code()
+        self._code_generator.create_new_variable(self.leaf.leaf, value_var_name)
 
 
 class Show(Node):
