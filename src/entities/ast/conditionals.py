@@ -6,11 +6,11 @@ class If(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("If", children, leaf, **dependencies)
 
-    def get_type(self):
+    def get_logotype(self):
         return None
 
     def check_types(self):
-        if self.leaf.get_type() is not LogoType.BOOL:
+        if self.leaf.get_logotype() is not LogoType.BOOL:
             self._logger.error_handler.add_error(2006, row=self.position.get_pos()[0])
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()
@@ -24,11 +24,11 @@ class IfElse(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("IfElse", children, leaf, **dependencies)
 
-    def get_type(self):
+    def get_logotype(self):
         return None
 
     def check_types(self):
-        if self.leaf.get_type() is not LogoType.BOOL:
+        if self.leaf.get_logotype() is not LogoType.BOOL:
             self._logger.error_handler.add_error(2006, row=self.position.get_pos()[0])
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()
