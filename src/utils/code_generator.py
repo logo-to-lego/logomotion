@@ -79,7 +79,7 @@ class CodeGenerator:
 
     def string(self, value):
         temp_var = self._generate_temp_var()
-        code = f"String {temp_var} = {value};"
+        code = f"String {temp_var} = \"{value}\";"
         self._logger.debug(code)
         self._code.append(code)
         return temp_var
