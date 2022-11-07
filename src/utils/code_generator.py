@@ -29,6 +29,11 @@ class CodeGenerator:
         self._temp_var_index += 1
         return self._temp_var_index
 
+    def reset(self):
+        """Resets code generator internals."""
+        self.reset_temp_var_index()
+        self._code = []
+
     def reset_temp_var_index(self):
         self._temp_var_index = 0
 

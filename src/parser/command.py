@@ -131,7 +131,6 @@ def p_make(prod):
     """make : MAKE expression expression"""
     prod[0] = shared.node_factory.create_node(
         Make,
-        node_type=shared.reserved_words[prod[1]],
         children=[prod[3]],
         leaf=prod[2],
         position=Position(prod),
@@ -142,7 +141,6 @@ def p_make_paren(prod):
     "make : LPAREN MAKE expression expression RPAREN"
     prod[0] = shared.node_factory.create_node(
         Make,
-        node_type=shared.reserved_words[prod[2]],
         children=[prod[4]],
         leaf=prod[3],
         position=Position(prod),

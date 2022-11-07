@@ -6,8 +6,8 @@ from lexer.token_types import TokenType
 
 
 class Make(Node):
-    def __init__(self, node_type, children=None, leaf=None, **dependencies):
-        super().__init__(node_type, children, leaf, **dependencies)
+    def __init__(self, children, leaf, **dependencies):
+        super().__init__(TokenType.MAKE, children, leaf, **dependencies)
         self._new_variable = False
 
     def get_type(self):
