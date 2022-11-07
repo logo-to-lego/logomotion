@@ -94,7 +94,14 @@ class CodeGenerator:
         temp_var = self._generate_temp_var()
         code = f"boolean {temp_var} = {value};"
         self._logger.debug(code)
-        self._logger.append(code)
+        self._code.append(code)
+        return temp_var
+
+    def string(self, value):
+        temp_var = self._generate_temp_var()
+        code = f"String {temp_var} = {value};"
+        self._logger.debug(code)
+        self._code.append(code)
         return temp_var
 
     def binop(self, value1, value2, operation):
@@ -107,8 +114,10 @@ class CodeGenerator:
 
     def relop(self, value1, value2, operation):
         """create java code for relops and return variable name"""
+        if operation == "<>":
+            operation = "!="
         temp_var = self._generate_temp_var()
-        code = f"boolean {temp_var}  = {value1} {operation} {value2}"
+        code = f"boolean {temp_var} = {value1} {operation} {value2};"
         self._logger.debug(code)
         self._code.append(code)
         return temp_var
