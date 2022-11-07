@@ -10,20 +10,21 @@ class Output(Node):
 
     def check_types(self):
         self.children[0].check_types()
-        output = self.children[0]
+        output_value = self.children[0]
         procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
         if not procedure:
             # virhe: ei olla funktion sisällä
             self._logger.error_handler.add_error(2024, row=self.position.get_pos()[0])
+            return
+        if procedure.get_logotype() == LogoType.UNKNOWN:
+            # aseta funktion tyypiksi palautusarvon tyyppi
+            if output_value.type == "Deref"
+            procedure.typeclass.logotype = output_value.get_type()
         else:
-            if procedure.get_logotype() == LogoType.UNKNOWN:
-                # aseta funktion tyypiksi palautusarvon tyyppi
-                procedure.typeclass.logotype = output.get_type()
-            else:
-                # tarkista, että palautustyyppi on sama
-                if procedure.get_logotype() != output.get_type():
-                    # virhe: funktion palautusarvo ei ole oikeaa, jo aiemmin määriteltyä tyyppiä
-                    self._logger.error_handler.add_error(2025, proc=procedure.name)
+            # tarkista, että palautustyyppi on sama
+            if procedure.get_logotype() != output_value.get_type():
+                # virhe: funktion palautusarvo ei ole oikeaa, jo aiemmin määriteltyä tyyppiä
+                self._logger.error_handler.add_error(2025, proc=procedure.name)
 
 
 class ProcCall(Node):
