@@ -25,7 +25,6 @@ class TestParser(unittest.TestCase):
         self.lexer.build()
         self.parser = Parser(self.lexer, self.logger)
         self.parser.build()
-        # debug
         self.maxDiff = None
 
     def test_parser_start_node(self):

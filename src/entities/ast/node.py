@@ -16,7 +16,6 @@ class Node:
         self._logger: Logger = dependencies.get("logger", default_logger)
         self._symbol_tables: SymbolTables = dependencies.get("symbol_tables", default_symbol_tables)
         self.position = dependencies.get("position", None)
-        # self._logo_type = None
         self._code_generator = dependencies.get("code_generator", default_code_generator)
 
     def get_logotype(self) -> LogoType:
@@ -24,9 +23,6 @@ class Node:
 
     def check_types(self):
         return
-
-    # def set_type(self, new_type: LogoType):
-    #    self._logo_type = new_type
 
     def __str__(self):
         result = f"({self.node_type}"
