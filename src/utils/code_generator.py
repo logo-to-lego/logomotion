@@ -102,8 +102,20 @@ class CodeGenerator:
         self._code.append(code)
         return temp_var
 
-    def if_statement(self, conditional, lambda_variable):
-        """Create Java code for if statements"""
+    def if_statement(self, conditional):
+        """Create Java code to start an if statement in Java."""
+        code = f"if ({conditional}) " + "{"
+        self._logger.debug(code)
+        self._code.append(code)
+
+    def closing_bracket(self):
+        """Generate a closing curly bracket"""
+        code = "}"
+        self._logger.debug(code)
+        self._code.append(code)
+
+    def if_statement_lambda(self, conditional, lambda_variable):
+        """Create Java code for if statements utilising Java's lambda"""
         code = f"if ({conditional}) {lambda_variable}.run();"
         self._logger.debug(code)
         self._code.append(code)

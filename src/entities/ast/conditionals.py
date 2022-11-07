@@ -22,11 +22,17 @@ class If(Node):
     def generate_code(self):
         """Generate if statement to Java"""
         condition = self.leaf.generate_code()
-        lambda_var = self._code_generator.lambda_no_param_start()
+        self._code_generator.if_statement(condition)
         for child in self.children:
             child.generate_code()
-        self._code_generator.lambda_end()
-        self._code_generator.if_statement(condition, lambda_var)
+        self._code_generator.closing_bracket()
+        # Lambda method. Delete code above and uncomment below if in use
+        #codition = self.leaf.generate_code()
+        #lambda_var = self._code_generator.lambda_no_param_start()
+        #for child in self.children:
+        #    child.generate_code()
+        #self._code_generator.lambda_end()
+        #self._code_generator.if_statement_lambda(condition, lambda_var)
 
 
 class IfElse(Node):
