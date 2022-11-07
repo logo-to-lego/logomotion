@@ -4,6 +4,10 @@ from utils.code_generator import default_code_generator
 from entities.ast.node import Node
 from entities.ast.logocommands import Make, Move
 from entities.ast.variables import Deref, Float, StringLiteral
+from entities.ast.logocommands import Move
+from entities.ast.operations import RelOp
+from entities.ast.variables import Float
+from entities.ast.conditionals import If
 from lexer.token_types import TokenType
 
 

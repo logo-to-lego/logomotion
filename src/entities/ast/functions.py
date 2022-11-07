@@ -1,9 +1,8 @@
 from entities.ast.node import Node
-from entities.logotypes import LogoType
 
 
 class Output(Node):
-    def get_type(self):
+    def get_logotype(self):
         pass
 
     def check_types(self):
@@ -18,11 +17,8 @@ class ProcDecl(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("ProcDecl", children, leaf, **dependencies)
 
-    def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.UNKNOWN
-
-        return self._logo_type
+    def get_logotype(self):
+        return None
 
     def check_types(self):
         if self._symbol_tables.functions.lookup(self.leaf):
