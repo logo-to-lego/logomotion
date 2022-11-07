@@ -23,7 +23,7 @@ class Type:
     def variables(self):
         """Returns the variables of the type class"""
         return self._variables
-    
+
     @property
     def functions(self):
         """Returns the variables of the type class"""
@@ -38,7 +38,7 @@ class Type:
 
     def add_variable(self, var_name):
         self._variables.add(var_name)
-    
+
     def add_function(self, func_name):
         self._functions.add(func_name)
 
@@ -59,4 +59,6 @@ class Type:
         return Type(logotype=get_new_logotype(), variables=variables, functions=functions)
 
     def __str__(self) -> str:
-        return f"LogoType: {self._logotype}, Variables: {self._variables}, Functions: {self._functions}"
+        string = f"LogoType: {self._logotype}, Variables: " \
+                 f"{self._variables}, Functions: {self._functions}"
+        return string

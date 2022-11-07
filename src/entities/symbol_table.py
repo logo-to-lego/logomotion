@@ -1,6 +1,5 @@
 """Symbol table module"""
 from collections import deque
-from entities.type import Type
 
 
 class SymbolTable:
@@ -36,7 +35,8 @@ class SymbolTable:
     def initialize_scope(self, in_function=None):
         """Saves current symbol table entries to a stack when entering to a new scope"""
         self._stack.appendleft({})
-        self._in_function = in_function
+        if not self._in_function and in_function:
+            self._in_function = in_function
 
     def finalize_scope(self):
         """Restores the previous symbol table scope and discards the current scope"""

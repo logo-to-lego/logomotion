@@ -11,32 +11,24 @@ class Output(Node):
         pass
 
     def check_types(self):
-        print("••• Output Node check_types")
         self.children[0].check_types()
         output_value = self.children[0]
         procedure: Function = self._symbol_tables.variables.get_in_scope_function_symbol()
-        print("procedure", procedure)
+        # Check output command is in function
         if not procedure:
-            # virhe: ei olla funktion sisällä
             self._logger.error_handler.add_error(2024, row=self.position.get_pos()[0])
             return
         if procedure.get_logotype() == LogoType.UNKNOWN:
-            # aseta funktion tyypiksi palautusarvon tyyppi
             if output_value.__class__ == Deref:
                 deref_symbol = self._symbol_tables.variables.lookup(output_value.leaf)
-                
-                output_typeclass = deref_symbol.typeclass
-                procedure_typeclass = procedure.typeclass
 
-                self._symbol_tables.concatenate_typeclasses(output_typeclass, procedure_typeclass)
-                
+                self._symbol_tables.concatenate_typeclasses(deref_symbol, procedure)
+
             else:
-                procedure.typeclass.logotype = output_value.get_type()
-            #print("OUTPUT", self._symbol_tables.variables.lookup(output_value.leaf), procedure)
+                procedure.typeclass.logotype = output_value.get_logotype()
         else:
-            # tarkista, että palautustyyppi on sama
-            if procedure.get_logotype() != output_value.get_type():
-                # virhe: funktion palautusarvo ei ole oikeaa, jo aiemmin määriteltyä tyyppiä
+            # Check output value's type is same as funtion's other output values' types
+            if procedure.get_logotype() != output_value.get_logotype():
                 self._logger.error_handler.add_error(2025, proc=procedure.name)
 
 
@@ -92,7 +84,10 @@ class ProcDecl(Node):
         # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
             self._logger.error_handler.add_error(2017, proc=self.leaf)
-        self._symbol_tables.functions.insert(self.leaf, Function(self.leaf, typeclass=Type(functions={self.leaf})))
+        self._symbol_tables.functions.insert(
+            self.leaf,
+            Function(self.leaf, typeclass=Type(functions={self.leaf}))
+        )
         procedure = self._symbol_tables.functions.lookup(self.leaf)
         self._symbol_tables.variables.initialize_scope(in_function=procedure)
         for child in self.children:
@@ -106,8 +101,7 @@ class ProcDecl(Node):
                     proc=procedure.name,
                     param=parameter.name)
 
-
-        # funktion palautustyypin määrittäminen TODO
+        # funktion tyypin tarkastaminen TODO
 
 
         self._symbol_tables.variables.finalize_scope()
