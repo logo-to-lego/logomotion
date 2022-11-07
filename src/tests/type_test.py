@@ -90,7 +90,7 @@ class TestType(unittest.TestCase):
         """
         ast = self.parser.parse(test_string)
         ast.check_types()
-        
+
         typeclass_abc = self.symbol_tables.variables.lookup("abc").typeclass
         typeclass_b = self.symbol_tables.variables.lookup("b").typeclass
         self.assertNotEqual(id(typeclass_abc), id(typeclass_b))

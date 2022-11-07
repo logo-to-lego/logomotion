@@ -11,103 +11,131 @@ class Make(Node):
             self._logo_type = LogoType.VOID
         return self._logo_type
 
+    def _check_variable_node(self, variable_node):
+        # Check that variable name is string
+        variable_node.check_types()
+        variable_logotype = variable_node.get_type()
+
+        if variable_logotype != LogoType.STRING:
+            self._logger.error_handler.add_error(
+                2010,
+                row=self.position.get_pos()[0],
+                command=self.type.value,
+                curr_type=variable_node.get_type().value,
+                expected_type=LogoType.STRING.value,
+            )
+
+    def _check_argument_node(self, argument_node):
+        # Check type of argument
+        argument_node.check_types()
+        arg_logotype = argument_node.get_type()
+
+        if arg_logotype == LogoType.VOID:
+            self._logger.error_handler.add_error(
+                2011,
+                row=self.position.get_pos()[0],
+                command=self.type.value,
+                value_type=arg_logotype.value,
+            )
+
+    def _create_new_variable(self, name, logotype):
+        symbol = Variable(name, Type(logotype, variables={name}))
+        self._symbol_tables.variables.insert(name, symbol)
+
+    def _create_new_variable_with_referenced_value(self, name, arg_logotype, typeclass):
+        if arg_logotype in (LogoType.UNKNOWN, typeclass.logotype):
+            typeclass.add_variable(name)
+            symbol = Variable(name, typeclass)
+            self._symbol_tables.variables.insert(name, symbol)
+        else:
+            self._logger.error_handler.add_error(
+                2012,
+                row=self.position.get_pos()[0],
+                var_name=name,
+                curr_type=arg_logotype,
+                expected_type=typeclass.logotype,
+            )
+
+    def _update_variable_type(self, name, arg_node, symbol_logotype, arg_logotype):
+        if symbol_logotype == LogoType.UNKNOWN:
+            symbol_logotype = arg_logotype
+        elif arg_logotype == LogoType.UNKNOWN:
+            arg_node.set_type(symbol_logotype)
+        elif arg_node.get_type() != symbol_logotype:
+            self._logger.error_handler.add_error(
+                2012,
+                row=self.position.get_pos()[0],
+                var_name=name,
+                curr_type=symbol_logotype.value,
+                expected_type=arg_node.get_type().value,
+            )
+
+    def _update_variable_type_with_referenced_value(self, name, reference_node, symbol_node):
+        ref_type = reference_node.typeclass.logotype
+        symbol_type = symbol_node.typeclass.logotype
+        if (
+            (ref_type == LogoType.UNKNOWN)
+            or (symbol_type == LogoType.UNKNOWN)
+            or (ref_type == symbol_type)
+        ):
+            self._symbol_tables.variables.concatenate_typeclasses(reference_node, symbol_node)
+        else:
+            self._logger.error_handler.add_error(
+                2012,
+                row=self.position.get_pos()[0],
+                var_name=name,
+                curr_type=symbol_type,
+                expected_type=ref_type,
+            )
+
+    def _check_references(self, var_node, arg_node):
+        # Check if the symbol has already been defined
+        var_name = var_node.leaf
+        var_symbol = self._symbol_tables.variables.lookup(var_name)
+
+        # Check if referenced value has already been defined.
+        # e.g. 'make "b :a', where the referenced value is 'a'
+        arg_symbol = None
+        if arg_node.type == "Deref":
+            arg_name = arg_node.leaf
+            arg_symbol = self._symbol_tables.variables.lookup(arg_name)
+
+        arg_logotype = arg_node.get_type()
+
+        if not var_symbol and not arg_symbol:
+            # e.g. 'make "a 2', where 'a' has not been defined before
+            self._create_new_variable(var_name, arg_logotype)
+
+        elif not var_symbol and arg_symbol:
+            # e.g. 'make "b :a', where 'b' has not been defined before, but 'a' has been defined
+            self._create_new_variable_with_referenced_value(
+                var_name, arg_logotype, arg_symbol.typeclass
+            )
+
+        elif var_symbol and not arg_symbol:
+            # e.g. 'make "b 42', where 'b' has already been defined
+            self._update_variable_type(
+                var_name, arg_node, var_symbol.typeclass.logotype, arg_logotype
+            )
+
+        else:  # var_symbol and arg_symbol
+            # e.g. 'make "b :a', where 'a' and 'b' have been defined earlier
+            self._update_variable_type_with_referenced_value(var_name, arg_symbol, var_symbol)
+
     def check_types(self):
-        # Check for right amount of params
+        # Check for right amount of arguments
         if len(self.children) != 1 or not self.leaf:
             self._logger.error_handler.add_error(
                 2009, row=self.position.get_pos()[0], command=self.type.value
             )
             return
 
-        # Check that variable name is string
-        var_name_node = self.leaf
-        var_name_node.check_types()
-        var_name = var_name_node.leaf
-        if var_name_node.get_type() != LogoType.STRING:
-            self._logger.error_handler.add_error(
-                2010,
-                row=self.position.get_pos()[0],
-                command=self.type.value,
-                curr_type=var_name_node.get_type().value,
-                expected_type=LogoType.STRING.value,
-            )
+        variable_node = self.leaf
+        argument_node = self.children[0]
 
-        # Check second argument type (assignment value)
-        value = self.children[0]
-        value.check_types()
-        value_logotype = value.get_type()
-
-        # Check if value type is of void
-        if value_logotype == LogoType.VOID:
-            self._logger.error_handler.add_error(
-                2011,
-                row=self.position.get_pos()[0],
-                command=self.type.value,
-                value_type=value_logotype.value,
-            )
-
-        # Symbol reference e.g. 'make "b :a', where ref is 'a'
-        ref = None
-        if value.type == "Deref":
-            ref = self._symbol_tables.variables.lookup(value.leaf)
-
-        # Check if the symbol has already been defined
-        # e.g. 'make "a 2', where 'a' has been defined before this make statement
-        symbol = self._symbol_tables.variables.lookup(var_name_node.leaf)
-
-        if (not symbol) and (not ref):
-            # e.g. 'make "a 2', where 'a' has not been defined before
-            symbol = Variable(var_name, Type(value_logotype, variables={var_name}))
-            self._symbol_tables.variables.insert(var_name, symbol)
-
-        elif not symbol and ref:
-            # e.g. 'make "b :a', where 'b' has not been defined before, but 'a' has been defined
-            if value_logotype in (LogoType.UNKNOWN, ref.typeclass.logotype):
-                ref.typeclass.add_variable(var_name)
-                symbol = Variable(var_name, ref.typeclass)
-                self._symbol_tables.variables.insert(var_name, symbol)
-            else:
-                self._logger.error_handler.add_error(
-                    2012,
-                    row=self.position.get_pos()[0],
-                    var_name=var_name,
-                    curr_type=value_logotype,
-                    expected_type=ref.typeclass.logotype,
-                )
-
-        elif symbol and not ref:
-            # e.g. 'make "b 42', where 'b' has already been defined
-            if symbol.typeclass.logotype == LogoType.UNKNOWN:
-                symbol.typeclass.logotype = value_logotype
-            elif value_logotype == LogoType.UNKNOWN:
-                value.set_type(symbol.typeclass.logotype)
-            elif value.get_type() != symbol.typeclass.logotype:
-                self._logger.error_handler.add_error(
-                    2012,
-                    row=self.position.get_pos()[0],
-                    var_name=var_name,
-                    curr_type=symbol.typeclass.logotype.value,
-                    expected_type=value.get_type().value,
-                )
-
-        else:  # symbol and ref
-            # e.g. 'make "b :a', where 'a' and 'b' have been defined earlier
-            ref_type = ref.typeclass.logotype
-            symbol_type = symbol.typeclass.logotype
-            if (
-                (ref_type == LogoType.UNKNOWN) or
-                (symbol_type == LogoType.UNKNOWN) or
-                (ref_type == symbol_type)
-            ):
-                self._symbol_tables.variables.concatenate_typeclasses(ref, symbol)
-            else:
-                self._logger.error_handler.add_error(
-                    2012,
-                    row=self.position.get_pos()[0],
-                    var_name=var_name,
-                    curr_type=symbol_type,
-                    expected_type=ref_type,
-                )
+        self._check_variable_node(variable_node)
+        self._check_argument_node(argument_node)
+        self._check_references(variable_node, argument_node)
 
 
 class Show(Node):
@@ -117,7 +145,7 @@ class Show(Node):
         return self._logo_type
 
     def check_types(self):
-        # Must have at least 1 param
+        # Must have at least 1 argument
         if len(self.children) == 0:
             self._logger.error_handler.add_error(2013, row=self.position.get_pos()[0])
 

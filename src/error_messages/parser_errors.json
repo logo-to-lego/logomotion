@@ -69,38 +69,42 @@
         "ENG": "Command '@command' does not take parameters."
     },
     "2016": {
+        "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2 vääränlaisella vertailuoperaatiolla. Sallitut operaatiot tyypille @type1 ovat: <> ja =",
+        "ENG": "In row @row you tried to compare types @type1 and @type2 with the wrong kind of relative operation. Acceptable operations for @type1 are: <> and "
+    },
+    "2017": {
         "FIN": "Funktio '@proc' on jo määritelty",
         "ENG": "Procedure '@proc' already declared"
     },
-    "2017": {
+    "2018": {
         "FIN": "Funktion '@proc' parametri '@param' on jo määritelty",
         "ENG": "Procedure @proc's parameter '@param' is already declared"
     },
-    "2018": {
+    "2019": {
         "FIN": "Funktion '@proc' parametrin '@param' tyyppi on tuntematon.",
         "ENG": "Procedure @proc's paratmeter @param's type is unknown"
     },
-    "2019": {
+    "2020": {
         "FIN": "Kutsuttua funktiota '@proc' rivillä @row ei ole määritelty.",
         "ENG": "Called procedure '@proc' on row @row has not been defined."
     },
-    "2020": {
+    "2021": {
         "FIN": "Rivillä @row funktiokutsussa '@proc' on argumentteja @args kappaletta, vaikka niitä kuuluisi olla @params.",
         "ENG": "Procedure call '@proc' at row @row has @args arguments even thought it should have @params arguments."
     },
-    "2021": {
+    "2022": {
         "FIN": "Rivillä @row funktiokutsun '@proc' argumentin '@arg' tyyppi on @atype, vaikka sen kuuluisi olla @ptype.",
         "ENG": "At row @row procedure call @proc's argument '@arg' is type @atype even thought it should be type @ptype."
     },
-    "2022": {
-        "FIN": "Funktion '@proc' palautusarvon tyyppiä ei ole määritelty",
-        "ENG": ""
-    },
     "2023": {
-        "FIN": "Anna/Output-komento ei ole funktion sisällä rivillä @row",
+        "FIN": "Funktion '@proc' palautusarvon tyyppi on tuntematon",
         "ENG": ""
     },
     "2024": {
+        "FIN": "Anna/Output-komento ei ole funktion sisällä rivillä @row",
+        "ENG": ""
+    },
+    "2025": {
         "FIN": "Funktion '@proc' palautusarvo ei ole oikeaa tyyppiä",
         "ENG": ""
     }
