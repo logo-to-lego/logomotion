@@ -14,7 +14,7 @@ class Output(Node):
         procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
         if not procedure:
             # virhe: ei olla funktion sisällä
-            self._logger.error_handler.add_error(2023, row=self.position.get_pos()[0])
+            self._logger.error_handler.add_error(2024, row=self.position.get_pos()[0])
         else:
             if procedure.get_logotype() == LogoType.UNKNOWN:
                 # aseta funktion tyypiksi palautusarvon tyyppi
@@ -23,7 +23,7 @@ class Output(Node):
                 # tarkista, että palautustyyppi on sama
                 if procedure.get_logotype() != output.get_type():
                     # virhe: funktion palautusarvo ei ole oikeaa, jo aiemmin määriteltyä tyyppiä
-                    self._logger.error_handler.add_error(2024, proc=procedure.name)
+                    self._logger.error_handler.add_error(2025, proc=procedure.name)
 
 
 class ProcCall(Node):
@@ -35,7 +35,7 @@ class ProcCall(Node):
         procedure = self._symbol_tables.functions.lookup(self.leaf)
         if not procedure:
             self._logger.error_handler.add_error(
-                2019,
+                2020,
                 proc=self.leaf,
                 row=self.position.get_pos()[0]
             )
@@ -43,7 +43,7 @@ class ProcCall(Node):
         # Check the procedure has right amout of arguments
         if len(procedure.parameters) != len(self.children):
             self._logger.error_handler.add_error(
-                2020,
+                2021,
                 proc=self.leaf,
                 row=self.position.get_pos()[0],
                 args=len(self.children),
@@ -59,7 +59,7 @@ class ProcCall(Node):
             print(argument_type, type(argument_type), parameter_type, type(parameter_type))
             if argument_type != parameter_type:
                 self._logger.error_handler.add_error(
-                    2021,
+                    2022,
                     proc=self.leaf,
                     arg=child.leaf,
                     atype=argument_type.value,
@@ -81,7 +81,7 @@ class ProcDecl(Node):
     def check_types(self):
         # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
-            self._logger.error_handler.add_error(2016, proc=self.leaf)
+            self._logger.error_handler.add_error(2017, proc=self.leaf)
         self._symbol_tables.functions.insert(self.leaf, Function(self.leaf))
         procedure = self._symbol_tables.functions.lookup(self.leaf)
         self._symbol_tables.variables.initialize_scope(in_function=procedure)
@@ -92,7 +92,7 @@ class ProcDecl(Node):
         for parameter in procedure.parameters:
             if parameter.get_logotype() == LogoType.UNKNOWN:
                 self._logger.error_handler.add_error(
-                    2018,
+                    2019,
                     proc=procedure.name,
                     param=parameter.name)
 
@@ -119,7 +119,7 @@ class ProcArg(Node):
         procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
         # Check the parameter hasn't already been declarated
         if self._symbol_tables.variables.lookup(self.leaf):
-            self._logger.error_handler.add_error(2017, proc=procedure.name, param=self.leaf)
+            self._logger.error_handler.add_error(2018, proc=procedure.name, param=self.leaf)
         variable = Variable(self.leaf)
         procedure.parameters.append(variable)
         self._symbol_tables.variables.insert(self.leaf, variable)
