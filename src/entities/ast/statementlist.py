@@ -8,5 +8,5 @@ class StatementList(Node):
     def check_types(self):
         """Runs the check in given order."""
         for child in self.children:
-            child.get_type()
+            child.get_logotype()
             child.check_types()

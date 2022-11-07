@@ -8,14 +8,8 @@ class Float(Node):
     def __init__(self, leaf, **dependencies):
         super().__init__("Float", children=None, leaf=leaf, **dependencies)
 
-    def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.FLOAT
-
-        return self._logo_type
-
-    def check_types(self):
-        self.get_type()
+    def get_logotype(self):
+        return LogoType.FLOAT
 
     def generate_code(self):
         return self._code_generator.float(self.leaf)
@@ -25,14 +19,8 @@ class Bool(Node):
     def __init__(self, leaf, **dependencies):
         super().__init__("Bool", children=None, leaf=leaf, **dependencies)
 
-    def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.BOOL
-
-        return self._logo_type
-
-    def check_types(self):
-        self.get_type()
+    def get_logotype(self):
+        return LogoType.BOOL
 
     def generate_code(self):
         return self._code_generator.boolean(self.leaf)
@@ -50,7 +38,7 @@ class Deref(Node):
                 f"in symbol_table {self._get_symbol} do not match"))
         self._symbol = symbol
 
-    def get_type(self) -> LogoType:
+    def get_logotype(self) -> LogoType:
         symbol = self._get_symbol()
         if symbol:
             return symbol.typeclass.logotype
@@ -78,14 +66,8 @@ class StringLiteral(Node):
     def __init__(self, leaf, **dependencies):
         super().__init__("StringLiteral", children=None, leaf=leaf, **dependencies)
 
-    def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.STRING
-
-        return self._logo_type
-
-    def check_types(self):
-        self.get_type()
+    def get_logotype(self):
+        return LogoType.STRING
 
     def generate_code(self):
         return self._code_generator.string(self.leaf)

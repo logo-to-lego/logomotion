@@ -10,29 +10,28 @@ class Node:
     """Base AST Node class"""
 
     def __init__(self, node_type, children=None, leaf=None, **dependencies):
-        self.type = node_type
+        self.node_type = node_type
         self.children = children if children else []
         self.leaf = leaf
         self._logger: Logger = dependencies.get("logger", default_logger)
         self._symbol_tables: SymbolTables = dependencies.get("symbol_tables", default_symbol_tables)
         self.position = dependencies.get("position", None)
-        self._logo_type = None
         self._code_generator = dependencies.get("code_generator", default_code_generator)
 
-    def get_type(self) -> LogoType:
-        return self._logo_type
+    def get_logotype(self) -> LogoType:
+        return None
 
-    def set_type(self, new_type: LogoType):
-        self._logo_type = new_type
+    def check_types(self):
+        return
 
     def __str__(self):
-        result = f"({self.type}"
+        result = f"({self.node_type}"
 
         if self.leaf:
             result += f", {self.leaf if self.leaf else 'None'}"
 
-        if self._logo_type:
-            result += f", logo type: {self._logo_type.value}"
+        if self.get_logotype():
+            result += f", logo type: {self.get_logotype()}"
 
         if self.children:
             result += ", children: ["
@@ -62,6 +61,9 @@ class Node:
 class Start(Node):
     def __init__(self, children=None, **dependencies):
         super().__init__("Start", children, **dependencies)
+
+    def get_logotype(self):
+        return None
 
     def check_types(self):
         """Runs semantic analysis on the AST nodes to find type errors, undefined
