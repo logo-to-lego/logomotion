@@ -59,6 +59,7 @@ class Deref(Node):
         if not symbol:
             self._logger.error_handler.add_error(2007, var=self.leaf)
 
+
 class StringLiteral(Node):
     def __init__(self, leaf, **dependencies):
         super().__init__("StringLiteral", children=None, leaf=leaf, **dependencies)
@@ -68,3 +69,7 @@ class StringLiteral(Node):
 
     def check_types(self):
          self.get_logotype()
+
+    def generate_code(self):
+        return self._code_generator.string(self.leaf)
+
