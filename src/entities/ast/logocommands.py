@@ -6,35 +6,33 @@ from lexer.token_types import TokenType
 
 
 class Make(Node):
-    def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.VOID
-        return self._logo_type
+    # def get_logotype(self):
+    #    return LogoType.VOID
 
     def _check_variable_node(self, variable_node):
         # Check that variable name is string
         variable_node.check_types()
-        variable_logotype = variable_node.get_type()
+        variable_logotype = variable_node.get_logotype()
 
         if variable_logotype != LogoType.STRING:
             self._logger.error_handler.add_error(
                 2010,
                 row=self.position.get_pos()[0],
-                command=self.type.value,
-                curr_type=variable_node.get_type().value,
+                command=self.node_type.value,
+                curr_type=variable_node.get_logotype().value,
                 expected_type=LogoType.STRING.value,
             )
 
     def _check_argument_node(self, argument_node):
         # Check type of argument
         argument_node.check_types()
-        arg_logotype = argument_node.get_type()
+        arg_logotype = argument_node.get_logotype()
 
         if arg_logotype == LogoType.VOID:
             self._logger.error_handler.add_error(
                 2011,
                 row=self.position.get_pos()[0],
-                command=self.type.value,
+                command=self.node_type.value,
                 value_type=arg_logotype.value,
             )
 
@@ -61,13 +59,13 @@ class Make(Node):
             symbol_logotype = arg_logotype
         elif arg_logotype == LogoType.UNKNOWN:
             arg_node.set_type(symbol_logotype)
-        elif arg_node.get_type() != symbol_logotype:
+        elif arg_node.get_logotype() != symbol_logotype:
             self._logger.error_handler.add_error(
                 2012,
                 row=self.position.get_pos()[0],
                 var_name=name,
                 curr_type=symbol_logotype.value,
-                expected_type=arg_node.get_type().value,
+                expected_type=arg_node.get_logotype().value,
             )
 
     def _update_variable_type_with_referenced_value(self, name, reference_node, symbol_node):
@@ -96,11 +94,11 @@ class Make(Node):
         # Check if referenced value has already been defined.
         # e.g. 'make "b :a', where the referenced value is 'a'
         arg_symbol = None
-        if arg_node.type == "Deref":
+        if arg_node.node_type == "Deref":
             arg_name = arg_node.leaf
             arg_symbol = self._symbol_tables.variables.lookup(arg_name)
 
-        arg_logotype = arg_node.get_type()
+        arg_logotype = arg_node.get_logotype()
 
         if not var_symbol and not arg_symbol:
             # e.g. 'make "a 2', where 'a' has not been defined before
@@ -126,7 +124,7 @@ class Make(Node):
         # Check for right amount of arguments
         if len(self.children) != 1 or not self.leaf:
             self._logger.error_handler.add_error(
-                2009, row=self.position.get_pos()[0], command=self.type.value
+                2009, row=self.position.get_pos()[0], command=self.node_type.value
             )
             return
 
@@ -139,10 +137,8 @@ class Make(Node):
 
 
 class Show(Node):
-    def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.VOID
-        return self._logo_type
+    # def get_logotype(self):
+    #    return LogoType.VOID
 
     def check_types(self):
         # Must have at least 1 argument
@@ -151,46 +147,42 @@ class Show(Node):
 
         # Cannot be function call that returns VOID
         for child in self.children:
-            logo_type = child.get_type()
+            logo_type = child.get_logotype()
             if logo_type == LogoType.VOID:
                 self._logger.error_handler.add_error(
                     2014,
                     row=child.position.get_pos()[0],
-                    command=self.type.value,
+                    command=self.node_type.value,
                     return_type=LogoType.VOID.value,
                 )
             child.check_types()
 
 
 class Bye(Node):
-    def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.VOID
-        return self._logo_type
+    # def get_logotype(self):
+    #    return LogoType.VOID
 
     def check_types(self):
         if self.children:
-            self._logger.error_handler.add_error(2015, command=self.type.value)
+            self._logger.error_handler.add_error(2015, command=self.node_type.value)
 
 
 class Move(Node):
     """FD, BK, LT, RT"""
 
-    def get_type(self):
-        if not self._logo_type:
-            self._logo_type = LogoType.VOID
-        return self._logo_type
+    # def get_logotype(self):
+    #    return LogoType.VOID
 
     def check_types(self):
         if len(self.children) != 1:
             self._logger.error_handler.add_error(
-                2009, row=self.position.get_pos()[0], command=self.type.value
+                2009, row=self.position.get_pos()[0], command=self.node_type.value
             )
             return
 
         child = self.children[0]
         child.check_types()
-        child_type = child.get_type()
+        child_type = child.get_logotype()
 
         if child_type is None:
             return
@@ -199,7 +191,7 @@ class Move(Node):
             self._logger.error_handler.add_error(
                 2010,
                 row=child.position.get_pos()[0],
-                command=self.type.value,
+                command=self.node_type.value,
                 curr_type=child_type.value,
                 expected_type=LogoType.FLOAT.value,
             )
@@ -208,11 +200,11 @@ class Move(Node):
         """Generate movement commands in Java."""
         arg_var = self.children[0].generate_code()
 
-        if self.type == TokenType.FD:
+        if self.node_type == TokenType.FD:
             self._code_generator.move_forward(arg_var)
-        if self.type == TokenType.BK:
+        if self.node_type == TokenType.BK:
             self._code_generator.move_backwards(arg_var)
-        if self.type == TokenType.LT:
+        if self.node_type == TokenType.LT:
             self._code_generator.left_turn(arg_var)
-        if self.type == TokenType.RT:
+        if self.node_type == TokenType.RT:
             self._code_generator.right_turn(arg_var)
