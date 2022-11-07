@@ -67,5 +67,9 @@
     "2015": {
         "FIN": "Komento '@command' ei ota parametreja.",
         "ENG": "Command '@command' does not take parameters."
+    },
+    "2016": {
+        "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2 vääränlaisella vertailuoperaatiolla. Sallitut operaatiot tyypille @type1 ovat: <> ja =",
+        "ENG": "In row @row you tried to compare types @type1 and @type2 with the wrong kind of relative operation. Acceptable operations for @type1 are: <> and "
     }
 }

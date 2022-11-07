@@ -34,7 +34,8 @@ def p_expression_relop(prod):
     | expression LESSTHAN expression
     | expression GREATERTHAN expression
     | expression LTEQUALS expression
-    | expression GTEQUALS expression"""
+    | expression GTEQUALS expression
+    | expression NOTEQUALS expression"""
     prod[0] = shared.node_factory.create_node(
         RelOp, children=[prod[1], prod[3]], leaf=prod[2], position=Position(prod)
     )
