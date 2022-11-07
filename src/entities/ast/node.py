@@ -21,7 +21,7 @@ class Node:
 
     def get_logotype(self) -> LogoType:
         return None
-    
+
     def check_types(self):
         return
 
