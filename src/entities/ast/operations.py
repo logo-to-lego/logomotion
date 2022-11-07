@@ -40,7 +40,7 @@ class UnaryOp(Node):
             self._logger.error_handler.add_error(
                 2003,
                 row=self.position.get_pos()[0],
-                curr_type=self.get_logotype(),  # _logo_type.value,
+                curr_type=self.get_logotype().value,  # _logo_type.value,
                 expected_type=LogoType.FLOAT.value,
             )
 
