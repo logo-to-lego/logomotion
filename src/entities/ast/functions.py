@@ -1,5 +1,4 @@
 from entities.ast.node import Node
-from entities.logotypes import LogoType
 
 
 class Output(Node):
