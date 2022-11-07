@@ -60,7 +60,7 @@ class Function(Variable):
         params_str = ""
         if self._parameters:
             params_str = f", parameters: {str(self._parameters)}"
-        return f"Function {self._name}: type: {self._typeclass.value}" + params_str
+        return f"Function {self._name}: typeclass: ({self._typeclass})" + params_str
 
     @property
     def parameters(self):

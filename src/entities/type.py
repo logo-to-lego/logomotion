@@ -8,10 +8,11 @@ class Type:
     can be then referenced to other variables which have the same LogoType"""
 
     def __init__(
-        self, logotype: LogoType = LogoType.UNKNOWN, variables=None
+        self, logotype: LogoType = LogoType.UNKNOWN, variables=None, functions=None
     ):  # variables is a set of Symbol objects
         self._logotype = logotype
-        self._variables = variables if variables is not None else {}
+        self._variables = variables if variables is not None else set()
+        self._functions = functions if functions is not None else set()
 
     @property
     def logotype(self):
@@ -22,6 +23,11 @@ class Type:
     def variables(self):
         """Returns the variables of the type class"""
         return self._variables
+    
+    @property
+    def functions(self):
+        """Returns the variables of the type class"""
+        return self._functions
 
     @logotype.setter
     def logotype(self, logotype: LogoType):
@@ -30,8 +36,11 @@ class Type:
         else:
             raise Exception(f"LogoType was already defined as {self._logotype.value}")
 
-    def add_variable(self, var_symbol):
-        self._variables.add(var_symbol)
+    def add_variable(self, var_name):
+        self._variables.add(var_name)
+    
+    def add_function(self, func_name):
+        self._functions.add(func_name)
 
     @staticmethod
     def concatenate(typeclass1: "Type", typeclass2: "Type") -> "Type":
@@ -46,7 +55,8 @@ class Type:
             return LogoType.UNKNOWN
 
         variables = typeclass1.variables.union(typeclass2.variables)
-        return Type(logotype=get_new_logotype(), variables=variables)
+        functions = typeclass1.functions.union(typeclass2.functions)
+        return Type(logotype=get_new_logotype(), variables=variables, functions=functions)
 
     def __str__(self) -> str:
-        return f"LogoType: {self._logotype}, Variables: {self._variables}"
+        return f"LogoType: {self._logotype}, Variables: {self._variables}, Functions: {self._functions}"

@@ -70,9 +70,13 @@ class SymbolTable:
         """Takes two symbols (variable or function) as parameters and
         concatenates their typeclasses
         """
+        print("\tconcatenate_typeclasses called", symbol1, symbol2)
         new_typeclass = Type.concatenate(symbol1.typeclass, symbol2.typeclass)
+        print("\tnew typeclass", new_typeclass)
+
         for var in new_typeclass.variables:
             symbol = self.lookup(var)
+            print("SYMBOL", symbol)
             symbol.typeclass = new_typeclass
 
 
