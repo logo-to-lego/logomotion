@@ -11,7 +11,7 @@ class Type:
         self, logotype: LogoType = LogoType.UNKNOWN, variables=None
     ):  # variables is a set of Symbol objects
         self._logotype = logotype
-        self._variables = variables if variables is not None else {}
+        self._variables = variables if variables is not None else set()
 
     @property
     def logotype(self):
@@ -44,7 +44,7 @@ class Type:
             if logotype2 != LogoType.UNKNOWN:
                 return logotype2
             return LogoType.UNKNOWN
-
+        print(typeclass2.variables, typeclass1.variables)
         variables = typeclass1.variables.union(typeclass2.variables)
         return Type(logotype=get_new_logotype(), variables=variables)
 

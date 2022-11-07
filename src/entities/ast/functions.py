@@ -2,6 +2,7 @@
 from entities.ast.node import Node
 from entities.logotypes import LogoType
 from entities.symbol import Function, Variable
+from entities.ast.variables import Deref
 
 
 class Output(Node):
@@ -18,8 +19,15 @@ class Output(Node):
             return
         if procedure.get_logotype() == LogoType.UNKNOWN:
             # aseta funktion tyypiksi palautusarvon tyyppi
-            if output_value.type == "Deref"
-            procedure.typeclass.logotype = output_value.get_type()
+
+            if output_value.__class__ == Deref:
+                deref_symbol = self._symbol_tables.variables.lookup(output_value.leaf)
+                print(deref_symbol, procedure)
+                self._symbol_tables.variables.concatenate_typeclasses(deref_symbol, procedure)
+                print(deref_symbol, procedure)
+            else:
+                procedure.typeclass.logotype = output_value.get_type()
+            #print("OUTPUT", self._symbol_tables.variables.lookup(output_value.leaf), procedure)
         else:
             # tarkista, että palautustyyppi on sama
             if procedure.get_logotype() != output_value.get_type():
@@ -57,7 +65,6 @@ class ProcCall(Node):
                 continue
             argument_type = child.get_type()
             parameter_type = procedure.parameters[index].get_logotype()
-            print(argument_type, type(argument_type), parameter_type, type(parameter_type))
             if argument_type != parameter_type:
                 self._logger.error_handler.add_error(
                     2022,
