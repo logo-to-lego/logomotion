@@ -108,7 +108,7 @@ class CodeGenerator:
         self._logger.debug(code)
         self._code.append(code)
 
-    def closing_bracket(self):
+    def closing_brace(self):
         """Generate a closing curly bracket"""
         code = "}"
         self._logger.debug(code)

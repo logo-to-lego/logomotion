@@ -25,7 +25,7 @@ class If(Node):
         self._code_generator.if_statement(condition)
         for child in self.children:
             child.generate_code()
-        self._code_generator.closing_bracket()
+        self._code_generator.closing_brace()
         # Lambda method. Delete code above and uncomment below if in use
         #codition = self.leaf.generate_code()
         #lambda_var = self._code_generator.lambda_no_param_start()
