@@ -55,6 +55,13 @@ class CodeGenerator:
         self._code.append(line)
         self._logger.debug(line)
 
+    def assign_value(self, logo_var_name, value_name):
+        """Assign a new value to an already existing variable."""
+        java_var_name = self._mangle_logo_var_name(logo_var_name)
+        line = f"{java_var_name} = {value_name};"
+        self._code.append(line)
+        self._logger.debug(line)
+
     def move_forward(self, arg_var):
         """create Java code for moving forward"""
         line = f"robot.travel({arg_var});"

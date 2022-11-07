@@ -6,6 +6,10 @@ from lexer.token_types import TokenType
 
 
 class Make(Node):
+    def __init__(self, node_type, children=None, leaf=None, **dependencies):
+        super().__init__(node_type, children, leaf, **dependencies)
+        self._new_variable = False
+
     def get_type(self):
         if not self._logo_type:
             self._logo_type = LogoType.VOID
@@ -39,10 +43,12 @@ class Make(Node):
             )
 
     def _create_new_variable(self, name, logotype):
+        self._new_variable = True
         symbol = Variable(name, Type(logotype, variables={name}))
         self._symbol_tables.variables.insert(name, symbol)
 
     def _create_new_variable_with_referenced_value(self, name, arg_logotype, typeclass):
+        self._new_variable = True
         if arg_logotype in (LogoType.UNKNOWN, typeclass.logotype):
             typeclass.add_variable(name)
             symbol = Variable(name, typeclass)
@@ -120,24 +126,6 @@ class Make(Node):
 
         else:  # var_symbol and arg_symbol
             # e.g. 'make "b :a', where 'a' and 'b' have been defined earlier
-<<<<<<< HEAD
-            ref_type = ref.typeclass.logotype
-            symbol_type = symbol.typeclass.logotype
-            if (
-                (ref_type == LogoType.UNKNOWN)
-                or (symbol_type == LogoType.UNKNOWN)
-                or (ref_type == symbol_type)
-            ):
-                self._symbol_tables.variables.concatenate_typeclasses(ref, symbol)
-            else:
-                self._logger.error_handler.add_error(
-                    2012,
-                    row=self.position.get_pos()[0],
-                    var_name=var_name,
-                    curr_type=symbol_type,
-                    expected_type=ref_type,
-                )
-=======
             self._update_variable_type_with_referenced_value(var_name, arg_symbol, var_symbol)
 
     def check_types(self):
@@ -154,12 +142,14 @@ class Make(Node):
         self._check_variable_node(variable_node)
         self._check_argument_node(argument_node)
         self._check_references(variable_node, argument_node)
->>>>>>> main
 
     def generate_code(self):
         """Generates MAKE command into target code."""
         value_var_name = self.children[0].generate_code()
-        self._code_generator.create_new_variable(self.leaf.leaf, value_var_name)
+        if self._new_variable:
+            self._code_generator.create_new_variable(self.leaf.leaf, value_var_name)
+        else:
+            self._code_generator.assign_value(self.leaf.leaf, value_var_name)
 
 
 class Show(Node):
