@@ -41,12 +41,10 @@ class Make(Node):
             )
 
     def _create_new_variable(self, name, logotype):
-        self._new_variable = True
         symbol = Variable(name, Type(logotype, variables={name}))
         self._symbol_tables.variables.insert(name, symbol)
 
     def _create_new_variable_with_referenced_value(self, name, arg_logotype, typeclass):
-        self._new_variable = True
         if arg_logotype in (LogoType.UNKNOWN, typeclass.logotype):
             typeclass.add_variable(name)
             symbol = Variable(name, typeclass)
@@ -107,6 +105,9 @@ class Make(Node):
             arg_node.set_symbol(arg_symbol)
 
         arg_logotype = arg_node.get_logotype()
+
+        if not var_symbol:
+            self._new_variable = True
 
         if not var_symbol and not arg_symbol:
             # e.g. 'make "a 2', where 'a' has not been defined before
