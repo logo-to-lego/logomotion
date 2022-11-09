@@ -17,12 +17,12 @@ def black(ctx):
     ctx.run("black src", pty=True)
 
 
-@task(optional=["file"])
-def start(ctx, file=None):
-    if file:
-        ctx.run("python3 src/main.py " + file)
-    else:
-        ctx.run("python3 src/main.py")
+@task(optional=["debug"])
+def start(ctx, logo_file, debug=False):
+    command = f"python3 src/main.py {logo_file} "
+    if debug:
+        command += "-d"
+    ctx.run(command)
 
 
 # From https://github.com/ohjelmistotekniikka-hy/python-todo-app/blob/master/tasks.py

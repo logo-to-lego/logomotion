@@ -1,106 +1,68 @@
 """Main module for the compiler.
 """
-import sys
+import argparse
 from parser.parser import Parser
 from entities.symbol_tables import SymbolTables
-from entities.symbol_table import SymbolTable
 from lexer.lexer import Lexer
 from utils.code_generator import CodeGenerator
 from utils.console_io import ConsoleIO
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
 
-io = ConsoleIO()
-error_handler = ErrorHandler(console_io=io, language="FIN")
-logger = Logger(io, error_handler, debug=True)
 
-lexer = Lexer(logger)
-lexer.build()
+def main(filepath: str, debug: bool):
+    def load_file(filename):
+        """Loads a file and returns contents as a string."""
+        content = []
+        with open(filename, "r", encoding="utf8") as file:
+            content = file.readlines()
+        return "".join(content)
 
-symbol_tables = SymbolTables()
-code_generator = CodeGenerator(logger=logger)
+    def file_parser():
+        """Parses a user given file and prints lexer & parser results."""
+        code = load_file(filepath)
 
-parser = Parser(lexer, logger, symbol_tables, code_generator)
-parser.build()
+        logger.debug(f"Load file {filepath}:")
+        logger.debug(code + "\n")
+        logger.debug("Lexer tokens:")
+        logger.debug("\n".join((str(token)
+            for token in lexer.tokenize_input(code))) + "\n")
+        logger.debug("Parser AST:")
 
-
-def parser_ui():
-    """For parser testing."""
-    while True:
-        program = []
-
-        io.write("Enter logo code, an empty line to start parsing or q! to quit:")
-
-        while True:
-            user_input = io.read()
-
-            if user_input == "q!":
-                sys.exit()
-
-            if not user_input:
-                break
-
-            program.append(user_input)
-
-        code = "\n".join(program)
-        io.write("Lexer tokens:")
-        io.write("\n".join((str(token) for token in lexer.tokenize_input(code))) + "\n")
-
-        io.write("AST Result:")
         start_node = parser.parse(code)
-        io.write(start_node)
+        start_node.check_types()
+        start_node.generate_code()
 
-        # start_node.check_types()
-        io.write("Type checks:")
-        io.write(start_node)
+        if debug:
+            console_io.print_ast(start_node)
 
         error_handler.write_errors_to_console()
-        error_handler.errors.clear()
-        start_node.generate_code()
         code_generator.write()
 
-        # Clear symbol tables
-        symbol_tables.functions = SymbolTable()
-        symbol_tables.variables = SymbolTable()
 
+    console_io = ConsoleIO()
+    error_handler = ErrorHandler(console_io=console_io, language="FIN")
+    logger = Logger(console_io, error_handler, debug)
 
-def load_file(filename):
-    """Loads a file and returns contents as a string."""
-    content = []
+    lexer = Lexer(logger)
+    lexer.build()
 
-    with open(filename, "r", encoding="utf8") as file:
-        content = file.readlines()
+    symbol_tables = SymbolTables()
+    code_generator = CodeGenerator(logger=logger)
 
-    return "".join(content)
+    parser = Parser(lexer, logger, symbol_tables, code_generator)
+    parser.build()
 
+    file_parser()
 
-def file_parser():
-    """Parses a user given file and prints lexer & parser results."""
-    filename = sys.argv[1]
-    code = load_file(filename)
-    io.write(f"Load file {filename}:")
-    io.write(code + "\n")
-    io.write("Lexer tokens:")
-    io.write("\n".join((str(token) for token in lexer.tokenize_input(code))) + "\n")
-    io.write("Parser AST:")
-    start_node = parser.parse(code)
-    io.write(start_node)
-    start_node.check_types()
-    io.write("\nType checks:")
-    io.write(start_node)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        file_parser()
-    else:
-        USE_UI = True
+    arg_parser = argparse.ArgumentParser(
+        prog="Logomotion",
+        description="Compile logo to java via python")
+    arg_parser.add_argument("filepath")
+    arg_parser.add_argument("-d", "--debug", action="store_true")
+    args = arg_parser.parse_args()
 
-        if USE_UI:
-            parser_ui()
-        else:
-            PROG = """fd 2 bk 50 rt 1+2 lt :a make :b 1<2 1<>2"""
-            ast = parser.parse(PROG)
-            ast.check_types()
-            io.print_ast(ast)
-            error_handler.write_errors_to_console()
+    main(args.filepath, args.debug)
