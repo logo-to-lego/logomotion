@@ -50,7 +50,7 @@ def parser_ui():
         start_node = parser.parse(code)
         io.write(start_node)
 
-        # start_node.check_types()
+        start_node.check_types()
         io.write("Type checks:")
         io.write(start_node)
 
@@ -99,7 +99,7 @@ if __name__ == "__main__":
         if USE_UI:
             parser_ui()
         else:
-            PROG = """fd 2 bk 50 rt 1+2 lt :a make :b 1<2 1<>2"""
+            PROG = """to f :x make "a 1 make "b :x end"""
             ast = parser.parse(PROG)
             ast.check_types()
             io.print_ast(ast)
