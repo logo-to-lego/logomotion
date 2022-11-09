@@ -81,8 +81,7 @@ class CodegenTest(unittest.TestCase):
         code_list = default_code_generator.get_generated_code()
         self.assertEqual("double temp1 = 19.0;", code_list[0])
         self.assertEqual("var var2 = temp1;", code_list[1])
-        self.assertEqual("var temp3 = var2;", code_list[2])
-        self.assertEqual("var var4 = temp3;", code_list[3])
+        self.assertEqual("var var3 = var2;", code_list[2])
 
     def test_binop(self):
         node_float1 = Float(leaf=1)

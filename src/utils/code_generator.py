@@ -68,14 +68,10 @@ class CodeGenerator:
         self._code.append(line)
         self._logger.debug(line)
 
-    def variable_value(self, logo_var_name):
-        """Create a temp var with the value of logo_var_name."""
+    def variable_name(self, logo_var_name):
+        """Returns the java variable name of the logo variable."""
         java_var_name = self._mangle_logo_var_name(logo_var_name)
-        temp_var = self._generate_temp_var()
-        line = f"var {temp_var} = {java_var_name};"
-        self._code.append(line)
-        self._logger.debug(line)
-        return temp_var
+        return java_var_name
 
     def move_forward(self, arg_var):
         """create Java code for moving forward"""
