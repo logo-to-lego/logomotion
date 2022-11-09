@@ -60,18 +60,19 @@ class Make(Node):
                 expected_type=typeclass.logotype,
             )
 
-    def _update_variable_type(self, name, arg_node, symbol_logotype, arg_logotype):
-        if symbol_logotype == LogoType.UNKNOWN:
-            symbol_logotype = arg_logotype
-        elif arg_logotype == LogoType.UNKNOWN:
-            arg_node.set_type(symbol_logotype)
-        elif arg_node.get_logotype() != symbol_logotype:
+    def _update_variable_type(self, name, var_symbol: Variable, arg_node):
+        var_type = var_symbol.typeclass.logotype
+        arg_type = arg_node.get_logotype()
+
+        if var_type == LogoType.UNKNOWN:
+            var_symbol.typeclass.logotype = arg_type
+        elif var_type != arg_type:
             self._logger.error_handler.add_error(
                 2012,
                 row=self.position.get_pos()[0],
                 var_name=name,
-                curr_type=symbol_logotype.value,
-                expected_type=arg_node.get_logotype().value,
+                curr_type=var_type.value,
+                expected_type=arg_type.value,
             )
 
     def _update_variable_type_with_referenced_value(self, name, reference_node, symbol_node):
@@ -120,7 +121,7 @@ class Make(Node):
         elif var_symbol and not arg_symbol:
             # e.g. 'make "b 42', where 'b' has already been defined
             self._update_variable_type(
-                var_name, arg_node, var_symbol.typeclass.logotype, arg_logotype
+                var_name, var_symbol, arg_node
             )
 
         else:  # var_symbol and arg_symbol

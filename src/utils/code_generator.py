@@ -1,6 +1,8 @@
 """Code Generator module"""
+# pylint: disable=too-many-public-methods
 import os
 from utils.logger import Logger, default_logger
+from lexer.token_types import TokenType
 
 START = (
     "package logo; import classes.EV3MovePilot; import java.lang.Runnable;"
@@ -22,7 +24,7 @@ class CodeGenerator:
         self._name = name
         self._temp_var_index = 0
         self._logger: Logger = dependencies.get("logger", default_logger)
-        self._java_variables = dict()
+        self._java_variable_names = {}
 
     def _increase_temp_var_index(self):
         """increase index for temp variables"""
@@ -31,11 +33,8 @@ class CodeGenerator:
 
     def reset(self):
         """Resets code generator internals."""
-        self.reset_temp_var_index()
-        self._java_variables = dict()
+        self._java_variable_names = {}
         self._code = []
-
-    def reset_temp_var_index(self):
         self._temp_var_index = 0
 
     def _generate_temp_var(self):
@@ -47,11 +46,12 @@ class CodeGenerator:
         return f"var{self._increase_temp_var_index()}"
 
     def _mangle_logo_var_name(self, logo_var_name):
-        """Mangles logo variable names into Java variables. If the logo variable name was previously mangled, returns the previous one."""
-        java_var_name = self._java_variables.get(logo_var_name, None)
+        """Mangles logo variable names into Java variables.
+        If the logo variable name was previously mangled, returns the previous one."""
+        java_var_name = self._java_variable_names.get(logo_var_name, None)
         if not java_var_name:
             java_var_name = self._generate_var()
-            self._java_variables[logo_var_name] = java_var_name
+            self._java_variable_names[logo_var_name] = java_var_name
         return java_var_name
 
     def create_new_variable(self, logo_var_name, value_name):
@@ -114,6 +114,10 @@ class CodeGenerator:
         """create Java code for defining boolean variable with given value
         and return the variable name"""
         temp_var = self._generate_temp_var()
+        if value == TokenType.TRUE:
+            value = "true"
+        else:
+            value = "false"
         code = f"boolean {temp_var} = {value};"
         self._logger.debug(code)
         self._code.append(code)
@@ -121,7 +125,7 @@ class CodeGenerator:
 
     def string(self, value):
         temp_var = self._generate_temp_var()
-        code = f"String {temp_var} = {value};"
+        code = f'String {temp_var} = "{value}";'
         self._logger.debug(code)
         self._code.append(code)
         return temp_var
@@ -147,6 +151,12 @@ class CodeGenerator:
     def if_statement(self, conditional):
         """Create Java code to start an if statement in Java."""
         code = f"if ({conditional}) " + "{"
+        self._logger.debug(code)
+        self._code.append(code)
+
+    def else_statement(self):
+        """Create Java code to start an else statement in Java."""
+        code = "else {"
         self._logger.debug(code)
         self._code.append(code)
 

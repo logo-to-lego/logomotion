@@ -45,3 +45,12 @@ class IfElse(Node):
         for variable in self.undefined_variables():
             self._logger.error_handler.add_error(2007, var=variable)
         self._symbol_tables.variables.finalize_scope()
+
+    def generate_code(self):
+        condition = self.leaf.generate_code()
+        self._code_generator.if_statement(condition)
+        self.children[0].generate_code()
+        self._code_generator.closing_brace()
+        self._code_generator.else_statement()
+        self.children[1].generate_code()
+        self._code_generator.closing_brace()
