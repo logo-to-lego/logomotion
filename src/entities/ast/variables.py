@@ -34,8 +34,11 @@ class Deref(Node):
     def set_symbol(self, symbol: Variable):
         if symbol != self.get_symbol():
             raise Exception(
-                (f"Bug: variable symbol param {symbol} and the symbol defined"
-                f"in symbol_table {self.get_symbol()} do not match"))
+                (
+                    f"Bug: variable symbol param {symbol} and the symbol defined"
+                    f"in symbol_table {self.get_symbol()} do not match"
+                )
+            )
         self._symbol = symbol
 
     def get_logotype(self) -> LogoType:
