@@ -6,6 +6,10 @@ from lexer.token_types import TokenType
 
 
 class Make(Node):
+    def __init__(self, children, leaf, **dependencies):
+        super().__init__(TokenType.MAKE, children, leaf, **dependencies)
+        self._new_variable = False
+
     # def get_logotype(self):
     #    return LogoType.VOID
 
@@ -102,6 +106,9 @@ class Make(Node):
 
         arg_logotype = arg_node.get_logotype()
 
+        if not var_symbol:
+            self._new_variable = True
+
         if not var_symbol and not arg_symbol:
             # e.g. 'make "a 2', where 'a' has not been defined before
             self._create_new_variable(var_name, arg_logotype)
@@ -136,6 +143,15 @@ class Make(Node):
         self._check_variable_node(variable_node)
         self._check_argument_node(argument_node)
         self._check_references(variable_node, argument_node)
+
+    def generate_code(self):
+        """Generates MAKE command into target code."""
+        value_var_name = self.children[0].generate_code()
+
+        if self._new_variable:
+            self._code_generator.create_new_variable(self.leaf.leaf, value_var_name)
+        else:
+            self._code_generator.assign_value(self.leaf.leaf, value_var_name)
 
 
 class Show(Node):
