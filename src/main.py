@@ -50,7 +50,7 @@ def parser_ui():
         start_node = parser.parse(code)
         io.write(start_node)
 
-        # start_node.check_types()
+        start_node.check_types()
         io.write("Type checks:")
         io.write(start_node)
 

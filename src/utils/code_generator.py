@@ -3,9 +3,11 @@ import os
 from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
-START = (
+START_METHOD = (
     "package logo; import classes.EV3MovePilot; import java.lang.Runnable;"
-    "public class Logo { public static void main(String[] args) { "
+    "public class Logo { ")
+START_MAIN = (
+    "public static void main(String[] args) { " 
     "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
 )
 END = "} }"
@@ -19,7 +21,9 @@ class CodeGenerator:
     """A class for generating Java code"""
 
     def __init__(self, name=DEFAULT_NAME, **dependencies):
-        self._code = []
+        self._main = []
+        self._method = []
+        self._proc_flag = False
         self._name = name
         self._temp_var_index = 0
         self._logger: Logger = dependencies.get("logger", default_logger)
@@ -30,8 +34,17 @@ class CodeGenerator:
         return self._temp_var_index
 
     def reset(self):
-        self._code = []
+        self._main = []
         self._temp_var_index = 0
+        self._method = []
+        self._proc_flag = False
+
+    def _append_code(self, code):
+        if self._proc_flag:
+            self._method.append(code)
+        else:
+            self._main.append(code)
+        self._logger.debug(code)
 
     def _generate_temp_var(self):
         """create an unique temp variable name"""
@@ -39,35 +52,30 @@ class CodeGenerator:
 
     def move_forward(self, arg_var):
         """create Java code for moving forward"""
-        line = f"robot.travel({arg_var});"
-        self._code.append(line)
-        self._logger.debug(line)
+        code = f"robot.travel({arg_var});"
+        self._append_code(code)
 
     def move_backwards(self, arg_var):
         """create Java code for moving backward"""
-        line = f"robot.travel(-{arg_var});"
-        self._code.append(line)
-        self._logger.debug(line)
+        code = f"robot.travel(-{arg_var});"
+        self._append_code(code)
 
     def left_turn(self, arg_var):
         """create Java code for turning left"""
-        line = f"robot.rotate({arg_var});"
-        self._code.append(line)
-        self._logger.debug(line)
+        code = f"robot.rotate({arg_var});"
+        self._append_code(code)
 
     def right_turn(self, arg_var):
         """create Java code for turning right"""
-        line = f"robot.rotate(-{arg_var});"
-        self._code.append(line)
-        self._logger.debug(line)
+        code = f"robot.rotate(-{arg_var});"
+        self._append_code(code)
 
     def float(self, value):
         """create Java code for defining double variable with given value
         and return the variable name"""
         temp_var = self._generate_temp_var()
         code = f"double {temp_var} = {value};"
-        self._logger.debug(code)
-        self._code.append(code)
+        self._append_code(code)
         return temp_var
 
     def boolean(self, value):
@@ -79,23 +87,20 @@ class CodeGenerator:
         else:
             value = "false"
         code = f"boolean {temp_var} = {value};"
-        self._logger.debug(code)
-        self._code.append(code)
+        self._append_code(code)
         return temp_var
 
     def string(self, value):
         temp_var = self._generate_temp_var()
         code = f"String {temp_var} = \"{value}\";"
-        self._logger.debug(code)
-        self._code.append(code)
+        self._append_code(code)
         return temp_var
 
     def binop(self, value1, value2, operation):
         """create java code for binops and return variable name"""
         temp_var = self._generate_temp_var()
         code = f"double {temp_var} = {value1} {operation} {value2};"
-        self._logger.debug(code)
-        self._code.append(code)
+        self._append_code(code)
         return temp_var
 
     def relop(self, value1, value2, operation):
@@ -104,54 +109,50 @@ class CodeGenerator:
             operation = "!="
         temp_var = self._generate_temp_var()
         code = f"boolean {temp_var} = {value1} {operation} {value2};"
-        self._logger.debug(code)
-        self._code.append(code)
+        self._append_code(code)
         return temp_var
 
     def if_statement(self, conditional):
         """Create Java code to start an if statement in Java."""
         code = f"if ({conditional}) " + "{"
-        self._logger.debug(code)
-        self._code.append(code)
+        self._append_code(code)
 
     def else_statement(self):
         """Create Java code to start an else statement in Java."""
         code = "else {"
-        self._logger.debug(code)
-        self._code.append(code)
+        self._append_code(code)
 
     def closing_brace(self):
         """Generate a closing curly bracket"""
         code = "}"
-        self._logger.debug(code)
-        self._code.append(code)
+        self._append_code(code)
 
     def if_statement_lambda(self, conditional, lambda_variable):
         """Create Java code for if statements utilising Java's lambda"""
         code = f"if ({conditional}) {lambda_variable}.run();"
-        self._logger.debug(code)
-        self._code.append(code)
+        self._append_code(code)
 
     def lambda_no_param_start(self):
         """Generate the start of a paramless Java lambda, return lambda variable's name"""
         temp_var = self._generate_temp_var()
         code = f"Runnable {temp_var} = () -> " + "{"
-        self._logger.debug(code)
-        self._code.append(code)
+        self._append_code(code)
         return temp_var
 
     def lambda_end(self):
         """Generate the closing bracket for Java lambda"""
         code = "};"
-        self._logger.debug(code)
-        self._code.append(code)
+        self._append_code(code)
 
     def write(self):
         """write a Java file"""
         try:
             with open(PATH + self._name + ".java", mode="w+", encoding="utf-8") as file:
-                file.write(START)
-                for line in self._code:
+                file.write(START_METHOD)
+                for method_line in self._method:
+                    file.write(method_line + " ")
+                file.write(START_MAIN)
+                for line in self._main:
                     file.write(line + " ")
                 file.write(END)
                 file.close()
@@ -160,7 +161,7 @@ class CodeGenerator:
             raise
 
     def get_generated_code(self):
-        return self._code
+        return self._main
 
 
 default_code_generator = CodeGenerator()
