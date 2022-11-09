@@ -156,8 +156,9 @@ def p_proc_decl(prod):
 
 def p_proc_args(prod):
     "proc_args : proc_args DEREF"
+    argument = shared.node_factory.create_node(ProcArg, leaf=prod[2][1:], position=Position(prod))
     prod[0] = shared.node_factory.create_node(
-        ProcArgs, children=prod[1].children + [prod[2]], position=Position(prod)
+        ProcArgs, children=prod[1].children + [argument], position=Position(prod)
     )
 
 
@@ -173,14 +174,13 @@ def p_output(prod):
 
 def p_proc_args_empty(prod):
     "proc_args : empty"
-    prod[0] = shared.node_factory.create_node(ProcArgs, position=Position(prod))
+    prod[0] = shared.node_factory.create_node(ProcArgs, children=[], position=Position(prod))
 
 
 def p_proc_call(prod):
     "proc_call : LPAREN IDENT expressions RPAREN"
     prod[0] = shared.node_factory.create_node(
-        Command,
-        node_type=TokenType.IDENT,
+        ProcCall,
         children=prod[3],
         leaf=prod[2],
         position=Position(prod),
