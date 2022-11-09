@@ -14,6 +14,11 @@ class SymbolTable:
         self._stack.appendleft({})
         self._in_function = None
 
+    def reset(self):
+        self._stack = deque()
+        self._stack.appendleft({})
+        self._in_function = None
+
     def insert(
         self, key, value: Variable
     ):  # varsinaista arvoa ei tallenneta TODO Ota Variable pois

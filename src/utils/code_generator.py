@@ -32,6 +32,7 @@ class CodeGenerator:
     def reset(self):
         """Resets code generator internals."""
         self.reset_temp_var_index()
+        self._java_variables = dict()
         self._code = []
 
     def reset_temp_var_index(self):
@@ -66,6 +67,15 @@ class CodeGenerator:
         line = f"{java_var_name} = {value_name};"
         self._code.append(line)
         self._logger.debug(line)
+
+    def variable_value(self, logo_var_name):
+        """Create a temp var with the value of logo_var_name."""
+        java_var_name = self._mangle_logo_var_name(logo_var_name)
+        temp_var = self._generate_temp_var()
+        line = f"var {temp_var} = {java_var_name};"
+        self._code.append(line)
+        self._logger.debug(line)
+        return temp_var
 
     def move_forward(self, arg_var):
         """create Java code for moving forward"""
