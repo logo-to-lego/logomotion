@@ -50,13 +50,13 @@ class TestParser(unittest.TestCase):
     def test_parser_proc_decl_one_arg(self):
         test_string = "to foo :bar end"
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(ProcDecl, foo, children: [(ProcArgs, children: [:bar]), (StatementList)])])])"
+        expected = "(Start, children: [(StatementList, children: [(ProcDecl, foo, children: [(ProcArgs, children: [(ProgArg, bar)]), (StatementList)])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_proc_decl_multiple_args(self):
         test_string = "to foo :bar :foobar end"
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(ProcDecl, foo, children: [(ProcArgs, children: [:bar, :foobar]), (StatementList)])])])"
+        expected = "(Start, children: [(StatementList, children: [(ProcDecl, foo, children: [(ProcArgs, children: [(ProgArg, bar), (ProgArg, foobar)]), (StatementList)])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_proc_decl_statement(self):
@@ -68,13 +68,13 @@ class TestParser(unittest.TestCase):
     def test_parser_proc_decl_one_arg_and_statement(self):
         test_string = "to foo :x show :x end"
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(ProcDecl, foo, children: [(ProcArgs, children: [:x]), (StatementList, children: [(TokenType.SHOW, children: [(Deref, x)])])])])])"
+        expected = "(Start, children: [(StatementList, children: [(ProcDecl, foo, children: [(ProcArgs, children: [(ProgArg, x)]), (StatementList, children: [(TokenType.SHOW, children: [(Deref, x)])])])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_proc_decl_multiple_args_and_statement(self):
         test_string = "to foo :x :y show :x end"
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(ProcDecl, foo, children: [(ProcArgs, children: [:x, :y]), (StatementList, children: [(TokenType.SHOW, children: [(Deref, x)])])])])])"
+        expected = "(Start, children: [(StatementList, children: [(ProcDecl, foo, children: [(ProcArgs, children: [(ProgArg, x), (ProgArg, y)]), (StatementList, children: [(TokenType.SHOW, children: [(Deref, x)])])])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_output_with_deref(self):
@@ -257,24 +257,24 @@ class TestParser(unittest.TestCase):
 
     def test_proc_call(self):
         test_string = "(foo)"
-        expected = "(Start, children: [(StatementList, children: [(TokenType.IDENT, foo)])])"
+        expected = "(Start, children: [(StatementList, children: [(ProcCall, foo)])])"
         ast = self.parser.parse(test_string)
         self.assertEqual(str(ast), expected)
 
     def test_proc_call_as_part_of_something_else(self):
         test_string = "show (foo)"
-        expected = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(TokenType.IDENT, foo)])])])"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(ProcCall, foo)])])])"
         ast = self.parser.parse(test_string)
         self.assertEqual(str(ast), expected)
 
     def test_proc_call_with_args(self):
         test_string = "(foo 123)"
-        expected = "(Start, children: [(StatementList, children: [(TokenType.IDENT, foo, children: [(Float, 123.0, logo type: LogoType.FLOAT)])])])"
+        expected = "(Start, children: [(StatementList, children: [(ProcCall, foo, children: [(Float, 123.0, logo type: LogoType.FLOAT)])])])"
         ast = self.parser.parse(test_string)
         self.assertEqual(str(ast), expected)
 
     def test_proc_call_with_args_as_part_of_something_else(self):
         test_string = "show (foo 123)"
-        expected = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(TokenType.IDENT, foo, children: [(Float, 123.0, logo type: LogoType.FLOAT)])])])])"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.SHOW, children: [(ProcCall, foo, children: [(Float, 123.0, logo type: LogoType.FLOAT)])])])])"
         ast = self.parser.parse(test_string)
         self.assertEqual(str(ast), expected)

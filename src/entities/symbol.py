@@ -5,7 +5,7 @@ from entities.type import Type
 class Variable:
     "Class for symbol in symbol table"
 
-    def __init__(self, name: str, typeclass=Type()):
+    def __init__(self, name: str, typeclass=None):
         """Constructor function for Variable object
 
         Args:
@@ -14,6 +14,8 @@ class Variable:
                 Defaults to new type class.
         """
         self._name = name
+        if not typeclass:
+            typeclass = Type(variables=set(name))
         if not isinstance(typeclass, Type):
             raise TypeError("Symbols type must be an instance of Type class")
         self._typeclass = typeclass
@@ -35,6 +37,9 @@ class Variable:
     def __str__(self):
         return f"Variable {self._name}: Typeclass: ({self._typeclass})"
 
+    def get_logotype(self):
+        return self._typeclass.logotype
+
 
 class Function(Variable):
     "Class for functions in symbol table. Inherits Variable class"
@@ -49,7 +54,7 @@ class Function(Variable):
         """
         super().__init__(name, typeclass)
         if not params:
-            self._parameters = {}
+            self._parameters = []
         else:
             self._parameters = params
 
@@ -57,7 +62,7 @@ class Function(Variable):
         params_str = ""
         if self._parameters:
             params_str = f", parameters: {str(self._parameters)}"
-        return f"Function {self._name}: type: {self._typeclass.value}" + params_str
+        return f"Function {self._name}: typeclass: ({self._typeclass})" + params_str
 
     @property
     def parameters(self):
