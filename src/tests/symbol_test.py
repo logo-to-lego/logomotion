@@ -45,4 +45,4 @@ class TestSymbol(unittest.TestCase):
     def test_empty_argument_for_params_forms_empty_dict(self):
         f = Function("name")
         re = f.parameters
-        self.assertDictEqual(re, {})
+        self.assertListEqual(re, [])
