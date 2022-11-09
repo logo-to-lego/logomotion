@@ -5,7 +5,7 @@ from entities.type import Type
 class Variable:
     "Class for symbol in symbol table"
 
-    def __init__(self, name: str, typeclass=Type()):
+    def __init__(self, name: str, typeclass=None):
         """Constructor function for Variable object
 
         Args:
@@ -14,6 +14,8 @@ class Variable:
                 Defaults to new type class.
         """
         self._name = name
+        if not typeclass:
+            typeclass = Type(variables=set(name))
         if not isinstance(typeclass, Type):
             raise TypeError("Symbols type must be an instance of Type class")
         self._typeclass = typeclass

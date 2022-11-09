@@ -7,8 +7,6 @@ from entities.ast.variables import Deref
 
 
 class Output(Node):
-    def get_logotype(self):
-        pass
 
     def check_types(self):
         self.children[0].check_types()
@@ -21,9 +19,7 @@ class Output(Node):
         if procedure.get_logotype() == LogoType.UNKNOWN:
             if output_value.__class__ == Deref:
                 deref_symbol = self._symbol_tables.variables.lookup(output_value.leaf)
-
                 self._symbol_tables.concatenate_typeclasses(deref_symbol, procedure)
-
             else:
                 procedure.typeclass.logotype = output_value.get_logotype()
         else:
@@ -59,7 +55,7 @@ class ProcCall(Node):
         for index, child in enumerate(self.children):
             child.check_types()
             if index >= len(procedure.parameters):
-                continue
+                break
             argument_type = child.get_logotype()
             parameter_type = procedure.parameters[index].get_logotype()
             if argument_type != parameter_type:
@@ -78,17 +74,17 @@ class ProcDecl(Node):
         super().__init__("ProcDecl", children, leaf, **dependencies)
 
     def get_logotype(self):
+        symbol = self._symbol_tables.functions.lookup(self.leaf)
+        if symbol:
+            return symbol.typeclass.logotype
         return None
 
     def check_types(self):
         # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
             self._logger.error_handler.add_error(2017, proc=self.leaf)
-        self._symbol_tables.functions.insert(
-            self.leaf,
-            Function(self.leaf, typeclass=Type(functions={self.leaf}))
-        )
-        procedure = self._symbol_tables.functions.lookup(self.leaf)
+        procedure = Function(self.leaf, typeclass=Type(functions={self.leaf}))
+        self._symbol_tables.functions.insert(self.leaf, procedure)
         self._symbol_tables.variables.initialize_scope(in_function=procedure)
         for child in self.children:
             child.check_types()
@@ -101,8 +97,9 @@ class ProcDecl(Node):
                     proc=procedure.name,
                     param=parameter.name)
 
-        # funktion tyypin tarkastaminen TODO
-
+        if procedure.get_logotype() == LogoType.UNKNOWN and \
+           len(procedure.typeclass.variables) == 0:
+            procedure.typeclass.logotype = LogoType.VOID
 
         self._symbol_tables.variables.finalize_scope()
 
