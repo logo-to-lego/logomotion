@@ -126,5 +126,5 @@ class TestSymbolTable(unittest.TestCase):
 
     def test_get_in_scope_function_symbol_returns_current_in_scope_function_symbol(self):
         self.st.initialize_scope(in_function="function x's symbol")
-        result = self.st.get_in_scope_fuction_symbol()
+        result = self.st.get_in_scope_function_symbol()
         self.assertEqual(result, "function x's symbol")

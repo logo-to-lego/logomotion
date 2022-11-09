@@ -77,7 +77,7 @@ class Make(Node):
             or (symbol_type == LogoType.UNKNOWN)
             or (ref_type == symbol_type)
         ):
-            self._symbol_tables.variables.concatenate_typeclasses(reference_node, symbol_node)
+            self._symbol_tables.concatenate_typeclasses(reference_node, symbol_node)
         else:
             self._logger.error_handler.add_error(
                 2012,

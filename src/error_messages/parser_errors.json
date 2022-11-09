@@ -71,5 +71,41 @@
     "2016": {
         "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2 vääränlaisella vertailuoperaatiolla. Sallitut operaatiot tyypille @type1 ovat: <> ja =",
         "ENG": "In row @row you tried to compare types @type1 and @type2 with the wrong kind of relative operation. Acceptable operations for @type1 are: <> and "
+    },
+    "2017": {
+        "FIN": "Funktio '@proc' on jo määritelty",
+        "ENG": "Procedure '@proc' already declared"
+    },
+    "2018": {
+        "FIN": "Funktion '@proc' parametri '@param' on jo määritelty",
+        "ENG": "Procedure @proc's parameter '@param' is already declared"
+    },
+    "2019": {
+        "FIN": "Funktion '@proc' parametrin '@param' tyyppi on tuntematon.",
+        "ENG": "Procedure @proc's paratmeter @param's type is unknown"
+    },
+    "2020": {
+        "FIN": "Kutsuttua funktiota '@proc' rivillä @row ei ole määritelty.",
+        "ENG": "Called procedure '@proc' on row @row has not been defined."
+    },
+    "2021": {
+        "FIN": "Rivillä @row funktiokutsussa '@proc' on argumentteja @args kappaletta, vaikka niitä kuuluisi olla @params.",
+        "ENG": "Procedure call '@proc' at row @row has @args arguments even thought it should have @params arguments."
+    },
+    "2022": {
+        "FIN": "Rivillä @row funktiokutsun '@proc' argumentin '@arg' tyyppi on @atype, vaikka sen kuuluisi olla @ptype.",
+        "ENG": "At row @row procedure call @proc's argument '@arg' is type @atype even thought it should be type @ptype."
+    },
+    "2023": {
+        "FIN": "Funktion '@proc' palautusarvon tyyppi on tuntematon",
+        "ENG": "Procedure @proc's output's type is unknown "
+    },
+    "2024": {
+        "FIN": "Anna/Output-komento ei ole funktion sisällä rivillä @row",
+        "ENG": "Output command isn't inside of a function in row @row"
+    },
+    "2025": {
+        "FIN": "Funktion '@proc' palautusarvo ei ole oikeaa tyyppiä",
+        "ENG": "Function @proc's output isn't right type"
     }
 }
