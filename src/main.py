@@ -18,26 +18,32 @@ def main(filepath: str, debug: bool):
             content = file.readlines()
         return "".join(content)
 
-    def file_parser():
+    def compile():
         """Parses a user given file and prints lexer & parser results."""
-        code = load_file(filepath)
 
+        # Get file
+        code = load_file(filepath)
         logger.debug(f"Load file {filepath}:")
         logger.debug(code + "\n")
+        
+        # Tokenize
+        tokens = lexer.tokenize_input(code)
         logger.debug("Lexer tokens:")
-        logger.debug("\n".join((str(token)
-            for token in lexer.tokenize_input(code))) + "\n")
-        logger.debug("Parser AST:")
+        logger.debug("\n".join((str(token) for token in tokens)) + "\n")
 
+        # Parse and type analyzation
         start_node = parser.parse(code)
         start_node.check_types()
-        start_node.generate_code()
-
-        if debug:
-            console_io.print_ast(start_node)
-
-        error_handler.write_errors_to_console()
-        code_generator.write()
+        logger.debug("Parser AST:")
+        logger.debug(console_io.get_formatted_ast(start_node))
+        
+        # Code generation, if there are no errors
+        if not error_handler.errors:
+            logger.debug("Generated code:")
+            start_node.generate_code()
+            code_generator.write()
+        else:
+            error_handler.write_errors_to_console()
 
 
     console_io = ConsoleIO()
@@ -53,8 +59,7 @@ def main(filepath: str, debug: bool):
     parser = Parser(lexer, logger, symbol_tables, code_generator)
     parser.build()
 
-    file_parser()
-
+    compile()
 
 
 if __name__ == "__main__":
