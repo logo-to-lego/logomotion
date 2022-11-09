@@ -98,14 +98,14 @@
     },
     "2023": {
         "FIN": "Funktion '@proc' palautusarvon tyyppi on tuntematon",
-        "ENG": ""
+        "ENG": "Procedure @proc's output's type is unknown "
     },
     "2024": {
         "FIN": "Anna/Output-komento ei ole funktion sisällä rivillä @row",
-        "ENG": ""
+        "ENG": "Output command isn't inside of a function in row @row"
     },
     "2025": {
         "FIN": "Funktion '@proc' palautusarvo ei ole oikeaa tyyppiä",
-        "ENG": ""
+        "ENG": "Function @proc's output isn't right type"
     }
 }

@@ -60,7 +60,7 @@ class ProcCall(Node):
             child.check_types()
             if index >= len(procedure.parameters):
                 continue
-            argument_type = child.get_type()
+            argument_type = child.get_logotype()
             parameter_type = procedure.parameters[index].get_logotype()
             if argument_type != parameter_type:
                 self._logger.error_handler.add_error(

@@ -94,12 +94,13 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         file_parser()
     else:
-        USE_UI = True
+        USE_UI = False
 
         if USE_UI:
             parser_ui()
         else:
-            PROG = """to f make "x 1 output :x end"""
+            PROG = """to f :y :y :z make "x 1 output :x output :y output 1
+                      end (f 1) (f 1 2 3 4) output 2 to f end"""
             ast = parser.parse(PROG)
             ast.check_types()
             io.print_ast(ast)

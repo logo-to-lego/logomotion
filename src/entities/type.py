@@ -53,7 +53,7 @@ class Type:
             if logotype2 != LogoType.UNKNOWN:
                 return logotype2
             return LogoType.UNKNOWN
-        print(typeclass2.variables, typeclass1.variables)
+
         variables = typeclass1.variables.union(typeclass2.variables)
         functions = typeclass1.functions.union(typeclass2.functions)
         return Type(logotype=get_new_logotype(), variables=variables, functions=functions)
