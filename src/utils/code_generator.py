@@ -16,7 +16,7 @@ PATH = os.path.join(
 )
 
 
-class CodeGenerator:
+class JavaCodeGenerator:
     """A class for generating Java code"""
 
     def __init__(self, name=DEFAULT_NAME, **dependencies):
@@ -199,4 +199,4 @@ class CodeGenerator:
         return self._code
 
 
-default_code_generator = CodeGenerator()
+default_code_generator = JavaCodeGenerator()
