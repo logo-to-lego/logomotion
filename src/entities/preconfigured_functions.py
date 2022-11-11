@@ -8,9 +8,10 @@ def initialize_logo_functions(symbol_tables):
     return symbol_tables
 
 def _repeat():
+    fname = 'repeat'
     repeat_n = Variable("n", Type(logotype=LogoType.FLOAT))
     nameless = Variable("block", Type(logotype=LogoType.NAMELESS_FUNCTION))
     procedure = Function(
-        "repeat", params=[repeat_n, nameless], typeclass=Type(logotype=LogoType.VOID)
+        fname, params=[repeat_n, nameless], typeclass=Type(logotype=LogoType.VOID,functions=set(fname))
     )
     return procedure
