@@ -41,6 +41,11 @@ class Deref(Node):
             )
         self._symbol = symbol
 
+    def set_logotype(self, logotype):
+        symbol = self.get_symbol()
+        if symbol:
+            symbol.typeclass.logotype = logotype
+
     def get_logotype(self) -> LogoType:
         symbol = self.get_symbol()
         if symbol:
