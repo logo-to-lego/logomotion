@@ -11,6 +11,11 @@ class SymbolTable:
         self._stack.appendleft({})
         self._in_function = None
 
+    def reset(self):
+        self._stack = deque()
+        self._stack.appendleft({})
+        self._in_function = None
+
     def insert(self, key, value):
         """Inserts a new entry to the symbol table"""
         self._stack[0][key] = value

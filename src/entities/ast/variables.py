@@ -63,6 +63,9 @@ class Deref(Node):
         if not symbol:
             self._logger.error_handler.add_error(2007, var=self.leaf)
 
+    def generate_code(self):
+        return self._code_generator.variable_name(self.leaf)
+
 
 class StringLiteral(Node):
     def __init__(self, leaf, **dependencies):
