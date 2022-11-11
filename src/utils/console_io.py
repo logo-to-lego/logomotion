@@ -25,7 +25,7 @@ class ConsoleIO:
         return result
 
     @staticmethod
-    def print_ast(ast, indent=""):
+    def print_ast(ast):
         """Prints ast as formatted string"""
         print(default_console_io.get_formatted_ast(ast))
 
