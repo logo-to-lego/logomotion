@@ -17,10 +17,10 @@ def main():
         """Checks that given programming language is valid in
         .env file and returns a new instance of CodeGenerator class"""
 
-        if code_gen_lang == "Java":
+        if CODE_GEN_LANG == "Java":
             return JavaCodeGenerator(logger=logger)
         err_msg = (
-            f"{code_gen_lang} is not an implemented"
+            f"{CODE_GEN_LANG} is not an implemented"
             "programming language for code generator")
         raise Exception(err_msg)
 
@@ -28,16 +28,15 @@ def main():
         """Compiles a user given logo file and generates code if there are no errors.
         Prints lexer & parser results if debug flag (-d, --debug) is on."""
 
-        # Get file
-        logger.debug(logo_code + "\n")
+        logger.debug(LOGO_CODE + "\n")
 
         # Tokenize
-        tokens = lexer.tokenize_input(logo_code)
+        tokens = lexer.tokenize_input(LOGO_CODE)
         logger.debug("Lexer tokens:")
         logger.debug("\n".join((str(token) for token in tokens)) + "\n")
 
         # Parse and type analyzation
-        start_node = parser.parse(logo_code)
+        start_node = parser.parse(LOGO_CODE)
         start_node.check_types()
         logger.debug("Parser AST:")
         logger.debug(console_io.get_formatted_ast(start_node))
@@ -52,7 +51,7 @@ def main():
 
     # Create required classes for the compiler
     console_io = ConsoleIO()
-    error_handler = ErrorHandler(console_io=console_io, language=err_msg_lang)
+    error_handler = ErrorHandler(console_io=console_io, language=MESSAGE_LANG)
     logger = Logger(console_io, error_handler, args.debug)
     lexer = Lexer(logger)
     lexer.build()
@@ -83,13 +82,13 @@ if __name__ == "__main__":
 
     # Load variables from .env file
     dotenv.load_dotenv()
-    err_msg_lang = os.getenv("MESSAGE_LANG")
-    code_gen_lang = os.getenv("CODE_GEN_LANG")
+    MESSAGE_LANG = os.getenv("MESSAGE_LANG")
+    CODE_GEN_LANG = os.getenv("CODE_GEN_LANG")
 
     # Get command line arguments
     args = get_cmd_line_args()
 
     # Get logo code from file. Filepath is given as a command line argument
-    logo_code = load_file(args.filepath)
+    LOGO_CODE = load_file(args.filepath)
 
     main()
