@@ -26,6 +26,9 @@ class Output(Node):
             if procedure.get_logotype() != output_value.get_logotype():
                 self._logger.error_handler.add_error(2025, proc=procedure.name)
 
+    def generate_code(self):
+        pass
+
 
 class ProcCall(Node):
     def __init__(self, children, leaf, **dependencies):
@@ -65,6 +68,9 @@ class ProcCall(Node):
                     row=self.position.get_pos()[0],
                 )
 
+    def generate_code(self):
+        pass
+
 
 class ProcDecl(Node):
     def __init__(self, children, leaf, **dependencies):
@@ -98,6 +104,13 @@ class ProcDecl(Node):
 
         self._symbol_tables.variables.finalize_scope()
 
+    def generate_code(self):
+        pass
+        # määritä funktio code_genissä: "public {tyyppi=get_logotype()} {nimi=self.leaf} (..."
+        # self.children[0].generate_code()
+        # code_gen: "...) {..."
+        # self.children[1].generate_code()
+        # code_gen: "...}"
 
 class ProcArgs(Node):
     def __init__(self, children, **dependencies):
@@ -106,6 +119,11 @@ class ProcArgs(Node):
     def check_types(self):
         for child in self.children:
             child.check_types()
+
+    def generate_code(self):
+        pass
+        # for child in self.childrens:
+        #    child.generate_code()
 
 
 class ProcArg(Node):
@@ -120,3 +138,7 @@ class ProcArg(Node):
         variable = Variable(self.leaf)
         procedure.parameters.append(variable)
         self._symbol_tables.variables.insert(self.leaf, variable)
+
+    def generate_code(self):
+        pass
+        # code_gen: määritetään parametrin nimi ja tyyppi

@@ -47,6 +47,20 @@ class CodeGenerator:
             self._main.append(code)
         self._logger.debug(code)
 
+    def start_function(self, name, type):
+        if self._proc_flag:
+            return
+        self._proc_flag = True
+        code = f"public {type} {name}("
+        self._append_code(code)
+
+    def end_function(self):
+        if not self._proc_flag:
+            return
+        self._proc_flag = False
+        code = "} "
+        self._append_code(code)
+
     def _generate_temp_var(self):
         """create an unique temp variable name"""
         return f"temp{self._increase_temp_var_index()}"
