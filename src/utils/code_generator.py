@@ -1,6 +1,7 @@
 """Code Generator module"""
 # pylint: disable=too-many-public-methods
 import os
+from entities.logotypes import LogoType
 from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
@@ -17,6 +18,8 @@ DEFAULT_NAME = "Logo"
 PATH = os.path.join(
     os.path.dirname(os.path.relpath(__file__)), "../../logomotion_gradle/src/main/java/logo/"
 )
+TYPES = {LogoType.FLOAT: "double", LogoType.STRING: "string",
+        LogoType.BOOL: "boolean", LogoType.VOID: "void"}
 
 
 class CodeGenerator:
@@ -51,18 +54,28 @@ class CodeGenerator:
             self._main.append(code)
         self._logger.debug(code)
 
-    def start_function(self, name, type):
+    def start_function_declaration(self, func_name, func_type):
         if self._proc_flag:
             return
         self._proc_flag = True
-        code = f"public {type} {name}("
+        code = f"public {str(func_type).lower()} {func_name}("
         self._append_code(code)
 
-    def end_function(self):
+    def end_function_declaration(self):
         if not self._proc_flag:
             return
         self._proc_flag = False
         code = "} "
+        self._append_code(code)
+    
+    def add_function_parameters(self, parameters):
+        code = ""
+        for index, param in enumerate(parameters):
+            code += f"{TYPES[param[0]]} {param[1]}"
+            if index < len(parameters)-1:
+                code += ", "
+            else:
+                code += ") {"
         self._append_code(code)
 
     def _generate_temp_var(self):
@@ -81,6 +94,7 @@ class CodeGenerator:
             java_var_name = self._generate_var()
             self._java_variable_names[logo_var_name] = java_var_name
         return java_var_name
+        
 
     def create_new_variable(self, logo_var_name, value_name):
         """Create a new Java variable and assign it a value."""
@@ -93,8 +107,7 @@ class CodeGenerator:
         """Assign a new value to an already existing variable."""
         java_var_name = self._mangle_logo_var_name(logo_var_name)
         line = f"{java_var_name} = {value_name};"
-        self._code.append(line)
-        self._logger.debug(line)
+        self._append_code(line)
 
     def variable_name(self, logo_var_name):
         """Returns the java variable name of the logo variable."""
