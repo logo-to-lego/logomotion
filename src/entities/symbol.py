@@ -15,7 +15,7 @@ class Variable:
         """
         self._name = name
         if not typeclass:
-            typeclass = Type(variables=set(name))
+            typeclass = Type(variables={name})
         if not isinstance(typeclass, Type):
             raise TypeError("Symbols type must be an instance of Type class")
         self._typeclass = typeclass
