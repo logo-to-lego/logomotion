@@ -4,11 +4,11 @@ from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
 START_METHOD = (
-    "package logo; import classes.EV3MovePilot; import java.lang.Runnable;",
+    "package logo; import classes.EV3MovePilot; import java.lang.Runnable;" \
     "public class Logo { "
 )
 START_MAIN = (
-    "public static void main(String[] args) { ",
+    "public static void main(String[] args) { " \
     "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
 )
 END = "} }"

@@ -129,15 +129,19 @@ class ProcArgs(Node):
 class ProcArg(Node):
     def __init__(self, children=None, **dependencies):
         super().__init__("ProgArg", children, **dependencies)
+        self.symbol: Variable = None
+
+    def get_logotype(self):
+        return self._symbol_tables.variables.lookup(self.leaf)
 
     def check_types(self):
         procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
         # Check the parameter hasn't already been declarated
         if self._symbol_tables.variables.lookup(self.leaf):
             self._logger.error_handler.add_error(2018, proc=procedure.name, param=self.leaf)
-        variable = Variable(self.leaf)
-        procedure.parameters.append(variable)
-        self._symbol_tables.variables.insert(self.leaf, variable)
+        self.symbol = Variable(self.leaf)
+        procedure.parameters.append(self.symbol)
+        self._symbol_tables.variables.insert(self.leaf, self.symbol)
 
     def generate_code(self):
         pass
