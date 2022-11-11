@@ -86,15 +86,13 @@ class CodeGenerator:
         """Create a new Java variable and assign it a value."""
         java_var_name = self._mangle_logo_var_name(logo_var_name)
         line = f"var {java_var_name} = {value_name};"
-        self._code.append(line)
-        self._logger.debug(line)
+        self._append_code(line)
 
     def assign_value(self, logo_var_name, value_name):
         """Assign a new value to an already existing variable."""
         java_var_name = self._mangle_logo_var_name(logo_var_name)
         line = f"{java_var_name} = {value_name};"
-        self._code.append(line)
-        self._logger.debug(line)
+        self._append_code(line)
 
     def variable_name(self, logo_var_name):
         """Returns the java variable name of the logo variable."""
