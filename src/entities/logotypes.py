@@ -11,3 +11,4 @@ class LogoType(Enum):
     BOOL = "BOOL"
     VOID = "VOID"
     UNKNOWN = "UNKNOWN"
+    NAMELESS_FUNCTION = "NAMELESS_FUNCTION"

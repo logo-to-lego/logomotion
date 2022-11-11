@@ -49,7 +49,7 @@ class Function(Variable):
 
         Args:
             name (str): Functions name
-            params (dict, optional): Arguments given to function. Defaults to None.
+            params ([Variable], optional): Arguments given to function. Defaults to None.
             typeclass (Type, optional): Functions return values type. Defaults to LogoType.UNKNOWN
         """
         super().__init__(name, typeclass)

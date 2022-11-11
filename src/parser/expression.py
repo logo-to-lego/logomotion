@@ -87,6 +87,7 @@ def p_expression_proc_call(prod):
     "expression : proc_call"
     prod[0] = prod[1]
 
+
 def p_expression_block(prod):
     "expression : block"
     prod[0] = prod[1]

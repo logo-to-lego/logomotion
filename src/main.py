@@ -4,11 +4,13 @@ import sys
 from parser.parser import Parser
 from entities.symbol_tables import SymbolTables
 from entities.symbol_table import SymbolTable
+from entities.preconfigured_functions import initialize_logo_functions
 from lexer.lexer import Lexer
 from utils.code_generator import CodeGenerator
 from utils.console_io import ConsoleIO
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
+
 
 io = ConsoleIO()
 error_handler = ErrorHandler(console_io=io, language="FIN")
@@ -19,7 +21,10 @@ lexer.build()
 
 symbol_tables = SymbolTables()
 code_generator = CodeGenerator(logger=logger)
-
+symbol_tables = initialize_logo_functions(symbol_tables)
+#print("DEBUG--", symbol_tables.functions.get_current_scope())
+#print("DEBUG--", symbol_tables.functions.get_current_scope()["repeat"])
+#print("DEBUG--", symbol_tables.functions.get_current_scope()["repeat"].parameters[0])
 parser = Parser(lexer, logger, symbol_tables, code_generator)
 parser.build()
 

@@ -1,4 +1,4 @@
-#pylint disable=fixme
+# pylint disable=fixme
 from entities.ast.node import Node
 from entities.logotypes import LogoType
 from entities.symbol import Function, Variable
@@ -7,7 +7,6 @@ from entities.ast.variables import Deref
 
 
 class Output(Node):
-
     def check_types(self):
         self.children[0].check_types()
         output_value = self.children[0]
@@ -37,9 +36,7 @@ class ProcCall(Node):
         procedure = self._symbol_tables.functions.lookup(self.leaf)
         if not procedure:
             self._logger.error_handler.add_error(
-                2020,
-                proc=self.leaf,
-                row=self.position.get_pos()[0]
+                2020, proc=self.leaf, row=self.position.get_pos()[0]
             )
             return
         # Check the procedure has right amout of arguments
@@ -49,7 +46,7 @@ class ProcCall(Node):
                 proc=self.leaf,
                 row=self.position.get_pos()[0],
                 args=len(self.children),
-                params=len(procedure.parameters)
+                params=len(procedure.parameters),
             )
         # Check procedure's arguments have right types
         for index, child in enumerate(self.children):
@@ -65,7 +62,7 @@ class ProcCall(Node):
                     arg=child.leaf,
                     atype=argument_type.value,
                     ptype=parameter_type.value,
-                    row=self.position.get_pos()[0]
+                    row=self.position.get_pos()[0],
                 )
 
 
@@ -93,12 +90,10 @@ class ProcDecl(Node):
         for parameter in procedure.parameters:
             if parameter.get_logotype() == LogoType.UNKNOWN:
                 self._logger.error_handler.add_error(
-                    2019,
-                    proc=procedure.name,
-                    param=parameter.name)
+                    2019, proc=procedure.name, param=parameter.name
+                )
 
-        if procedure.get_logotype() == LogoType.UNKNOWN and \
-           len(procedure.typeclass.variables) == 0:
+        if procedure.get_logotype() == LogoType.UNKNOWN and len(procedure.typeclass.variables) == 0:
             procedure.typeclass.logotype = LogoType.VOID
 
         self._symbol_tables.variables.finalize_scope()
@@ -111,6 +106,7 @@ class ProcArgs(Node):
     def check_types(self):
         for child in self.children:
             child.check_types()
+
 
 class ProcArg(Node):
     def __init__(self, children=None, **dependencies):
