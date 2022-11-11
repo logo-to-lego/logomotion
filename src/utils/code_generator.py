@@ -1,4 +1,5 @@
 """Code Generator module"""
+# pylint: disable=too-many-public-methods
 import os
 from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
@@ -23,6 +24,7 @@ class CodeGenerator:
         self._name = name
         self._temp_var_index = 0
         self._logger: Logger = dependencies.get("logger", default_logger)
+        self._java_variable_names = {}
 
     def _increase_temp_var_index(self):
         """increase index for temp variables"""
@@ -30,12 +32,46 @@ class CodeGenerator:
         return self._temp_var_index
 
     def reset(self):
+        """Resets code generator internals."""
+        self._java_variable_names = {}
         self._code = []
         self._temp_var_index = 0
 
     def _generate_temp_var(self):
         """create an unique temp variable name"""
         return f"temp{self._increase_temp_var_index()}"
+
+    def _generate_var(self):
+        """Create a unique variable name"""
+        return f"var{self._increase_temp_var_index()}"
+
+    def _mangle_logo_var_name(self, logo_var_name):
+        """Mangles logo variable names into Java variables.
+        If the logo variable name was previously mangled, returns the previous one."""
+        java_var_name = self._java_variable_names.get(logo_var_name, None)
+        if not java_var_name:
+            java_var_name = self._generate_var()
+            self._java_variable_names[logo_var_name] = java_var_name
+        return java_var_name
+
+    def create_new_variable(self, logo_var_name, value_name):
+        """Create a new Java variable and assign it a value."""
+        java_var_name = self._mangle_logo_var_name(logo_var_name)
+        line = f"var {java_var_name} = {value_name};"
+        self._code.append(line)
+        self._logger.debug(line)
+
+    def assign_value(self, logo_var_name, value_name):
+        """Assign a new value to an already existing variable."""
+        java_var_name = self._mangle_logo_var_name(logo_var_name)
+        line = f"{java_var_name} = {value_name};"
+        self._code.append(line)
+        self._logger.debug(line)
+
+    def variable_name(self, logo_var_name):
+        """Returns the java variable name of the logo variable."""
+        java_var_name = self._mangle_logo_var_name(logo_var_name)
+        return java_var_name
 
     def move_forward(self, arg_var):
         """create Java code for moving forward"""
@@ -85,7 +121,7 @@ class CodeGenerator:
 
     def string(self, value):
         temp_var = self._generate_temp_var()
-        code = f"String {temp_var} = \"{value}\";"
+        code = f'String {temp_var} = "{value}";'
         self._logger.debug(code)
         self._code.append(code)
         return temp_var
