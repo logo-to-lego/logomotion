@@ -18,8 +18,9 @@ DEFAULT_NAME = "Logo"
 PATH = os.path.join(
     os.path.dirname(os.path.relpath(__file__)), "../../logomotion_gradle/src/main/java/logo/"
 )
-TYPES = {LogoType.FLOAT: "double", LogoType.STRING: "string",
-        LogoType.BOOL: "boolean", LogoType.VOID: "void"}
+TYPES = {LogoType.FLOAT: "double", LogoType.STRING: "String",
+        LogoType.BOOL: "boolean", LogoType.VOID: "void", LogoType.UNKNOWN: "unknown"}
+        # unknown'n voi poistaa, kunhan funktioparametrien tyypitys toimii
 
 
 class CodeGenerator:
@@ -58,7 +59,7 @@ class CodeGenerator:
         if self._proc_flag:
             return
         self._proc_flag = True
-        code = f"public {str(func_type).lower()} {func_name}("
+        code = f"public {TYPES[func_type]} {func_name}("
         self._append_code(code)
 
     def end_function_declaration(self):
@@ -67,7 +68,7 @@ class CodeGenerator:
         self._proc_flag = False
         code = "} "
         self._append_code(code)
-    
+
     def add_function_parameters(self, parameters):
         code = ""
         for index, param in enumerate(parameters):
@@ -94,14 +95,12 @@ class CodeGenerator:
             java_var_name = self._generate_var()
             self._java_variable_names[logo_var_name] = java_var_name
         return java_var_name
-        
 
     def create_new_variable(self, logo_var_name, value_name):
         """Create a new Java variable and assign it a value."""
         java_var_name = self._mangle_logo_var_name(logo_var_name)
         line = f"var {java_var_name} = {value_name};"
-        self._code.append(line)
-        self._logger.debug(line)
+        self._append_code(line)
 
     def assign_value(self, logo_var_name, value_name):
         """Assign a new value to an already existing variable."""

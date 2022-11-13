@@ -99,23 +99,21 @@ class ProcDecl(Node):
                     2019, proc=self.procedure.name, param=parameter.name
                 )
 
-        if self.procedure.get_logotype() == LogoType.UNKNOWN and len(self.procedure.typeclass.variables) == 0:
+        if self.procedure.get_logotype() == LogoType.UNKNOWN and \
+           len(self.procedure.typeclass.variables) == 0:
             self.procedure.typeclass.logotype = LogoType.VOID
 
         self._symbol_tables.variables.finalize_scope()
 
     def generate_code(self):
-        print("PROGDECL")
         self._code_generator.start_function_declaration(
             func_name=self.leaf,
-            func_type=self.get_logotype().value
+            func_type=self.get_logotype()
         )
-        self.children[0].generate_code()
-        # määritä funktio code_genissä: "public {tyyppi=get_logotype()} {nimi=self.leaf} (..."
-        # self.children[0].generate_code()
-        # code_gen: "...) {..."
-        # self.children[1].generate_code()
-        # code_gen: "...}"
+        for child in self.children:
+            child.generate_code()
+        self._code_generator.end_function_declaration()
+
 
 class ProcArgs(Node):
     def __init__(self, children, **dependencies):
@@ -126,7 +124,6 @@ class ProcArgs(Node):
             child.check_types()
 
     def generate_code(self):
-        print("PROGARGS")
         parameters = []
         for child in self.children:
             parameters.append(child.generate_code())
@@ -153,6 +150,5 @@ class ProcArg(Node):
         self._symbol_tables.variables.insert(self.leaf, self.symbol)
 
     def generate_code(self):
-        print("PROGARG")
         return (self.get_logotype(), self.leaf)
         # code_gen: määritetään parametrin nimi ja tyyppi
