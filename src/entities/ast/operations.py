@@ -69,25 +69,74 @@ class RelOp(Node):
         child1.check_types()
         child2.check_types()
 
-        child1_type = child1.get_logotype()
-        child2_type = child2.get_logotype()
-
         row = child1.position.get_pos()[0]
 
-        if LogoType.UNKNOWN in (child1_type, child2_type):
-            self._logger.error_handler.add_error(2004, row=row)
+        allowed_types = [LogoType.UNKNOWN, LogoType.FLOAT, LogoType.STRING]
 
-        if child1_type != child2_type:
-            self._logger.error_handler.add_error(
-                2005, row=row, type1=child1_type.value, type2=child2_type.value
-            )
+        # Deref.get_logotype() returns None if variable is not defined
+        if child1.get_logotype() == None or child2.get_logotype() == None:
+            return
 
-        if (
-            child1_type == LogoType.STRING and child2_type == LogoType.STRING
-        ) and self.leaf not in ("<>", "="):
+        # Check that both childrens types are comparable
+        if (child1.get_logotype() not in allowed_types or
+            child2.get_logotype() not in allowed_types):
             self._logger.error_handler.add_error(
-                2016, row=row, type1=child1_type.value, type2=child2_type.value
-            )
+                2005, row=row, type1=child1.get_logotype().value, type2=child2.get_logotype().value)
+            return
+
+        # Types can be different only if at least one of them is unknown
+        if child1.get_logotype() == LogoType.UNKNOWN:
+            child1.set_logotype(child2.get_logotype())
+        elif child2.get_logotype() == LogoType.UNKNOWN:
+            child2.set_logotype(child1.get_logotype())
+        
+        # If after setting unknown types the types are still not the same -> error
+        if child1.get_logotype() != child2.get_logotype():
+            self._logger.error_handler.add_error(
+                2005, row=row, type1=child1.get_logotype().value, type2=child2.get_logotype().value)
+            return
+
+        # Equals (=) and not equals (<>) can be used with FLOAT AND STRING
+        if self.leaf in ("<>", "="):
+            # Comparing STRING or FLOAT 
+            if child1.get_logotype() == LogoType.UNKNOWN and child2.get_logotype() == LogoType.UNKNOWN:
+                self._logger.error_handler.add_error(
+                    2004, row=row)
+                return
+
+        # <, >, <= and >= can only be used with type FLOAT
+        elif self.leaf in ("<", ">", "<=", ">="):
+            if child1.get_logotype() == LogoType.UNKNOWN:
+                child1.set_logotype(LogoType.FLOAT)
+            if child2.get_logotype() == LogoType.UNKNOWN:
+                child2.set_logotype(LogoType.FLOAT)
+
+            if (child1.get_logotype() is not LogoType.FLOAT or
+                child2.get_logotype() is not LogoType.FLOAT):
+                self._logger.error_handler.add_error(
+                    2016, 
+                    row=row, 
+                    type1=child1.get_logotype().value, 
+                    type2=child2.get_logotype().value)
+            
+
+
+
+
+        # if LogoType.UNKNOWN in (child1_type, child2_type):
+        #     self._logger.error_handler.add_error(2004, row=row)
+
+        # if child1_type != child2_type:
+        #     self._logger.error_handler.add_error(
+        #         2005, row=row, type1=child1_type.value, type2=child2_type.value
+        #     )
+
+        # if (
+        #     child1_type == LogoType.STRING and child2_type == LogoType.STRING
+        # ) and self.leaf not in ("<>", "="):
+        #     self._logger.error_handler.add_error(
+        #         2016, row=row, type1=child1_type.value, type2=child2_type.value
+        #     )
 
     def generate_code(self):
         """Generate relop to java"""
