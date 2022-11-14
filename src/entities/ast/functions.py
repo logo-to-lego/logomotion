@@ -27,7 +27,8 @@ class Output(Node):
                 self._logger.error_handler.add_error(2025, proc=procedure.name)
 
     def generate_code(self):
-        pass
+        output_var = self.children[0].generate_code()
+        self._code_generator.return_statement(output_var)
 
 
 class ProcCall(Node):
@@ -69,7 +70,10 @@ class ProcCall(Node):
                 )
 
     def generate_code(self):
-        pass
+        temp_vars = []
+        for child in self.children:
+            temp_vars.append(child.generate_code())
+        self._code_generator.function_call(self.leaf, temp_vars)
 
 
 class ProcDecl(Node):
@@ -107,8 +111,8 @@ class ProcDecl(Node):
 
     def generate_code(self):
         self._code_generator.start_function_declaration(
-            func_name=self.leaf,
-            func_type=self.get_logotype()
+            logo_func_name=self.leaf,
+            logo_func_type=self.get_logotype()
         )
         for child in self.children:
             child.generate_code()
@@ -151,4 +155,3 @@ class ProcArg(Node):
 
     def generate_code(self):
         return (self.get_logotype(), self.leaf)
-        # code_gen: määritetään parametrin nimi ja tyyppi

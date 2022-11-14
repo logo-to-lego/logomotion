@@ -11,14 +11,15 @@ START_METHOD = (
 )
 START_MAIN = (
     "public static void main(String[] args) { " \
-    "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
+    "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); " \
+    "Logo logo = new Logo();"
 )
 END = "} }"
 DEFAULT_NAME = "Logo"
 PATH = os.path.join(
     os.path.dirname(os.path.relpath(__file__)), "../../logomotion_gradle/src/main/java/logo/"
 )
-TYPES = {LogoType.FLOAT: "double", LogoType.STRING: "String",
+JAVA_TYPES = {LogoType.FLOAT: "double", LogoType.STRING: "String",
         LogoType.BOOL: "boolean", LogoType.VOID: "void", LogoType.UNKNOWN: "unknown"}
         # unknown'n voi poistaa, kunhan funktioparametrien tyypitys toimii
 
@@ -34,6 +35,7 @@ class CodeGenerator:
         self._temp_var_index = 0
         self._logger: Logger = dependencies.get("logger", default_logger)
         self._java_variable_names = {}
+        self._java_function_names = {}
 
     def _increase_temp_var_index(self):
         """increase index for temp variables"""
@@ -55,28 +57,48 @@ class CodeGenerator:
             self._main.append(code)
         self._logger.debug(code)
 
-    def start_function_declaration(self, func_name, func_type):
+    def start_function_declaration(self, logo_func_name, logo_func_type):
         if self._proc_flag:
             return
         self._proc_flag = True
-        code = f"public {TYPES[func_type]} {func_name}("
+        java_func_name = self._mangle_java_function_name(logo_func_name)
+        code = f"public {JAVA_TYPES[logo_func_type]} {java_func_name}("
         self._append_code(code)
+
+    def _mangle_java_function_name(self, logo_func_name):
+        java_func_name = self._java_function_names.get(logo_func_name, None)
+        if not java_func_name:
+            java_func_name = self._generate_func_name()
+            self._java_function_names[logo_func_name] = java_func_name
+        return java_func_name
+    
+    def _generate_func_name(self):
+        return f"func{self._increase_temp_var_index()}"
 
     def end_function_declaration(self):
         if not self._proc_flag:
             return
-        self._proc_flag = False
         code = "} "
         self._append_code(code)
+        self._proc_flag = False
 
     def add_function_parameters(self, parameters):
         code = ""
         for index, param in enumerate(parameters):
-            code += f"{TYPES[param[0]]} {param[1]}"
+            code += f"{JAVA_TYPES[param[0]]} {self._mangle_logo_var_name(param[1])}"
             if index < len(parameters)-1:
                 code += ", "
-            else:
-                code += ") {"
+        code += ") {"
+        self._append_code(code)
+
+    def return_statement(self, arg_var):
+        code = f"return {arg_var};"
+        self._append_code(code)
+
+    def function_call(self, logo_func_name, arg_vars):
+        java_func_name = self._mangle_java_function_name(logo_func_name)
+        arguments = ", ".join(arg_vars)
+        code = f"logo.{java_func_name}({arguments});"
         self._append_code(code)
 
     def _generate_temp_var(self):

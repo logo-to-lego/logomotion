@@ -99,8 +99,14 @@ if __name__ == "__main__":
         if USE_UI:
             parser_ui()
         else:
-            PROG = """TO f :x output :x+1 END"""
+            PROG = """TO f :x :z make "a :x+:z output :a+1 END TO g :y make "y 2 output :y END TO h output 1 END (f 1 2) (g 3) (h)"""
             ast = parser.parse(PROG)
             ast.check_types()
             io.print_ast(ast)
             error_handler.write_errors_to_console()
+            error_handler.errors.clear()
+            ast.generate_code()
+            code_generator.write()
+
+            symbol_tables.functions = SymbolTable()
+            symbol_tables.variables = SymbolTable()
