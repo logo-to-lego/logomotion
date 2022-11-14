@@ -245,7 +245,8 @@ class JavaCodeGenerator:
             raise
 
     def get_generated_code(self):
-        return self._main
+        """Returns list of generated code for tests"""
+        return self._method + self._main
 
 
 default_code_generator = JavaCodeGenerator()
