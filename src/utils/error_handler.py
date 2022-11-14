@@ -9,6 +9,7 @@ from utils.console_io import default_console_io
 FIN = "FIN"
 ENG = "ENG"
 
+
 class ErrorHandler:
     """ErrorHandler class takes all error messages when running the compiler.
     The messages are stored in a list

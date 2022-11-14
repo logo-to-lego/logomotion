@@ -1,5 +1,3 @@
-
-
 """Main module for the compiler.
 """
 import argparse
@@ -7,6 +5,7 @@ import os
 from parser.parser import Parser
 import dotenv
 from entities.symbol_tables import SymbolTables
+from entities.preconfigured_functions import initialize_logo_functions
 from lexer.lexer import Lexer
 from utils.code_generator import JavaCodeGenerator
 from utils.console_io import ConsoleIO
@@ -21,9 +20,7 @@ def main():
 
         if CODE_GEN_LANG == "Java":
             return JavaCodeGenerator(logger=logger)
-        err_msg = (
-            f"{CODE_GEN_LANG} is not an implemented"
-            "programming language for code generator")
+        err_msg = f"{CODE_GEN_LANG} is not an implemented" "programming language for code generator"
         raise Exception(err_msg)
 
     def compile_logo():
@@ -58,6 +55,7 @@ def main():
     lexer = Lexer(logger)
     lexer.build()
     symbol_tables = SymbolTables()
+    symbol_tables = initialize_logo_functions(symbol_tables)
     code_generator = get_code_generator()
     parser = Parser(lexer, logger, symbol_tables, code_generator)
     parser.build()
@@ -67,10 +65,11 @@ def main():
 
 
 if __name__ == "__main__":
+
     def get_cmd_line_args():
         arg_parser = argparse.ArgumentParser(
-        prog="Logomotion",
-        description="Compile logo to java via python")
+            prog="Logomotion", description="Compile logo to java via python"
+        )
         arg_parser.add_argument("filepath")
         arg_parser.add_argument("-d", "--debug", action="store_true")
         return arg_parser.parse_args()

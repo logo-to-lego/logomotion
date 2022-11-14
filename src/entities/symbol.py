@@ -19,6 +19,7 @@ class Variable:
         if not isinstance(typeclass, Type):
             raise TypeError("Symbols type must be an instance of Type class")
         self._typeclass = typeclass
+        self._typeclass.add_variable(name)
 
     @property
     def name(self):
@@ -49,7 +50,7 @@ class Function(Variable):
 
         Args:
             name (str): Functions name
-            params (dict, optional): Arguments given to function. Defaults to None.
+            params ([Variable], optional): Arguments given to function. Defaults to None.
             typeclass (Type, optional): Functions return values type. Defaults to LogoType.UNKNOWN
         """
         super().__init__(name, typeclass)
