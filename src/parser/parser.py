@@ -98,7 +98,7 @@ def p_statement_list_empty(prod):
 def p_block_statement_list(prod):
     "block : LBRACE statement_list RBRACE"
     prod[0] = shared.node_factory.create_node(
-        Block, children=prod[2].children, position=Position(prod)
+        Block, children=[prod[2]], position=Position(prod)
     )
 
 
