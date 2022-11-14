@@ -1,4 +1,4 @@
-#pylint disable=fixme
+# pylint disable=fixme
 from entities.ast.node import Node
 from entities.logotypes import LogoType
 from entities.symbol import Function, Variable
@@ -7,7 +7,6 @@ from entities.ast.variables import Deref
 
 
 class Output(Node):
-
     def check_types(self):
         self.children[0].check_types()
         output_value = self.children[0]
@@ -27,6 +26,10 @@ class Output(Node):
             if procedure.get_logotype() != output_value.get_logotype():
                 self._logger.error_handler.add_error(2025, proc=procedure.name)
 
+    def generate_code(self):
+        output_var = self.children[0].generate_code()
+        self._code_generator.return_statement(output_var)
+
 
 class ProcCall(Node):
     def __init__(self, children, leaf, **dependencies):
@@ -37,9 +40,7 @@ class ProcCall(Node):
         procedure = self._symbol_tables.functions.lookup(self.leaf)
         if not procedure:
             self._logger.error_handler.add_error(
-                2020,
-                proc=self.leaf,
-                row=self.position.get_pos()[0]
+                2020, proc=self.leaf, row=self.position.get_pos()[0]
             )
             return
         # Check the procedure has right amout of arguments
@@ -49,7 +50,7 @@ class ProcCall(Node):
                 proc=self.leaf,
                 row=self.position.get_pos()[0],
                 args=len(self.children),
-                params=len(procedure.parameters)
+                params=len(procedure.parameters),
             )
         # Check procedure's arguments have right types
         for index, child in enumerate(self.children):
@@ -65,43 +66,57 @@ class ProcCall(Node):
                     arg=child.leaf,
                     atype=argument_type.value,
                     ptype=parameter_type.value,
-                    row=self.position.get_pos()[0]
+                    row=self.position.get_pos()[0],
                 )
+
+    def generate_code(self):
+        temp_vars = []
+        for child in self.children:
+            temp_vars.append(child.generate_code())
+        self._code_generator.function_call(self.leaf, temp_vars)
 
 
 class ProcDecl(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("ProcDecl", children, leaf, **dependencies)
+        self.procedure: Function = None
 
     def get_logotype(self):
-        symbol = self._symbol_tables.functions.lookup(self.leaf)
-        if symbol:
-            return symbol.typeclass.logotype
+        if self.procedure:
+            return self.procedure.typeclass.logotype
         return None
 
     def check_types(self):
         # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
             self._logger.error_handler.add_error(2017, proc=self.leaf)
-        procedure = Function(self.leaf, typeclass=Type(functions={self.leaf}))
-        self._symbol_tables.functions.insert(self.leaf, procedure)
-        self._symbol_tables.variables.initialize_scope(in_function=procedure)
+        self.procedure = Function(self.leaf, typeclass=Type(functions={self.leaf}))
+        self._symbol_tables.functions.insert(self.leaf, self.procedure)
+        self._symbol_tables.variables.initialize_scope(in_function=self.procedure)
         for child in self.children:
             child.check_types()
 
         # Check the procedure doesn't have unknown type parameters
-        for parameter in procedure.parameters:
+        for parameter in self.procedure.parameters:
             if parameter.get_logotype() == LogoType.UNKNOWN:
                 self._logger.error_handler.add_error(
-                    2019,
-                    proc=procedure.name,
-                    param=parameter.name)
+                    2019, proc=self.procedure.name, param=parameter.name
+                )
 
-        if procedure.get_logotype() == LogoType.UNKNOWN and \
-           len(procedure.typeclass.variables) == 0:
-            procedure.typeclass.logotype = LogoType.VOID
+        if self.procedure.get_logotype() == LogoType.UNKNOWN and \
+           len(self.procedure.typeclass.variables) == 0:
+            self.procedure.typeclass.logotype = LogoType.VOID
 
         self._symbol_tables.variables.finalize_scope()
+
+    def generate_code(self):
+        self._code_generator.start_function_declaration(
+            logo_func_name=self.leaf,
+            logo_func_type=self.get_logotype()
+        )
+        for child in self.children:
+            child.generate_code()
+        self._code_generator.end_function_declaration()
 
 
 class ProcArgs(Node):
@@ -112,15 +127,32 @@ class ProcArgs(Node):
         for child in self.children:
             child.check_types()
 
+    def generate_code(self):
+        parameters = []
+        for child in self.children:
+            parameters.append(child.get_param_data())
+        self._code_generator.add_function_parameters(parameters=parameters)
+
+
 class ProcArg(Node):
     def __init__(self, children=None, **dependencies):
         super().__init__("ProgArg", children, **dependencies)
+        self.symbol: Variable = None
+
+    def get_logotype(self):
+        if self.symbol:
+            return self.symbol.get_logotype()
+        return None
 
     def check_types(self):
         procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
         # Check the parameter hasn't already been declarated
         if self._symbol_tables.variables.lookup(self.leaf):
             self._logger.error_handler.add_error(2018, proc=procedure.name, param=self.leaf)
-        variable = Variable(self.leaf)
-        procedure.parameters.append(variable)
-        self._symbol_tables.variables.insert(self.leaf, variable)
+        self.symbol = Variable(self.leaf)
+        procedure.parameters.append(self.symbol)
+        self._symbol_tables.variables.insert(self.leaf, self.symbol)
+
+    def get_param_data(self):
+        """Return function parameter's type and name in tuple for ProgArgs' generate_code"""
+        return (self.get_logotype(), self.leaf)
