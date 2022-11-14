@@ -10,8 +10,8 @@ class Make(Node):
         super().__init__(TokenType.MAKE, children, leaf, **dependencies)
         self._new_variable = False
 
-    # def get_logotype(self):
-    #    return LogoType.VOID
+    def get_logotype(self):
+        return LogoType.VOID
 
     def _check_variable_node(self, variable_node):
         # Check that variable name is string
@@ -153,8 +153,8 @@ class Make(Node):
 
 
 class Show(Node):
-    # def get_logotype(self):
-    #    return LogoType.VOID
+    def get_logotype(self):
+        return LogoType.VOID
 
     def check_types(self):
         # Must have at least 1 argument
@@ -175,8 +175,8 @@ class Show(Node):
 
 
 class Bye(Node):
-    # def get_logotype(self):
-    #    return LogoType.VOID
+    def get_logotype(self):
+        return LogoType.VOID
 
     def check_types(self):
         if self.children:
@@ -186,8 +186,8 @@ class Bye(Node):
 class Move(Node):
     """FD, BK, LT, RT"""
 
-    # def get_logotype(self):
-    #    return LogoType.VOID
+    def get_logotype(self):
+        return LogoType.VOID
 
     def check_types(self):
         if len(self.children) != 1:
