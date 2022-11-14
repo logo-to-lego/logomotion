@@ -100,20 +100,12 @@ class ProcDecl(Node):
         for parameter in self.procedure.parameters:
             if parameter.get_logotype() == LogoType.UNKNOWN:
                 self._logger.error_handler.add_error(
-<<<<<<< HEAD
                     2019, proc=self.procedure.name, param=parameter.name
                 )
 
         if self.procedure.get_logotype() == LogoType.UNKNOWN and \
            len(self.procedure.typeclass.variables) == 0:
             self.procedure.typeclass.logotype = LogoType.VOID
-=======
-                    2019, proc=procedure.name, param=parameter.name
-                )
-
-        if procedure.get_logotype() == LogoType.UNKNOWN and len(procedure.typeclass.variables) == 0:
-            procedure.typeclass.logotype = LogoType.VOID
->>>>>>> f2c3c69cb9e5c5845405f05f9212afcc15659a1d
 
         self._symbol_tables.variables.finalize_scope()
 
@@ -135,15 +127,12 @@ class ProcArgs(Node):
         for child in self.children:
             child.check_types()
 
-<<<<<<< HEAD
     def generate_code(self):
         parameters = []
         for child in self.children:
             parameters.append(child.get_param_data())
         self._code_generator.add_function_parameters(parameters=parameters)
 
-=======
->>>>>>> f2c3c69cb9e5c5845405f05f9212afcc15659a1d
 
 class ProcArg(Node):
     def __init__(self, children=None, **dependencies):
