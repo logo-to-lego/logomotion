@@ -19,6 +19,7 @@ class Variable:
         if not isinstance(typeclass, Type):
             raise TypeError("Symbols type must be an instance of Type class")
         self._typeclass = typeclass
+        self._typeclass.add_variable(name)
 
     @property
     def name(self):

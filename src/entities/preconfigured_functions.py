@@ -12,6 +12,6 @@ def _repeat():
     repeat_n = Variable("n", Type(logotype=LogoType.FLOAT))
     nameless = Variable("block", Type(logotype=LogoType.NAMELESS_FUNCTION))
     procedure = Function(
-        fname, params=[repeat_n, nameless], typeclass=Type(logotype=LogoType.VOID,functions=set(fname))
+        fname, params=[repeat_n, nameless], typeclass=Type(logotype=LogoType.VOID,functions=set((fname,)))
     )
     return procedure
