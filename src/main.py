@@ -1,5 +1,3 @@
-
-
 """Main module for the compiler.
 """
 import argparse

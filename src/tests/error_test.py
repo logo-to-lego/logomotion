@@ -101,6 +101,19 @@ class TestErrorHandler(unittest.TestCase):
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
         self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg)
 
+    def test_valid_relops_work(self):
+        test_string = """
+            make "a "kissa
+            make "b 42
+            make "c :a <> "koira
+            make "d :b > 100
+        """
+
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 0)
+
     def test_relop_raises_error_with_undefined_variables(self):
         test_string = """make "c :a >= :b"""
 
@@ -128,8 +141,8 @@ class TestErrorHandler(unittest.TestCase):
         ast = self.parser.parse(test_string)
         ast.check_types()
 
-        fin_expected_msg = "Rivillä 4 koitit vertailla tyyppejä STRING ja FLOAT. Katso, että tyypit ovat keskenään samat."
-        eng_expected_msg = "In row 4 you tried to compare types STRING and FLOAT. Check that you are comparing the same types."
+        fin_expected_msg = "Rivillä 4 koitit vertailla tyyppejä STRING ja FLOAT. Katso, että tyypit ovat joko FLOAT tai STRING tyyppisiä ja keskenään samat"
+        eng_expected_msg = "In row 4 you tried to compare types STRING and FLOAT. Check that you are comparing FLOAT or STRING types and that the types are equal"
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
