@@ -21,12 +21,12 @@
     },
     "2004":
     {
-        "FIN": "Rivillä @row en pystynyt päättelemään vertailuoperaattorin tyyppiä.",
-        "ENG": "In row @row I could not infer the type of the operand."
+        "FIN": "Rivillä @row ei pystytty päättelemään vertailtavien muuttujien tyyppiä.",
+        "ENG": "In row @row the type of the operand could not be inferred."
     },
     "2005": {
-        "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2. Katso, että tyypit ovat keskenään samat.",
-        "ENG": "In row @row you tried to compare types @type1 and @type2. Check that you are comparing the same types."
+        "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2. Katso, että tyypit ovat joko FLOAT tai STRING tyyppisiä ja keskenään samat",
+        "ENG": "In row @row you tried to compare types @type1 and @type2. Check that you are comparing FLOAT or STRING types and that the types are equal"
     },
     "2006": {
         "FIN": "Ehtolause rivillä @row ei tuota totuusarvoa.",
@@ -69,8 +69,8 @@
         "ENG": "Command '@command' does not take parameters."
     },
     "2016": {
-        "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2 vääränlaisella vertailuoperaatiolla. Sallitut operaatiot tyypille @type1 ovat: <> ja =",
-        "ENG": "In row @row you tried to compare types @type1 and @type2 with the wrong kind of relative operation. Acceptable operations for @type1 are: <> and "
+        "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2 vääränlaisella vertailuoperaatiolla. Tyypin FLOAT operaatiot ovat <, >, <=, >=, = ja <> ja tyypin STRING operaatiot ovat <> ja =",
+        "ENG": "In row @row you tried to compare types @type1 and @type2 with the wrong kind of relative operation. Acceptable operations for FLOAT are <, >, <=, >=, = and <> and for STRING <> and ="
     },
     "2017": {
         "FIN": "Funktio '@proc' on jo määritelty",
