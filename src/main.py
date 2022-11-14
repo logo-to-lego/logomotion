@@ -1,5 +1,3 @@
-
-
 """Main module for the compiler.
 """
 import argparse
@@ -22,9 +20,7 @@ def main():
 
         if CODE_GEN_LANG == "Java":
             return JavaCodeGenerator(logger=logger)
-        err_msg = (
-            f"{CODE_GEN_LANG} is not an implemented"
-            "programming language for code generator")
+        err_msg = f"{CODE_GEN_LANG} is not an implemented" "programming language for code generator"
         raise Exception(err_msg)
 
     def compile_logo():
@@ -69,10 +65,11 @@ def main():
 
 
 if __name__ == "__main__":
+
     def get_cmd_line_args():
         arg_parser = argparse.ArgumentParser(
-        prog="Logomotion",
-        description="Compile logo to java via python")
+            prog="Logomotion", description="Compile logo to java via python"
+        )
         arg_parser.add_argument("filepath")
         arg_parser.add_argument("-d", "--debug", action="store_true")
         return arg_parser.parse_args()
