@@ -57,6 +57,8 @@ class Type:
         return Type(logotype=get_new_logotype(), variables=variables, functions=functions)
 
     def __str__(self) -> str:
-        string = f"LogoType: {self._logotype}, Variables: " \
-                 f"{self._variables}, Functions: {self._functions}"
+        string = (
+            f"LogoType: {self._logotype}, Variables: "
+            f"{self._variables}, Functions: {self._functions}"
+        )
         return string

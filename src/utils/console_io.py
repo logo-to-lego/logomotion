@@ -16,10 +16,10 @@ class ConsoleIO:
 
     @staticmethod
     def get_formatted_ast(ast, indent="", result=""):
-        result += (indent + "Type: " + str(ast.node_type) + "\n")
-        result += (indent + "Leaf: " + str(ast.leaf) + "\n")
-        result += (indent + "Logotype: " + str(ast.get_logotype()) + "\n")
-        result += (indent + "Children: " + "\n")
+        result += indent + "Type: " + str(ast.node_type) + "\n"
+        result += indent + "Leaf: " + str(ast.leaf) + "\n"
+        result += indent + "Logotype: " + str(ast.get_logotype()) + "\n"
+        result += indent + "Children: " + "\n"
         for child in ast.children:
             result += default_console_io.get_formatted_ast(child, (indent + "\t"))
         return result
