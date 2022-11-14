@@ -33,8 +33,6 @@ class Type:
     def logotype(self, logotype: LogoType):
         if self._logotype == LogoType.UNKNOWN:
             self._logotype = logotype
-        else:
-            raise Exception(f"LogoType was already defined as {self._logotype.value}")
 
     def add_variable(self, var_name):
         self._variables.add(var_name)
