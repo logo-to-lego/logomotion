@@ -1,5 +1,6 @@
 from entities.ast.node import Node
 from entities.logotypes import LogoType
+from utils.code_generator import *
 
 
 class Block(Node):
@@ -17,5 +18,8 @@ class Block(Node):
 
     def generate_code(self):
         """Generate block into for statement"""
-        aaa = 1+1 #debug
-        return aaa
+        tmpvar = self._code_generator.lambda_no_param_start()
+        for child in self.children:
+            child.generate_code()
+        self._code_generator.lambda_end()
+        return tmpvar
