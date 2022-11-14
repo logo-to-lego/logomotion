@@ -154,5 +154,5 @@ class ProcArg(Node):
         self._symbol_tables.variables.insert(self.leaf, self.symbol)
 
     def get_param_data(self):
-        """Return function parameter's name and type for ProgArgs' generate_code"""
+        """Return function parameter's type and name in tuple for ProgArgs' generate_code"""
         return (self.get_logotype(), self.leaf)
