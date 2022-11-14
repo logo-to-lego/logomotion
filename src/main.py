@@ -7,11 +7,7 @@ import os
 from parser.parser import Parser
 import dotenv
 from entities.symbol_tables import SymbolTables
-<<<<<<< HEAD
-from entities.symbol_table import SymbolTable
 from entities.preconfigured_functions import initialize_logo_functions
-=======
->>>>>>> main
 from lexer.lexer import Lexer
 from utils.code_generator import JavaCodeGenerator
 from utils.console_io import ConsoleIO
@@ -63,6 +59,7 @@ def main():
     lexer = Lexer(logger)
     lexer.build()
     symbol_tables = SymbolTables()
+    symbol_tables = initialize_logo_functions(symbol_tables)
     code_generator = get_code_generator()
     parser = Parser(lexer, logger, symbol_tables, code_generator)
     parser.build()

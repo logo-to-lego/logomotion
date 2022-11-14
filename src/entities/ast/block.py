@@ -1,6 +1,5 @@
 from entities.ast.node import Node
 from entities.logotypes import LogoType
-from utils.code_generator import *
 
 
 class Block(Node):
