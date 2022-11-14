@@ -23,7 +23,7 @@ JAVA_TYPES = {LogoType.FLOAT: "double", LogoType.STRING: "String",
         LogoType.BOOL: "boolean", LogoType.VOID: "void"}
 
 
-class CodeGenerator:
+class JavaCodeGenerator:
     """A class for generating Java code"""
 
     def __init__(self, name=DEFAULT_NAME, **dependencies):
@@ -248,4 +248,4 @@ class CodeGenerator:
         return self._main
 
 
-default_code_generator = CodeGenerator()
+default_code_generator = JavaCodeGenerator()

@@ -1,112 +1,96 @@
+
+
 """Main module for the compiler.
 """
-import sys
+import argparse
+import os
 from parser.parser import Parser
+import dotenv
 from entities.symbol_tables import SymbolTables
-from entities.symbol_table import SymbolTable
 from lexer.lexer import Lexer
-from utils.code_generator import CodeGenerator
+from utils.code_generator import JavaCodeGenerator
 from utils.console_io import ConsoleIO
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
 
-io = ConsoleIO()
-error_handler = ErrorHandler(console_io=io, language="FIN")
-logger = Logger(io, error_handler, debug=True)
 
-lexer = Lexer(logger)
-lexer.build()
+def main():
+    def get_code_generator():
+        """Checks that given programming language is valid in
+        .env file and returns a new instance of CodeGenerator class"""
 
-symbol_tables = SymbolTables()
-code_generator = CodeGenerator(logger=logger)
+        if CODE_GEN_LANG == "Java":
+            return JavaCodeGenerator(logger=logger)
+        err_msg = (
+            f"{CODE_GEN_LANG} is not an implemented"
+            "programming language for code generator")
+        raise Exception(err_msg)
 
-parser = Parser(lexer, logger, symbol_tables, code_generator)
-parser.build()
+    def compile_logo():
+        """Compiles a user given logo file and generates code if there are no errors.
+        Prints lexer & parser results if debug flag (-d, --debug) is on."""
 
+        logger.debug(LOGO_CODE + "\n")
 
-def parser_ui():
-    """For parser testing."""
-    while True:
-        program = []
+        # Tokenize
+        tokens = lexer.tokenize_input(LOGO_CODE)
+        logger.debug("Lexer tokens:")
+        logger.debug("\n".join((str(token) for token in tokens)) + "\n")
 
-        io.write("Enter logo code, an empty line to start parsing or q! to quit:")
-
-        while True:
-            user_input = io.read()
-
-            if user_input == "q!":
-                sys.exit()
-
-            if not user_input:
-                break
-
-            program.append(user_input)
-
-        code = "\n".join(program)
-        io.write("Lexer tokens:")
-        io.write("\n".join((str(token) for token in lexer.tokenize_input(code))) + "\n")
-
-        io.write("AST Result:")
-        start_node = parser.parse(code)
-        io.write(start_node)
-
+        # Parse and type analyzation
+        start_node = parser.parse(LOGO_CODE)
         start_node.check_types()
-        io.write("Type checks:")
-        io.write(start_node)
+        logger.debug("Parser AST:")
+        logger.debug(console_io.get_formatted_ast(start_node))
 
-        error_handler.write_errors_to_console()
-        error_handler.errors.clear()
-        start_node.generate_code()
-        code_generator.write()
+        # Code generation, if there are no errors
+        if not error_handler.errors:
+            logger.debug("Generated code:")
+            start_node.generate_code()
+            code_generator.write()
+        else:
+            error_handler.write_errors_to_console()
 
-        # Clear symbol tables
-        symbol_tables.functions = SymbolTable()
-        symbol_tables.variables = SymbolTable()
+    # Create required classes for the compiler
+    console_io = ConsoleIO()
+    error_handler = ErrorHandler(console_io=console_io, language=MESSAGE_LANG)
+    logger = Logger(console_io, error_handler, args.debug)
+    lexer = Lexer(logger)
+    lexer.build()
+    symbol_tables = SymbolTables()
+    code_generator = get_code_generator()
+    parser = Parser(lexer, logger, symbol_tables, code_generator)
+    parser.build()
 
-
-def load_file(filename):
-    """Loads a file and returns contents as a string."""
-    content = []
-
-    with open(filename, "r", encoding="utf8") as file:
-        content = file.readlines()
-
-    return "".join(content)
-
-
-def file_parser():
-    """Parses a user given file and prints lexer & parser results."""
-    filename = sys.argv[1]
-    code = load_file(filename)
-    io.write(f"Load file {filename}:")
-    io.write(code + "\n")
-    io.write("Lexer tokens:")
-    io.write("\n".join((str(token) for token in lexer.tokenize_input(code))) + "\n")
-    io.write("Parser AST:")
-    start_node = parser.parse(code)
-    io.write(start_node)
-    start_node.check_types()
-    io.write("\nType checks:")
-    io.write(start_node)
+    # Compile from logo to language defined with CODE_GEN .env variable
+    compile_logo()
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        file_parser()
-    else:
-        USE_UI = False
+    def get_cmd_line_args():
+        arg_parser = argparse.ArgumentParser(
+        prog="Logomotion",
+        description="Compile logo to java via python")
+        arg_parser.add_argument("filepath")
+        arg_parser.add_argument("-d", "--debug", action="store_true")
+        return arg_parser.parse_args()
 
-        if USE_UI:
-            parser_ui()
-        else:
-            PROG = """TO f :x :z make "a :x+:z output :a+1 END TO g :y make "y 2 output :y END TO h output 1 END (f 1 2) (g 3) (h)"""
-            ast = parser.parse(PROG)
-            ast.check_types()
-            io.print_ast(ast)
-            error_handler.write_errors_to_console()
-            error_handler.errors.clear()
-            ast.generate_code()
-            code_generator.write()
+    def load_file(filename):
+        """Loads a file and returns contents as a string."""
+        content = []
+        with open(filename, "r", encoding="utf8") as file:
+            content = file.readlines()
+        return "".join(content)
 
-            symbol_tables.functions = SymbolTable()
-            symbol_tables.variables = SymbolTable()
+    # Load variables from .env file
+    dotenv.load_dotenv()
+    MESSAGE_LANG = os.getenv("MESSAGE_LANG")
+    CODE_GEN_LANG = os.getenv("CODE_GEN_LANG")
+
+    # Get command line arguments
+    args = get_cmd_line_args()
+
+    # Get logo code from file. Filepath is given as a command line argument
+    LOGO_CODE = load_file(args.filepath)
+
+    main()
