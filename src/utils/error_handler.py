@@ -6,13 +6,17 @@ import json
 import os
 from utils.console_io import default_console_io
 
+FIN = "FIN"
+ENG = "ENG"
 
 class ErrorHandler:
     """ErrorHandler class takes all error messages when running the compiler.
     The messages are stored in a list
     """
 
-    def __init__(self, console_io=default_console_io, language="FIN"):
+    def __init__(self, console_io=default_console_io, language=FIN):
+        if language not in (FIN, ENG):
+            raise Exception(f"Language {language} is not defined or valid")
         self.errors = []
 
         self.console_io = console_io
@@ -44,8 +48,8 @@ class ErrorHandler:
         """
         msg_dict = self._get_messages_from_json_files(msg_id)
 
-        fin_msg = msg_dict["FIN"]
-        eng_msg = msg_dict["ENG"]
+        fin_msg = msg_dict[FIN]
+        eng_msg = msg_dict[ENG]
 
         for key, value in kwargs.items():
             fin_msg = fin_msg.replace(f"@{key}", str(value))
@@ -56,7 +60,7 @@ class ErrorHandler:
         # We want to have only one test file for error testing, and because in this parser,
         # there is only one instance of the Shared class (defined in parser/globals.py), only
         # one parser object can be defined in the testing setup.
-        err_msgs = {"FIN": fin_msg, "ENG": eng_msg}
+        err_msgs = {FIN: fin_msg, ENG: eng_msg}
         self.errors.append(err_msgs)
 
     def get_error_messages(self):

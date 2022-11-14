@@ -2,7 +2,7 @@
 """Parsing rules and globals used by the parser"""
 
 from lexer.lexer import Lexer
-from utils.code_generator import CodeGenerator
+from utils.code_generator import JavaCodeGenerator
 from utils.logger import Logger
 from entities.symbol_tables import SymbolTables
 from entities.ast.node import NodeFactory
@@ -54,7 +54,7 @@ class Shared:
         current_lexer: Lexer,
         logger: Logger,
         symbol_tables: SymbolTables,
-        code_generator: CodeGenerator,
+        code_generator: JavaCodeGenerator,
     ):
         """Update parser-wide shared fields"""
         self.current_lexer = current_lexer
