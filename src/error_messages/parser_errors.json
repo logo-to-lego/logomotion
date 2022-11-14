@@ -25,7 +25,7 @@
         "ENG": "In row @row the type of the operand could not be inferred."
     },
     "2005": {
-        "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2. Katso, että tyypit joko FLOAT tai STRING tyyppisiä ja keskenään samat",
+        "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2. Katso, että tyypit ovat joko FLOAT tai STRING tyyppisiä ja keskenään samat",
         "ENG": "In row @row you tried to compare types @type1 and @type2. Check that you are comparing FLOAT or STRING types and that the types are equal"
     },
     "2006": {

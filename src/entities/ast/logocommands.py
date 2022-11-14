@@ -121,9 +121,7 @@ class Make(Node):
 
         elif var_symbol and not arg_symbol:
             # e.g. 'make "b 42', where 'b' has already been defined
-            self._update_variable_type(
-                var_name, var_symbol, arg_node
-            )
+            self._update_variable_type(var_name, var_symbol, arg_node)
 
         else:  # var_symbol and arg_symbol
             # e.g. 'make "b :a', where 'a' and 'b' have been defined earlier
