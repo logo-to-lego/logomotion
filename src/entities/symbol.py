@@ -45,7 +45,7 @@ class Variable:
 class Function(Variable):
     "Class for functions in symbol table. Inherits Variable class"
 
-    def __init__(self, name, params=None, typeclass=Type()):
+    def __init__(self, name, params=None, typeclass=None):
         """Constructor function for Function class
 
         Args:
@@ -58,6 +58,11 @@ class Function(Variable):
             self._parameters = []
         else:
             self._parameters = params
+        if not typeclass:
+            typeclass = Type(functions={name})
+        if not isinstance(typeclass, Type):
+            raise TypeError("Symbols type must be an instance of Type class")
+        self._typeclass = typeclass
 
     def __str__(self):
         params_str = ""

@@ -15,14 +15,19 @@ class ConsoleIO:
         print(message)
 
     @staticmethod
-    def print_ast(ast, indent=""):
-        """Prints ast as formatted string"""
-        print(indent + "Type: " + str(ast.node_type))
-        print(indent + "Leaf: " + str(ast.leaf))
-        print(indent + "Logotype: " + str(ast.get_logotype()))
-        print(indent + "Children: ")
+    def get_formatted_ast(ast, indent="", result=""):
+        result += (indent + "Type: " + str(ast.node_type) + "\n")
+        result += (indent + "Leaf: " + str(ast.leaf) + "\n")
+        result += (indent + "Logotype: " + str(ast.get_logotype()) + "\n")
+        result += (indent + "Children: " + "\n")
         for child in ast.children:
-            default_console_io.print_ast(child, indent + "\t")
+            result += default_console_io.get_formatted_ast(child, (indent + "\t"))
+        return result
+
+    @staticmethod
+    def print_ast(ast):
+        """Prints ast as formatted string"""
+        print(default_console_io.get_formatted_ast(ast))
 
 
 default_console_io = ConsoleIO()
