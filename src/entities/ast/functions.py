@@ -130,7 +130,7 @@ class ProcArgs(Node):
     def generate_code(self):
         parameters = []
         for child in self.children:
-            parameters.append(child.generate_code())
+            parameters.append(child.get_param_data())
         self._code_generator.add_function_parameters(parameters=parameters)
 
 
@@ -153,5 +153,6 @@ class ProcArg(Node):
         procedure.parameters.append(self.symbol)
         self._symbol_tables.variables.insert(self.leaf, self.symbol)
 
-    def generate_code(self):
+    def get_param_data(self):
+        """Return function parameter's name and type for ProgArgs' generate_code"""
         return (self.get_logotype(), self.leaf)
