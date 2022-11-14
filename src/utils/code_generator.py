@@ -1,5 +1,5 @@
 """Code Generator module"""
-# pylint: disable=too-many-public-methods
+# pylint: disable=too-many-public-methods, too-many-instance-attributes
 import os
 from entities.logotypes import LogoType
 from utils.logger import Logger, default_logger
@@ -20,8 +20,7 @@ PATH = os.path.join(
     os.path.dirname(os.path.relpath(__file__)), "../../logomotion_gradle/src/main/java/logo/"
 )
 JAVA_TYPES = {LogoType.FLOAT: "double", LogoType.STRING: "String",
-        LogoType.BOOL: "boolean", LogoType.VOID: "void", LogoType.UNKNOWN: "unknown"}
-        # unknown'n voi poistaa, kunhan funktioparametrien tyypitys toimii
+        LogoType.BOOL: "boolean", LogoType.VOID: "void"}
 
 
 class CodeGenerator:
@@ -71,7 +70,7 @@ class CodeGenerator:
             java_func_name = self._generate_func_name()
             self._java_function_names[logo_func_name] = java_func_name
         return java_func_name
-    
+
     def _generate_func_name(self):
         return f"func{self._increase_temp_var_index()}"
 
