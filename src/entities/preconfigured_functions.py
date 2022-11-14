@@ -7,7 +7,6 @@ def initialize_logo_functions(symbol_tables):
     symbol_tables.functions.insert("repeat", _repeat())
     return symbol_tables
 
-
 def _repeat():
     fname = "repeat"
     repeat_n = Variable("n", Type(logotype=LogoType.FLOAT))
