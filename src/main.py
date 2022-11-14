@@ -1,3 +1,5 @@
+
+
 """Main module for the compiler.
 """
 import argparse
@@ -47,10 +49,6 @@ def main():
             start_node.generate_code()
             code_generator.write()
         else:
-            PROG = """to f :x make "a 1 make "b :x end"""
-            ast = parser.parse(PROG)
-            ast.check_types()
-            io.print_ast(ast)
             error_handler.write_errors_to_console()
 
     # Create required classes for the compiler
