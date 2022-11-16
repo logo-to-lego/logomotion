@@ -101,7 +101,7 @@ class CodegenTest(unittest.TestCase):
         node_list = default_code_generator.get_generated_code()
         self.assertEqual("double temp1 = 1;", node_list[0])
         self.assertEqual("double temp2 = 1;", node_list[1])
-        self.assertEqual("boolean temp3 = temp1 = temp2;", node_list[2])
+        self.assertEqual("boolean temp3 = temp1 == temp2;", node_list[2])
 
     def test_boolean_string(self):
         node_string1 = StringLiteral(leaf="sana")
