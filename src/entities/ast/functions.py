@@ -7,6 +7,9 @@ from entities.ast.variables import Deref
 
 
 class Output(Node):
+    def get_logotype(self):
+        return LogoType.VOID
+
     def check_types(self):
         self.children[0].check_types()
         output_value = self.children[0]
