@@ -50,7 +50,7 @@ class ProcCall(Node):
                 proc=self.leaf,
                 row=self.position.get_pos()[0],
                 args=len(self.children),
-                params=len(procedure.parameters),
+                params=len(procedure.parameters)
             )
         # Check procedure's arguments have right types
         for index, child in enumerate(self.children):
@@ -66,7 +66,7 @@ class ProcCall(Node):
                     arg=child.leaf,
                     atype=argument_type.value,
                     ptype=parameter_type.value,
-                    row=self.position.get_pos()[0],
+                    row=self.position.get_pos()[0]
                 )
 
     def generate_code(self):
