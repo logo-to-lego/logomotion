@@ -72,6 +72,7 @@ class JavaCodeGenerator:
         return java_func_name
 
     def _generate_func_name(self):
+        """create unique function name"""
         return f"func{self._increase_temp_var_index()}"
 
     def end_function_declaration(self):
