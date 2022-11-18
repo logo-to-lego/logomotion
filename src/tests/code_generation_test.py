@@ -10,6 +10,7 @@ from entities.ast.variables import Float
 from entities.ast.variables import StringLiteral
 from entities.ast.operations import BinOp
 from entities.ast.operations import RelOp
+from entities.ast.operations import UnaryOp
 from entities.ast.conditionals import If
 from lexer.token_types import TokenType
 from entities.symbol_table import default_variable_table
@@ -92,6 +93,14 @@ class CodegenTest(unittest.TestCase):
         self.assertEqual("double temp1 = 1;", node_list[0])
         self.assertEqual("double temp2 = 2;", node_list[1])
         self.assertEqual("double temp3 = temp1 + temp2;", node_list[2])
+
+    def test_unop(self):
+        node_float = Float(leaf=1)
+        node_unop = UnaryOp(leaf="-", children=[node_float])
+        node_unop.generate_code()
+        node_list = default_code_generator.get_generated_code()
+        self.assertEqual("double temp1 = 1;", node_list[0])
+        self.assertEqual("double temp2 = -temp1;", node_list[1])
 
     def test_boolean_float(self):
         node_float1 = Float(leaf=1)
