@@ -8,6 +8,7 @@ from utils.error_handler_mock import ErrorHandlerMock
 from utils.logger import Logger
 import unittest
 
+
 class TestFunctions(unittest.TestCase):
     """Test class for testing type checking and errors of function declarations,
     function calls and output commands in functions.py"""
