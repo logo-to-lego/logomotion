@@ -12,7 +12,7 @@ class StatementList(Node):
             child.get_logotype()
             child.check_types()
 
-            # Check output statement is at end statement list
+            # Check output statement ends statement list
             if child.__class__ == Output:
                 procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
                 if procedure and index != len(self.children) - 1:
