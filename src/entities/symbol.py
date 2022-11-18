@@ -1,6 +1,7 @@
 """symbol module"""
 from entities.type import Type
 
+
 class Symbol:
     def __init__(self, name, typeclass):
         self._name = name

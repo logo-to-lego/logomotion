@@ -54,7 +54,7 @@ class ProcCall(Node):
                 proc=self.leaf,
                 row=self.position.get_pos()[0],
                 args=len(self.children),
-                params=len(procedure.parameters)
+                params=len(procedure.parameters),
             )
         # Check procedure's arguments have right types
         for index, child in enumerate(self.children):
@@ -70,7 +70,7 @@ class ProcCall(Node):
                     arg=child.leaf,
                     atype=argument_type.value,
                     ptype=parameter_type.value,
-                    row=self.position.get_pos()[0]
+                    row=self.position.get_pos()[0],
                 )
 
     def generate_code(self):
@@ -107,8 +107,10 @@ class ProcDecl(Node):
                     2019, proc=self.procedure.name, param=parameter.name
                 )
 
-        if self.procedure.get_logotype() == LogoType.UNKNOWN and \
-           len(self.procedure.typeclass.variables) == 0:
+        if (
+            self.procedure.get_logotype() == LogoType.UNKNOWN
+            and len(self.procedure.typeclass.variables) == 0
+        ):
             self.procedure.typeclass.logotype = LogoType.VOID
         else:
             # Check function with output statements ends to output statement
@@ -119,8 +121,7 @@ class ProcDecl(Node):
 
     def generate_code(self):
         self._code_generator.start_function_declaration(
-            logo_func_name=self.leaf,
-            logo_func_type=self.get_logotype()
+            logo_func_name=self.leaf, logo_func_type=self.get_logotype()
         )
         for child in self.children:
             child.generate_code()

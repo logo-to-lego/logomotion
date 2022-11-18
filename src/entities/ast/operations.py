@@ -78,10 +78,10 @@ class RelOp(Node):
             return
 
         # Check that given types are comparable
-        if (child1.get_logotype() not in allowed_types or
-            child2.get_logotype() not in allowed_types):
+        if child1.get_logotype() not in allowed_types or child2.get_logotype() not in allowed_types:
             self._logger.error_handler.add_error(
-                2005, row=row, type1=child1.get_logotype().value, type2=child2.get_logotype().value)
+                2005, row=row, type1=child1.get_logotype().value, type2=child2.get_logotype().value
+            )
             return
 
         # Types can be different only if at least one of them is unknown
@@ -93,16 +93,18 @@ class RelOp(Node):
         # If after setting unknown types the types are still not the same -> error
         if child1.get_logotype() != child2.get_logotype():
             self._logger.error_handler.add_error(
-                2005, row=row, type1=child1.get_logotype().value, type2=child2.get_logotype().value)
+                2005, row=row, type1=child1.get_logotype().value, type2=child2.get_logotype().value
+            )
             return
 
         # Equals (=) and not equals (<>) can be used with FLOAT AND STRING
         if self.leaf in ("<>", "="):
             # If type could not be inferred -> error
-            if (child1.get_logotype() == LogoType.UNKNOWN and
-                child2.get_logotype() == LogoType.UNKNOWN):
-                self._logger.error_handler.add_error(
-                    2004, row=row)
+            if (
+                child1.get_logotype() == LogoType.UNKNOWN
+                and child2.get_logotype() == LogoType.UNKNOWN
+            ):
+                self._logger.error_handler.add_error(2004, row=row)
                 return
 
         # <, >, <= and >= can only be used with type FLOAT
@@ -112,14 +114,16 @@ class RelOp(Node):
             if child2.get_logotype() == LogoType.UNKNOWN:
                 child2.set_logotype(LogoType.FLOAT)
 
-            if (child1.get_logotype() is not LogoType.FLOAT or
-                child2.get_logotype() is not LogoType.FLOAT):
+            if (
+                child1.get_logotype() is not LogoType.FLOAT
+                or child2.get_logotype() is not LogoType.FLOAT
+            ):
                 self._logger.error_handler.add_error(
                     2016,
                     row=row,
                     type1=child1.get_logotype().value,
-                    type2=child2.get_logotype().value)
-
+                    type2=child2.get_logotype().value,
+                )
 
     def generate_code(self):
         """Generate relop to java"""

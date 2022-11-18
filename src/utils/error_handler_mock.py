@@ -1,8 +1,10 @@
 """Mock module for testing raised error ID's while checking types
 and analysing ast"""
 
-class ErrorHandlerMock():
+
+class ErrorHandlerMock:
     """Class for storing raised error ID's for testing type checking"""
+
     def __init__(self):
         self.error_ids = []
 
