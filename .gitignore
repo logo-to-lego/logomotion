@@ -10,3 +10,6 @@ coverage.xml
 .gradle
 Logo.java
 *parser.out
+log.html
+output.xml
+report.html
