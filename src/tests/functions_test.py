@@ -1,4 +1,4 @@
-"""Test module for type check in functions.py"""
+"""Test module for type check in functions.py (and statementlist.py)"""
 from entities.symbol_table import SymbolTable
 from entities.symbol_tables import SymbolTables
 from lexer.lexer import Lexer
@@ -10,7 +10,7 @@ import unittest
 
 class TestFunctions(unittest.TestCase):
     """Test class for testing type checking and errors of function declarations,
-    function calls and output commands in functions.py"""
+    function calls and output commands in functions.py (and statementlist.py)"""
 
     def setUp(self):
         console_io = Mock()
@@ -83,3 +83,15 @@ class TestFunctions(unittest.TestCase):
         ast = self.parser.parse(test_code)
         ast.check_types()
         self.assertEqual(True, self.error_handler.check_id_is_in_errors(2022))
+
+    def test_function_doesnt_end_to_output_if_it_has_output_elsewhere_procdecl(self):
+        test_code = """TO f :x if :x > 1 { output :x+1 } END"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2026))
+
+    def test_statement_list_have_output_statement_but_it_isnt_at_end_of_it_statementlist(self):
+        test_code = """TO f :x if :x > 0 { output :x+1 output :x } output :x+2 END"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2027))
