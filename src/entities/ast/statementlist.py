@@ -1,3 +1,4 @@
+from entities.ast.functions import Output
 from entities.ast.node import Node
 
 
@@ -7,6 +8,15 @@ class StatementList(Node):
 
     def check_types(self):
         """Runs the check in given order."""
-        for child in self.children:
+        for index, child in enumerate(self.children):
             child.get_logotype()
             child.check_types()
+
+            # Check output statement is at end statement list
+            if child.__class__ == Output:
+                procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
+                if procedure and index != len(self.children) - 1:
+                    self._logger.error_handler.add_error(
+                        2027,
+                        proc=procedure.name
+                    )
