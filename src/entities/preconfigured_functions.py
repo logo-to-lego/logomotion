@@ -28,3 +28,11 @@ def _repeat():
         typeclass=Type(logotype=LogoType.VOID, functions=set((fname,))),
     )
     return procedure
+
+"""
+tee oma moduuli preconf_codegen ja sijoita sinne
+public void repeat (int n, runnable f) {
+    for n....
+        f.run()
+}
+"""

@@ -35,6 +35,7 @@ class JavaCodeGenerator:
         self._logger: Logger = dependencies.get("logger", default_logger)
         self._java_variable_names = {}
         self._java_function_names = {}
+        self._preconf_funcs_dict = dependencies.get("funcs_dict", "" )
 
     def _increase_temp_var_index(self):
         """increase index for temp variables"""
@@ -233,6 +234,8 @@ class JavaCodeGenerator:
         try:
             with open(PATH + self._name + ".java", mode="w+", encoding="utf-8") as file:
                 file.write(START_METHOD)
+                for fname in self._preconf_funcs_dict.keys():
+                    file.write(self._preconf_funcs_dict[fname] + " ")
                 for method_line in self._method:
                     file.write(method_line + " ")
                 file.write(START_MAIN)
