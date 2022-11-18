@@ -31,7 +31,7 @@ def p_fd(prod):
     "fd : FD expression"
     prod[0] = shared.node_factory.create_node(
         Move,
-        node_type=shared.reserved_words[prod[1]],
+        node_type=shared.reserved_words[prod[1].lower()],
         children=[prod[2]],
         position=Position(prod),
     )
@@ -41,7 +41,7 @@ def p_fd_paren(prod):
     "fd : LPAREN FD expression RPAREN"
     prod[0] = shared.node_factory.create_node(
         Move,
-        node_type=shared.reserved_words[prod[2]],
+        node_type=shared.reserved_words[prod[2].lower()],
         children=[prod[3]],
         position=Position(prod),
     )
@@ -51,7 +51,7 @@ def p_bk(prod):
     "bk : BK expression"
     prod[0] = shared.node_factory.create_node(
         Move,
-        node_type=shared.reserved_words[prod[1]],
+        node_type=shared.reserved_words[prod[1].lower()],
         children=[prod[2]],
         position=Position(prod),
     )
@@ -61,7 +61,7 @@ def p_bk_paren(prod):
     "bk : LPAREN BK expression RPAREN"
     prod[0] = shared.node_factory.create_node(
         Move,
-        node_type=shared.reserved_words[prod[2]],
+        node_type=shared.reserved_words[prod[2].lower()],
         children=[prod[3]],
         position=Position(prod),
     )
@@ -71,7 +71,7 @@ def p_lt(prod):
     "lt : LT expression"
     prod[0] = shared.node_factory.create_node(
         Move,
-        node_type=shared.reserved_words[prod[1]],
+        node_type=shared.reserved_words[prod[1].lower()],
         children=[prod[2]],
         position=Position(prod),
     )
@@ -81,7 +81,7 @@ def p_lt_paren(prod):
     "lt : LPAREN LT expression RPAREN"
     prod[0] = shared.node_factory.create_node(
         Move,
-        node_type=shared.reserved_words[prod[2]],
+        node_type=shared.reserved_words[prod[2].lower()],
         children=[prod[3]],
         position=Position(prod),
     )
@@ -91,7 +91,7 @@ def p_rt(prod):
     "rt : RT expression"
     prod[0] = shared.node_factory.create_node(
         Move,
-        node_type=shared.reserved_words[prod[1]],
+        node_type=shared.reserved_words[prod[1].lower()],
         children=[prod[2]],
         position=Position(prod),
     )
@@ -101,7 +101,7 @@ def p_rt_paren(prod):
     "rt : LPAREN RT expression RPAREN"
     prod[0] = shared.node_factory.create_node(
         Move,
-        node_type=shared.reserved_words[prod[2]],
+        node_type=shared.reserved_words[prod[2].lower()],
         children=[prod[3]],
         position=Position(prod),
     )
@@ -111,7 +111,7 @@ def p_show(prod):
     "show : SHOW expression"
     prod[0] = shared.node_factory.create_node(
         Show,
-        node_type=shared.reserved_words[prod[1]],
+        node_type=shared.reserved_words[prod[1].lower()],
         children=[prod[2]],
         position=Position(prod),
     )
@@ -121,7 +121,7 @@ def p_show_paren(prod):
     "show : LPAREN SHOW expression expressions RPAREN"
     prod[0] = shared.node_factory.create_node(
         Show,
-        node_type=shared.reserved_words[prod[2]],
+        node_type=shared.reserved_words[prod[2].lower()],
         children=[prod[3]] + prod[4],
         position=Position(prod),
     )
@@ -166,7 +166,7 @@ def p_output(prod):
     "output : OUTPUT expression"
     prod[0] = shared.node_factory.create_node(
         Output,
-        node_type=shared.reserved_words[prod[1]],
+        node_type=shared.reserved_words[prod[1].lower()],
         children=[prod[2]],
         position=Position(prod),
     )
@@ -190,14 +190,14 @@ def p_proc_call(prod):
 def p_bye(prod):
     "bye : BYE"
     prod[0] = shared.node_factory.create_node(
-        Bye, node_type=shared.reserved_words[prod[1]], position=Position(prod)
+        Bye, node_type=shared.reserved_words[prod[1].lower()], position=Position(prod)
     )
 
 
 def p_bye_paren(prod):
     "bye : LPAREN BYE RPAREN"
     prod[0] = shared.node_factory.create_node(
-        Bye, node_type=shared.reserved_words[prod[2]], position=Position(prod)
+        Bye, node_type=shared.reserved_words[prod[2].lower()], position=Position(prod)
     )
 
 
