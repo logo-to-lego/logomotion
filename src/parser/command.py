@@ -129,6 +129,8 @@ def p_show_paren(prod):
 
 def p_make(prod):
     """make : MAKE expression expression"""
+    if isinstance(prod[2].leaf, str):
+        prod[2].leaf = prod[2].leaf.lower()
     prod[0] = shared.node_factory.create_node(
         Make,
         children=[prod[3]],
@@ -139,6 +141,8 @@ def p_make(prod):
 
 def p_make_paren(prod):
     "make : LPAREN MAKE expression expression RPAREN"
+    if isinstance(prod[3].leaf, str):
+        prod[3].leaf = prod[3].leaf.lower()
     prod[0] = shared.node_factory.create_node(
         Make,
         children=[prod[4]],

@@ -73,7 +73,9 @@ def p_expression_bool(prod):
 
 def p_expression_deref(prod):
     "expression : DEREF"
-    prod[0] = shared.node_factory.create_node(Deref, leaf=prod[1][1:], position=Position(prod))
+    prod[0] = shared.node_factory.create_node(
+        Deref, leaf=prod[1][1:].lower(), position=Position(prod)
+    )
 
 
 def p_expression_string_literal(prod):
