@@ -54,6 +54,10 @@ class UnaryOp(Node):
                     expected_type=LogoType.FLOAT.value,
                 )
 
+    def generate_code(self):
+        arg_var = self.children[0].generate_code()
+        return self._code_generator.unop(arg_var)
+
 
 class RelOp(Node):
     def __init__(self, children, leaf, **dependencies):

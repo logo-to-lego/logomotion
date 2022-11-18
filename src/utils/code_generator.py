@@ -204,6 +204,13 @@ class JavaCodeGenerator:
         self._append_code(code)
         return temp_var
 
+    def unop(self, value):
+        """Create Java code for unaryops and return variable name"""
+        temp_var = self._generate_temp_var()
+        code = f"double {temp_var} = -{value};"
+        self._append_code(code)
+        return temp_var
+
     def if_statement(self, conditional):
         """Create Java code to start an if statement in Java."""
         code = f"if ({conditional}) " + "{"
