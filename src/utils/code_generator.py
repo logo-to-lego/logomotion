@@ -73,6 +73,7 @@ class JavaCodeGenerator:
         return java_func_name
 
     def _generate_func_name(self):
+        """create unique function name"""
         return f"func{self._increase_temp_var_index()}"
 
     def end_function_declaration(self):
@@ -192,6 +193,8 @@ class JavaCodeGenerator:
         """create java code for relops and return variable name"""
         if operation == "<>":
             operation = "!="
+        elif operation == "=":
+            operation = "=="
         temp_var = self._generate_temp_var()
         code = f"boolean {temp_var} = {value1} {operation} {value2};"
         self._append_code(code)

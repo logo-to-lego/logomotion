@@ -15,7 +15,6 @@ class SymbolTables:
         """Takes two symbols (variable or function) as parameters,
         concatenates their typeclasses and updates their symbols typeclasses
         """
-
         new_typeclass = Type.concatenate(symbol1.typeclass, symbol2.typeclass)
 
         for var_name in new_typeclass.variables:
