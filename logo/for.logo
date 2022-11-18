@@ -1,0 +1,3 @@
+(for "varname 0 2 1 {
+    fd 20
+})
