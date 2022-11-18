@@ -56,7 +56,7 @@ class UnaryOp(Node):
 
     def generate_code(self):
         arg_var = self.children[0].generate_code()
-        return self._code_generator.unop(arg_var)
+        return self._code_generator.unary_op(arg_var)
 
 
 class RelOp(Node):

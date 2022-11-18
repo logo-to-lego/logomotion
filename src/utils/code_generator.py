@@ -204,7 +204,7 @@ class JavaCodeGenerator:
         self._append_code(code)
         return temp_var
 
-    def unop(self, value):
+    def unary_op(self, value):
         """Create Java code for unaryops and return variable name"""
         temp_var = self._generate_temp_var()
         code = f"double {temp_var} = -{value};"
