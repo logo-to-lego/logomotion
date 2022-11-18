@@ -154,7 +154,7 @@ def p_make_paren(prod):
 def p_proc_decl(prod):
     "proc_decl : TO IDENT proc_args statement_list END"
     prod[0] = shared.node_factory.create_node(
-        ProcDecl, children=[prod[3], prod[4]], leaf=prod[2], position=Position(prod)
+        ProcDecl, children=[prod[3], prod[4]], leaf=prod[2].lower(), position=Position(prod)
     )
 
 
@@ -186,7 +186,7 @@ def p_proc_call(prod):
     prod[0] = shared.node_factory.create_node(
         ProcCall,
         children=prod[3],
-        leaf=prod[2],
+        leaf=prod[2].lower(),
         position=Position(prod),
     )
 
