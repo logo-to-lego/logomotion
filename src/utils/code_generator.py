@@ -6,7 +6,8 @@ from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
 START_METHOD = (
-    "package logo; import classes.EV3MovePilot; import java.lang.Runnable;" "public class Logo { "
+    "package logo; import classes.EV3MovePilot; import java.lang.Runnable;"\
+        "public class Logo { "
 )
 START_MAIN = (
     "public static void main(String[] args) { "
