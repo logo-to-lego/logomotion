@@ -6,12 +6,11 @@ from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
 START_METHOD = (
-    "package logo; import classes.EV3MovePilot; import java.lang.Runnable;" \
-    "public class Logo { "
+    "package logo; import classes.EV3MovePilot; import java.lang.Runnable;" "public class Logo { "
 )
 START_MAIN = (
-    "public static void main(String[] args) { " \
-    "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); " \
+    "public static void main(String[] args) { "
+    "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
     "Logo logo = new Logo();"
 )
 END = "} }"
@@ -19,8 +18,12 @@ DEFAULT_NAME = "Logo"
 PATH = os.path.join(
     os.path.dirname(os.path.relpath(__file__)), "../../logomotion_gradle/src/main/java/logo/"
 )
-JAVA_TYPES = {LogoType.FLOAT: "double", LogoType.STRING: "String",
-        LogoType.BOOL: "boolean", LogoType.VOID: "void"}
+JAVA_TYPES = {
+    LogoType.FLOAT: "double",
+    LogoType.STRING: "String",
+    LogoType.BOOL: "boolean",
+    LogoType.VOID: "void",
+}
 
 
 class JavaCodeGenerator:
@@ -35,7 +38,7 @@ class JavaCodeGenerator:
         self._logger: Logger = dependencies.get("logger", default_logger)
         self._java_variable_names = {}
         self._java_function_names = {}
-        self._preconf_funcs_dict = dependencies.get("funcs_dict", "" )
+        self._preconf_funcs_dict = dependencies.get("funcs_dict", {})
 
     def _increase_temp_var_index(self):
         """increase index for temp variables"""
@@ -87,7 +90,7 @@ class JavaCodeGenerator:
         code = ""
         for index, param in enumerate(parameters):
             code += f"{JAVA_TYPES[param[0]]} {self._mangle_logo_var_name(param[1])}"
-            if index < len(parameters)-1:
+            if index < len(parameters) - 1:
                 code += ", "
         code += ") {"
         self._append_code(code)

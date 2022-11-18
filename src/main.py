@@ -22,7 +22,7 @@ def main():
         if CODE_GEN_LANG == "Java":
             preconf_gen = JavaPreconfFuncsGenerator()
             funcs_dict = preconf_gen.get_funcs()
-            return JavaCodeGenerator(funcs_dict=funcs_dict ,logger=logger)
+            return JavaCodeGenerator(funcs_dict=funcs_dict, logger=logger)
         err_msg = f"{CODE_GEN_LANG} is not an implemented" "programming language for code generator"
         raise Exception(err_msg)
 
@@ -63,7 +63,7 @@ def main():
     parser.build()
 
     symbol_tables = initialize_logo_functions(symbol_tables)
-    
+
     # Compile from logo to language defined with CODE_GEN .env variable
     compile_logo()
 
