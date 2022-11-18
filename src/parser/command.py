@@ -160,7 +160,7 @@ def p_proc_decl(prod):
 
 def p_proc_args(prod):
     "proc_args : proc_args DEREF"
-    argument = shared.node_factory.create_node(ProcArg, leaf=prod[2][1:], position=Position(prod))
+    argument = shared.node_factory.create_node(ProcArg, leaf=prod[2][1:].lower(), position=Position(prod))
     prod[0] = shared.node_factory.create_node(
         ProcArgs, children=prod[1].children + [argument], position=Position(prod)
     )
