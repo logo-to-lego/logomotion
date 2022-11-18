@@ -7,6 +7,7 @@ from entities.ast.variables import Deref
 
 
 class Output(Node):
+
     def get_logotype(self):
         return LogoType.VOID
 
@@ -109,6 +110,10 @@ class ProcDecl(Node):
         if self.procedure.get_logotype() == LogoType.UNKNOWN and \
            len(self.procedure.typeclass.variables) == 0:
             self.procedure.typeclass.logotype = LogoType.VOID
+        else:
+            # Check function with output statements ends to output statement
+            if not self.children[1].children[-1].__class__ == Output:
+                self._logger.error_handler.add_error(2026, proc=self.leaf)
 
         self._symbol_tables.variables.finalize_scope()
 
