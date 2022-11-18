@@ -185,7 +185,7 @@ class TestLexer(unittest.TestCase):
         tok = self.lexer.t_IDENT(self.token_mock)
         self.assertEqual(tok.type, "SHOW")
 
-        self.token_mock.value = "näytä"
+        self.token_mock.value = "tulosta"
         tok = self.lexer.t_IDENT(self.token_mock)
         self.assertEqual(tok.type, "SHOW")
 
