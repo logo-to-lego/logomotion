@@ -13,17 +13,11 @@ from utils.console_io import ConsoleIO
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
 
-JAVA_GEN_PATH = os.path.join(
-    os.path.dirname(os.path.relpath(__file__)), "tests/e2e/java/logo/"
-)
-
-JAVA_TEST_PATH = os.path.join(
-    os.path.dirname(os.path.relpath(__file__)), "tests/e2e/test_files/java/"
-)
-
-LOGO_TEST_PATH = os.path.join(
-    os.path.dirname(os.path.relpath(__file__)), "tests/e2e/test_files/logo/"
-)
+CWD = os.getcwd()
+CURR_DIR = os.path.dirname(os.path.relpath(__file__)) 
+JAVA_GEN_PATH = os.path.join(CURR_DIR, "tests/e2e/java/logo/")
+JAVA_TEST_PATH = os.path.join(CURR_DIR, "tests/e2e/test_files/java/")
+LOGO_TEST_PATH = os.path.join(CURR_DIR, "tests/e2e/test_files/logo/")
 
 
 class MockIO():
@@ -68,7 +62,7 @@ class AppLibrary:
             raise AssertionError(f"Given logocode in {filename} is not valid")
 
     def _difference(self, str1, str2):
-        # Split both strings into list items
+        # Differences between two strings
         str1 = str1.split()
         str2 = str2.split()
         A = set(str1)
@@ -95,9 +89,10 @@ class AppLibrary:
 
     def java_compiles(self):
         """Compiles the generated java code (located in e2e/java/logo/Logo.java).
-        Raises AssertionError if the compilation failes."""
+        Raises AssertionError if the compilation fails."""
         path = os.path.join(JAVA_GEN_PATH, "..")
-        os.chdir(path)
+        os.chdir(path) # Change dir to make the compile
         output = subprocess.run(['javac', 'logo/Logo.java'], capture_output=True)
+        os.chdir(CWD) # Change dir back to make tests work after this
         if output.returncode != 0:
-            raise AssertionError("Java compilation failed: ", output.stderr.decode('utf-8'))
+            raise AssertionError("Java compilation failed: \n", output.stderr.decode('utf-8'))
