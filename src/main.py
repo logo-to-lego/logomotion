@@ -8,6 +8,7 @@ from entities.symbol_tables import SymbolTables
 from entities.preconfigured_functions import initialize_logo_functions
 from lexer.lexer import Lexer
 from utils.code_generator import JavaCodeGenerator
+from utils.preconf_code_generator import JavaPreconfFuncsGenerator
 from utils.console_io import ConsoleIO
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
@@ -19,7 +20,9 @@ def main():
         .env file and returns a new instance of CodeGenerator class"""
 
         if CODE_GEN_LANG == "Java":
-            return JavaCodeGenerator(logger=logger)
+            preconf_gen = JavaPreconfFuncsGenerator()
+            funcs_dict = preconf_gen.get_funcs()
+            return JavaCodeGenerator(funcs_dict=funcs_dict, logger=logger)
         err_msg = f"{CODE_GEN_LANG} is not an implemented" "programming language for code generator"
         raise Exception(err_msg)
 
@@ -56,10 +59,11 @@ def main():
     lexer = Lexer(logger)
     lexer.build()
     symbol_tables = SymbolTables()
-    symbol_tables = initialize_logo_functions(symbol_tables)
     code_generator = get_code_generator()
     parser = Parser(lexer, logger, symbol_tables, code_generator)
     parser.build()
+
+    symbol_tables = initialize_logo_functions(symbol_tables)
 
     # Compile from logo to language defined with CODE_GEN .env variable
     compile_logo()

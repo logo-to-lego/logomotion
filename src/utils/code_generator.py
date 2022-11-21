@@ -6,11 +6,12 @@ from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
 START_METHOD = (
-    "package logo;import classes.EV3MovePilot;import java.lang.Runnable;" "public class Logo {"
+    "package logo; import classes.EV3MovePilot; import java.lang.Runnable;"\
+        "public class Logo { "
 )
 START_MAIN = (
-    "public static void main(String[] args) {"
-    "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7);"
+    "public static void main(String[] args) { "
+    "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
     "Logo logo = new Logo();"
 )
 END = "} }"
@@ -38,6 +39,7 @@ class JavaCodeGenerator:
         self._logger: Logger = dependencies.get("logger", default_logger)
         self._java_variable_names = {}
         self._java_function_names = {}
+        self._preconf_funcs_dict = dependencies.get("funcs_dict", {})
 
     def _increase_temp_var_index(self):
         """increase index for temp variables"""
@@ -202,6 +204,13 @@ class JavaCodeGenerator:
         self._append_code(code)
         return temp_var
 
+    def unary_op(self, value):
+        """Create Java code for unaryops and return variable name"""
+        temp_var = self._generate_temp_var()
+        code = f"double {temp_var} = -{value};"
+        self._append_code(code)
+        return temp_var
+
     def if_statement(self, conditional):
         """Create Java code to start an if statement in Java."""
         code = f"if ({conditional}) " + "{"
@@ -239,6 +248,8 @@ class JavaCodeGenerator:
         try:
             with open(PATH + self._name + ".java", mode="w+", encoding="utf-8") as file:
                 file.write(START_METHOD)
+                for fname in self._preconf_funcs_dict.keys():
+                    file.write(self._preconf_funcs_dict[fname] + " ")
                 for method_line in self._method:
                     file.write(method_line + " ")
                 file.write(START_MAIN)
