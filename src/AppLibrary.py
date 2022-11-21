@@ -1,18 +1,14 @@
 """File to handle tests created with Robot Framework"""
-import argparse
 import os
 import subprocess
 from parser.parser import Parser
-import dotenv
 from entities.symbol_tables import SymbolTables
 from entities.symbol_table import SymbolTable
 from entities.preconfigured_functions import initialize_logo_functions
 from lexer.lexer import Lexer
 from utils.code_generator import JavaCodeGenerator
-from utils.console_io import ConsoleIO
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
-from utils.preconf_code_generator import JavaPreconfFuncsGenerator
 
 CWD = os.getcwd()
 CURR_DIR = os.path.dirname(os.path.relpath(__file__)) 
@@ -81,8 +77,8 @@ class AppLibrary:
         generated_java_code = self._get_file_as_str(generated_java_path)
 
         # Remove spaces, tabs and new lines
-        code1 = ''.join(test_java_code.split())
-        code2 = ''.join(generated_java_code.split())
+        code1 = "".join(test_java_code.split())
+        code2 = "".join(generated_java_code.split())
 
         if code1 != code2:
             difference = self._difference(test_java_code, generated_java_code)
@@ -93,7 +89,7 @@ class AppLibrary:
         Raises AssertionError if the compilation fails."""
         path = os.path.join(JAVA_GEN_PATH, "..")
         os.chdir(path) # Change dir to make the compile
-        output = subprocess.run(['javac', 'logo/Logo.java'], capture_output=True)
+        output = subprocess.run(["javac", "logo/Logo.java"], capture_output=True)
         os.chdir(CWD) # Change dir back to make tests work after this
         if output.returncode != 0:
-            raise AssertionError("Java compilation failed: \n", output.stderr.decode('utf-8'))
+            raise AssertionError("Java compilation failed: \n", output.stderr.decode("utf-8"))
