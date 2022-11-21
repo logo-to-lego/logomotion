@@ -44,6 +44,15 @@ foo
 ERR
 ```
 
+FOR määritetään seuraavalla tavalla
+``` 
+for ["a 1 2 3] {}
+
+for ["a 0 10 1] { show :a }
+```
+Ensimmäinen argumentti on iteraattori, toinen argumentti on iteraation alkuarvo, kolmas lopetusarvo ja neljäs on millä arvolla iteraattoria korotetaan per sykli.
+'{}'-merkkien väliin sijoitetaan loopissa toistettavat toimenpiteet.
+
 ## Ehtolauseet
 
 Alla oleva koodi määrittää muuttujan x arvoksi luvun 42. Jos arvo on alle 100, tulostetaan muuttujan x arvo. 

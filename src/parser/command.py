@@ -185,6 +185,15 @@ def p_proc_call(prod):
         leaf=prod[2],
         position=Position(prod),
     )
+    
+def p_for_call(prod):
+    "proc_call : FOR LBRACKET expressions RBRACKET LBRACE statement_list RBRACE"
+    prod[0] = shared.node_factory.create_node(
+        ProcCall,
+        children=[prod[3], prod[6]],
+        leaf=prod[1],
+        position=Position[prod],
+    )
 
 
 def p_bye(prod):

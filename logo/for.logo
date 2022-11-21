@@ -1,3 +1,4 @@
-(for "varname 0 2 1 {
+
+for "wasd 2 3 4 {
     fd 20
-})
+}

@@ -110,6 +110,8 @@ def p_error(prod):
     colpos = shared.ply_lexer.lexpos - shared.ply_lexer.linestartpos
 
     if prod:
+        print("--------------------------")
+        print(prod)
         shared.logger.error_handler.add_error(2000, row=lineno, column=colpos, prodval=prod.value)
     else:
         shared.logger.error_handler.add_error(2001, row=lineno, column=colpos)

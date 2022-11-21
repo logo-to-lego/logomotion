@@ -1,27 +1,58 @@
 class JavaPreconfFuncsGenerator:
-    """A class for generating preconfigured functions Java code"""
-
-    java_repeat_code = "public static void repeat(int n, Runnable f) {\
+    """A class for generating preconfigured functions Java code
+    
+    TODO 
+    koodi generoituu logo.func1(temp18, temp19) -> miksi 'logo.funktio'
+    """
+    
+    """ java_repeat_code = "public void repeat(double n, Runnable f) {\
                     for(int i=0;i<n;i++) {\
                         f.run();\
                     }\
                   }"
                   
-    java_for_code = "public static void repeat(String varname, int itr, int limit, Runnable f) {\
-        for(int varname=itr;limit<=itr;itr++) {\
+    java_for_code = "public void logo_for(double itr, double start, double limit, Runnable f) {\
+        for(itr=start;itr<=limit;itr++) {\
             f.run();\
             }}\
             \
-            public static void repeat(String varname, int itr, int limit, int stepsize, Runnable f) {\
-                for(int varname = itr ; itr <= limit ; itr += stepsize) {\
-                    f.run()\
-                    }}"
-                  
-    #Typical for loop. The controllist specifies three or four members: 
-    # the local varname, start value, limit value, and optional step size
-
+            public void logo_for(double itr, double start, double limit, double step, Runnable f) {\
+                for (itr = start; itr <= limit; itr+=step) {\
+                    f.run();\
+                }\
+            }"
+     """
     def __init__(self):
-        self.java_preconf_funcs_dict = {"repeat": self.java_repeat_code}
+        pass
 
+    def give_code_generator(self, jcg):
+        self.jcg = jcg
+    
     def get_funcs(self):
-        return self.java_preconf_funcs_dict
+        return {"repeat": self._repeat_code(),
+                "for": self._for_code()}
+
+    def _repeat_code(self):
+        mangled_name = self.jcg._mangle_java_function_name("repeat")
+        java_repeat_code = f"public static void {mangled_name}(double n, Runnable f) {{ \
+                    for(int i=0;i<n;i++) {{ \
+                        f.run();\
+                    }} \
+                  }}"
+        return java_repeat_code
+    
+    def _for_code(self):
+        #itr -> variable taulusta
+        mangled_for = self.jcg._mangle_java_function_name("for")
+        java_for_code = f"public void {mangled_for}(double itr, double start, double limit, Runnable f) {{\
+        for(itr=start;itr<=limit;itr++) {{\
+            f.run();\
+            }}\
+            }}\
+            \
+            public void {mangled_for}(double itr, double start, double limit, double step, Runnable f) {{\
+                for (itr = start; itr <= limit; itr+=step) {{\
+                    f.run();\
+                }}\
+            }}"
+        return java_for_code

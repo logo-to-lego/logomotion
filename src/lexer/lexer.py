@@ -45,7 +45,6 @@ class Lexer:
         "ifelse": TokenType.IFELSE,
         "riippuen": TokenType.IFELSE,
         "for": TokenType.FOR,
-        "luvuille": TokenType.FOR,
         "show": TokenType.SHOW,
         "näytä": TokenType.SHOW,
         "true": TokenType.TRUE,

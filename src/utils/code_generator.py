@@ -39,7 +39,9 @@ class JavaCodeGenerator:
         self._logger: Logger = dependencies.get("logger", default_logger)
         self._java_variable_names = {}
         self._java_function_names = {}
-        self._preconf_funcs_dict = dependencies.get("funcs_dict", {})
+        
+    def give_preconf_funcs_dict(self, pre_func_dict):
+        self._preconf_funcs_dict = pre_func_dict
 
     def _increase_temp_var_index(self):
         """increase index for temp variables"""
@@ -230,6 +232,13 @@ class JavaCodeGenerator:
         code = f"Runnable {temp_var} = () -> " + "{"
         self._append_code(code)
         return temp_var
+    
+    def lambda_param_start(self):
+        """Generate the start of a parametered Java lambda, return lambda variable's name"""
+        temp_var = self._generate_temp_var()
+        code = f"Runnable {temp_var} = (double a) -> " + "{"
+        self._append_code(code)
+        return temp_var
 
     def lambda_end(self):
         """Generate the closing bracket for Java lambda"""
@@ -239,6 +248,7 @@ class JavaCodeGenerator:
     def write(self):
         """write a Java file"""
         try:
+            print("DEBUG CODEGEN DEBUG",self._java_function_names)
             with open(PATH + self._name + ".java", mode="w+", encoding="utf-8") as file:
                 file.write(START_METHOD)
                 for fname in self._preconf_funcs_dict.keys():
