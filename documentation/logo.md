@@ -41,8 +41,12 @@ END
 
 MAKE "x 42
 foo
-ERR
+ERROR
 ```
+
+## Scopet
+
+
 
 ## Ehtolauseet
 
@@ -61,5 +65,15 @@ if :x < 100 {
     make "y 123
 }
 show :y
-ERR
+ERROR
 ```
+
+## Laskutoimitukset
+
+Vain FLOAT-tyyppisillä muuttujilla. Operaatiot ovat `+`, `-`, `*` ja `/`.
+
+## Vertailuoperaatiot
+
+FLOAT-tyyppisiä muuttujia voidaan vertailla operaattoreilla `<`, `<=`, `>`, `>=`, `=` ja `<>`. 
+
+STRING-tyyppisillä muuttujilla voidaan vertailla vain yhtäsuuruutta operaattorilla `=` ja erisuuruutta operaattorilla `<>`.
