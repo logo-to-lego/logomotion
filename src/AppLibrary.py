@@ -12,6 +12,7 @@ from utils.code_generator import JavaCodeGenerator
 from utils.console_io import ConsoleIO
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
+from utils.preconf_code_generator import JavaPreconfFuncsGenerator
 
 CWD = os.getcwd()
 CURR_DIR = os.path.dirname(os.path.relpath(__file__)) 
@@ -75,7 +76,7 @@ class AppLibrary:
         The comparison is done simply by comparing the strings without spaces, tabs or newlines"""
         test_java_path = os.path.join(JAVA_TEST_PATH, filename)
         generated_java_path = os.path.join(JAVA_GEN_PATH, "Logo.java")
-        
+
         test_java_code = self._get_file_as_str(test_java_path)
         generated_java_code = self._get_file_as_str(generated_java_path)
 
@@ -85,7 +86,7 @@ class AppLibrary:
 
         if code1 != code2:
             difference = self._difference(test_java_code, generated_java_code)
-            raise AssertionError(f"{filename} and generated java did not match: ", difference)
+            raise AssertionError(f"{filename} and generated java did not match ", difference)
 
     def java_compiles(self):
         """Compiles the generated java code (located in e2e/java/logo/Logo.java).

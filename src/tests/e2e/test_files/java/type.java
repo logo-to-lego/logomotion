@@ -4,6 +4,7 @@ import classes.EV3MovePilot;
 import java.lang.Runnable;
 
 public class Logo {
+
     public static void main(String[] args) {
         EV3MovePilot robot = new EV3MovePilot(5.6, 11.7);
         Logo logo = new Logo();

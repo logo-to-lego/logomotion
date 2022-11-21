@@ -10,6 +10,9 @@ ${MOVE_JAVA}    move.java
 ${TYPE_LOGO}    type.logo
 ${TYPE_JAVA}    type.java
 
+${OPERATIONS_LOGO}    operations.logo
+${OPERATIONS_JAVA}    operations.java
+
 
 *** Test Cases ***
 Move In All Directions
@@ -20,4 +23,9 @@ Move In All Directions
 Make Variables In All Types
     Compile Logo  ${TYPE_LOGO}
     Java Is Valid  ${TYPE_JAVA}
+    Java Compiles
+
+Use All Operations
+    Compile Logo  ${OPERATIONS_LOGO}
+    Java Is Valid  ${OPERATIONS_JAVA}
     Java Compiles
