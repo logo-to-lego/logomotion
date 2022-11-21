@@ -2,7 +2,7 @@ from entities.ast.node import Node
 from entities.logotypes import LogoType
 
 
-class Block(Node):
+class UnknownFunction(Node):
     def __init__(self, children=None, **dependencies):
         super().__init__("Block", children, None, **dependencies)
 

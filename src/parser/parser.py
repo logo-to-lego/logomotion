@@ -50,7 +50,7 @@ param_decl_list
     : DEREF
     | DEREF COMMA param_decl_list
 
-block
+unknown_function
     : LBRACE statement_list RBRACE
 
 list
@@ -75,7 +75,7 @@ from entities.ast.logocommands import *
 from entities.ast.operations import *
 from entities.ast.statementlist import *
 from entities.ast.variables import *
-from entities.ast.block import *
+from entities.ast.unknown_function import *
 
 
 def p_start(prod):
@@ -95,9 +95,9 @@ def p_statement_list_empty(prod):
     prod[0] = shared.node_factory.create_node(StatementList, position=Position(prod))
 
 
-def p_block_statement_list(prod):
-    "block : LBRACE statement_list RBRACE"
-    prod[0] = shared.node_factory.create_node(Block, children=[prod[2]], position=Position(prod))
+def p_unknown_function_statement_list(prod):
+    "unknown_function : LBRACE statement_list RBRACE"
+    prod[0] = shared.node_factory.create_node(UnknownFunction, children=[prod[2]], position=Position(prod))
 
 
 def p_empty(prod):
