@@ -9,9 +9,7 @@ from utils.console_io import default_console_io
 FIN = "FIN"
 ENG = "ENG"
 DEFAULT_NAME = "error_messages"
-PATH = os.path.join(
-    os.path.dirname(os.path.relpath(__file__)), "../../src/error_messages/"
-)
+PATH = os.path.join(os.path.dirname(os.path.relpath(__file__)), "../../src/error_messages/")
 
 
 class ErrorHandler:
@@ -78,12 +76,11 @@ class ErrorHandler:
             self.err_dict[index] = msg
         try:
             with open(PATH + self._name + ".json", mode="w+", encoding="utf-8") as file:
-                jsonObject = json.dumps(self.err_dict, ensure_ascii=False).encode('utf8')
-                file.write(jsonObject.decode())
+                json_object = json.dumps(self.err_dict, ensure_ascii=False).encode("utf8")
+                file.write(json_object.decode())
         except Exception as error:
             print(f"An error occurred when writing {self._name}.json file:\n{error}")
             raise
-
 
     def write_errors_to_console(self):
         """Writes error messages to console in the selected language"""
