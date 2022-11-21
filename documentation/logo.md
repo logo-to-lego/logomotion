@@ -46,7 +46,9 @@ ERROR
 
 ## Scopet
 
+Päätasolla (globaalilla) määritellyt muuttujat eivät näy funktioiden sisään. Funktioiden sisäiset muuttujat eivät näy päätasolla.
 
+Ehtolauseiden sisällä määritellyt muuttujat eivät näy ehtolauseen ulkopuolelle. Ehtolause voi kuitenkin käyttää ylemmän tason muuttujia, kuten globaaleita muuttujia.
 
 ## Ehtolauseet
 
