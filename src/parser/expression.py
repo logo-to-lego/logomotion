@@ -67,7 +67,7 @@ def p_expression_bool(prod):
     """expression : TRUE
     | FALSE"""
     prod[0] = shared.node_factory.create_node(
-        Bool, leaf=shared.reserved_words[prod[1]], position=Position(prod)
+        Bool, leaf=shared.reserved_words[prod[1].lower()], position=Position(prod)
     )
 
 
