@@ -1,0 +1,15 @@
+make "num1 5.123
+make "num2 (-20.6)
+
+make "bool1 :num1 < :num2
+make "bool2 :num1 <= :num2
+make "bool3 :num1 > :num2
+make "bool4 :num1 >= :num2
+make "bool5 :num1 = :num2
+make "bool6 :num1 <> :num2
+
+make "str1 "kissa
+make "str2 "vesinokkaeläin
+
+make "bool7 :str1 = :str2
+make "bool8 :str1 <> :str2

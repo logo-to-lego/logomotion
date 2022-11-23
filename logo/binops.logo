@@ -1,0 +1,8 @@
+make "a 5.123
+make "b (-20.6)
+make "c 1
+
+make "d :a + :b
+make "e :b - :c
+make "f :a * :c
+make "g :b / :a
