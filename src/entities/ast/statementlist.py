@@ -1,4 +1,3 @@
-from entities.ast.functions import Output
 from entities.ast.node import Node
 
 
