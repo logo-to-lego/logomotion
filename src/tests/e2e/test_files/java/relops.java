@@ -6,7 +6,7 @@ import java.lang.Runnable;
 public class Logo {
 
     public static void main(String[] args) {
-        EV3MovePilot robot = new EV3MovePilot(5.6, 11.7);
+        EV3MovePilot robot = new EV3MovePilot();
         Logo logo = new Logo();
         
         double temp1 = 5.123;
