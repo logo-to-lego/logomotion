@@ -41,8 +41,14 @@ END
 
 MAKE "x 42
 foo
-ERR
+ERROR
 ```
+
+## Scopet
+
+Päätasolla (globaalilla) määritellyt muuttujat eivät näy funktioiden sisään. Funktioiden sisäiset muuttujat eivät näy päätasolla.
+
+Ehtolauseiden sisällä määritellyt muuttujat eivät näy ehtolauseen ulkopuolelle. Ehtolause voi kuitenkin käyttää ylemmän tason muuttujia, kuten globaaleita muuttujia.
 
 ## Ehtolauseet
 
@@ -61,5 +67,15 @@ if :x < 100 {
     make "y 123
 }
 show :y
-ERR
+ERROR
 ```
+
+## Laskutoimitukset
+
+Vain FLOAT-tyyppisillä muuttujilla. Operaatiot ovat `+`, `-`, `*` ja `/`.
+
+## Vertailuoperaatiot
+
+FLOAT-tyyppisiä muuttujia voidaan vertailla operaattoreilla `<`, `<=`, `>`, `>=`, `=` ja `<>`. 
+
+STRING-tyyppisillä muuttujilla voidaan vertailla vain yhtäsuuruutta operaattorilla `=` ja erisuuruutta operaattorilla `<>`.
