@@ -11,7 +11,7 @@ START_METHOD = (
 )
 START_MAIN = (
     "public static void main(String[] args) { "
-    "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
+    "EV3MovePilot robot = new EV3MovePilot(); "
     "Logo logo = new Logo(); "
 )
 END = "} }"
@@ -273,6 +273,75 @@ class JavaCodeGenerator:
     def get_generated_code(self):
         """Returns list of generated code for tests"""
         return self._method + self._main
+
+    def _get_params_as_code_lines(self, path):
+        params = []
+        param_area = False
+        with open(path, mode="r", encoding="utf-8") as file:
+            for line in file.readlines():
+                if "// Start params" in line:
+                    param_area = True
+                    continue
+                if "// End params" in line:
+                    param_area = False
+                    continue
+                if param_area:
+                    params.append(line)
+        return params
+
+    def _create_params_as_code_lines(self, params, kwargs):
+        for key, value in kwargs.items():
+            search_key = f"this.{key} = "
+            matches = [line for line in params if search_key in line]
+            if len(matches) != 1:
+                raise Exception(f"Either could not find '{key}' or there were more than one")
+
+            line_to_modify = matches[0]
+
+            if key in ("leftMotor", "rightMotor"):
+                new_line = f"\t\t{search_key}new EV3LargeRegulatedMotor(MotorPort.{value});\n"
+            else:
+                new_line = f"\t\t{search_key}{value};\n"
+            params = list(map(lambda x: x.replace(line_to_modify, new_line), params)) # pylint: disable=W0640
+        return params
+
+    def _write_new_params_to_file(self, path, param_lines):
+        lines = []
+        with open(path, mode="r", encoding="utf-8") as file:
+            lines = file.readlines()
+
+        param_area = False
+        params_added = False
+        with open(path, mode="w", encoding="utf-8") as file:
+            for line in lines:
+                if "// Start params" in line:
+                    param_area = True
+                    file.write(line)
+                    continue
+                if "// End params" in line:
+                    param_area = False
+                    file.write(line)
+                    continue
+
+                if param_area and not params_added:
+                    for param_line in param_lines:
+                        file.write(param_line)
+                    params_added = True
+
+                elif not param_area:
+                    file.write(line)
+
+    def add_env_variables(self, **kwargs):
+        path = os.path.join(PATH, "../classes/EV3MovePilot.java")
+
+        try:
+            params = self._get_params_as_code_lines(path)
+            param_lines = self._create_params_as_code_lines(params, kwargs)
+            self._write_new_params_to_file(path, param_lines)
+
+        except Exception as error:
+            print("An error occurred when writing environment variables to EV3MovePilot.java")
+            raise error
 
 
 default_code_generator = JavaCodeGenerator()
