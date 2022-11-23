@@ -97,12 +97,6 @@ class TestFunctions(unittest.TestCase):
         ast.check_types()
         self.assertEqual(True, self.error_handler.check_id_is_in_errors(2026))
 
-    def test_statement_list_have_output_statement_but_it_isnt_at_end_of_it_statementlist(self):
-        test_code = """TO f :x if :x > 0 { output :x+1 output :x } output :x+2 END"""
-        ast = self.parser.parse(test_code)
-        ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2027))
-
     def test_make_statement_works_in_functions(self):
         test_code = """TO f :x if :x > 0 { make "x :x-1 output :x }
                     make "x :x+1 output :x END"""
