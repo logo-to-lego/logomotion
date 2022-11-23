@@ -18,13 +18,15 @@ class SymbolTable:
 
     def insert(self, key, value):
         """Inserts a new entry to the symbol table"""
-        key = key.lower()
+        if isinstance(key, str):
+            key = key.lower()
         self._stack[0][key] = value
 
     def lookup(self, key):
         """Searches for a symbol and returns its value.
         Global scope can't be reached in function scope"""
-        key = key.lower()
+        if isinstance(key, str):
+            key = key.lower()
         if self._in_function:
             for i in range(len(self._stack) - 1):
                 if key in self._stack[i]:
