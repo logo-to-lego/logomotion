@@ -83,8 +83,8 @@ class ProcCall(Node):
             temp_vars.append(child.generate_code())
         if self.get_logotype() == LogoType.VOID:
             self._code_generator.function_call(self.leaf, temp_vars)
-        else:
-            return self._code_generator.returning_function_call(self.leaf, temp_vars)
+            return None
+        return self._code_generator.returning_function_call(self.leaf, temp_vars)
 
 
 class ProcDecl(Node):
