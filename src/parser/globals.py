@@ -35,6 +35,9 @@ class Position:
 
         return (line, col)
 
+    def get_lexspan(self):
+        return self._lexspan
+
 
 class Shared:
     """Wrapper class for exposing the lexer, console_io,
