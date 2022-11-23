@@ -55,11 +55,17 @@ class TestFunctions(unittest.TestCase):
         ast.check_types()
         self.assertEqual(True, self.error_handler.check_id_is_in_errors(2025))
 
-    def test_deref_output_does_not_cause_error_in_output(self):
+    def test_output_of_deref_does_not_cause_error_in_output(self):
         test_code = """TO f :x make "y :x+1 output :y END"""
         ast = self.parser.parse(test_code)
         ast.check_types()
         self.assertEqual(0, len(self.error_handler.get_error_ids()))
+
+    def test_output_of_undefined_deref_cause_error(self):
+        test_code = """TO f :x if :x > 0 { output :y } output :y END"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2007))
 
     def test_function_call_has_too_much_arguments_in_proccall(self):
         test_code = """TO f :x output :x+1 END (f 1 2)"""
@@ -96,3 +102,10 @@ class TestFunctions(unittest.TestCase):
         ast = self.parser.parse(test_code)
         ast.check_types()
         self.assertEqual(True, self.error_handler.check_id_is_in_errors(2027))
+
+    def test_make_statement_works_in_functions(self):
+        test_code = """TO f :x if :x > 0 { make "x :x-1 output :x }
+                    make "x :x+1 output :x END"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(0, len(self.error_handler.get_error_ids()))
