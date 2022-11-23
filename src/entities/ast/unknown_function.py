@@ -3,8 +3,9 @@ from entities.logotypes import LogoType
 
 
 class UnknownFunction(Node):
+    """Todo: vaihdettu Block suoraan tähän, toiminta on todennäköisesti epäjärkevää"""
     def __init__(self, children=None, **dependencies):
-        super().__init__("Block", children, None, **dependencies)
+        super().__init__("UnknownFunction", children, None, **dependencies)
 
     def get_logotype(self) -> LogoType:
         return LogoType.NAMELESS_FUNCTION
