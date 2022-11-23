@@ -332,7 +332,7 @@ class JavaCodeGenerator:
             self._write_new_params_to_file(path, param_lines)
 
         except Exception as error:
-            print("An error occurred when writing environment variables to EV3MovePilot.java_")
+            print("An error occurred when writing environment variables to EV3MovePilot.java")
             raise error
 
 
