@@ -22,10 +22,16 @@ class Output(Node):
         if procedure.get_logotype() == LogoType.UNKNOWN:
             if output_value.__class__ == Deref:
                 deref_symbol = self._symbol_tables.variables.lookup(output_value.leaf)
-                self._symbol_tables.concatenate_typeclasses(deref_symbol, procedure)
+                if deref_symbol:
+                    self._symbol_tables.concatenate_typeclasses(deref_symbol, procedure)
             else:
                 procedure.typeclass.logotype = output_value.get_logotype()
         else:
+            if output_value.get_logotype() == LogoType.UNKNOWN \
+               and output_value.__class__ == Deref:
+                deref_symbol = self._symbol_tables.variables.lookup(output_value.leaf)
+                self._symbol_tables.concatenate_typeclasses(deref_symbol, procedure)
+                return
             # Check output value's type is same as funtion's other output values' types
             if procedure.get_logotype() != output_value.get_logotype():
                 self._logger.error_handler.add_error(2025, proc=procedure.name)
