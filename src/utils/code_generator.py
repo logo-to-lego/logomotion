@@ -274,10 +274,10 @@ class JavaCodeGenerator:
                 if "// Start params" in line:
                     param_area = True
                     continue
-                elif "// End params" in line:
+                if "// End params" in line:
                     param_area = False
                     continue
-                if param_area == True:
+                if param_area:
                     params.append(line)
         return params
 
@@ -287,14 +287,14 @@ class JavaCodeGenerator:
             matches = [line for line in params if search_key in line]
             if len(matches) != 1:
                 raise Exception(f"Either could not find '{key}' or there were more than one")
-            
+
             line_to_modify = matches[0]
 
             if key in ("leftMotor", "rightMotor"):
                 new_line = f"\t\t{search_key}new EV3LargeRegulatedMotor(MotorPort.{value});\n"
             else:
                 new_line = f"\t\t{search_key}{value};\n"
-            params = list(map(lambda x: x.replace(line_to_modify, new_line), params))
+            params = list(map(lambda x: x.replace(line_to_modify, new_line), params)) # pylint: disable=W0640
         return params
 
     def _write_new_params_to_file(self, path, param_lines):
@@ -310,7 +310,7 @@ class JavaCodeGenerator:
                     param_area = True
                     file.write(line)
                     continue
-                elif "// End params" in line:
+                if "// End params" in line:
                     param_area = False
                     file.write(line)
                     continue
@@ -319,12 +319,9 @@ class JavaCodeGenerator:
                     for param_line in param_lines:
                         file.write(param_line)
                     params_added = True
-                
+
                 elif not param_area:
                     file.write(line)
-                
-
-                    
 
     def add_env_variables(self, **kwargs):
         path = os.path.join(PATH, "../classes/EV3MovePilot.java")
@@ -336,8 +333,8 @@ class JavaCodeGenerator:
             self._write_new_params_to_file(path, param_lines)
 
         except Exception as error:
-            print(f"An error occurred when writing environment variables to EV3MovePilot.java_")
-            raise
+            print("An error occurred when writing environment variables to EV3MovePilot.java_")
+            raise error
 
 
 default_code_generator = JavaCodeGenerator()
