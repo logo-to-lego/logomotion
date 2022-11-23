@@ -156,4 +156,4 @@ class ProcArg(Node):
 
     def get_param_data(self):
         """Return function parameter's type and name in tuple for ProgArgs' generate_code"""
-        return (self.get_logotype(), self.leaf)
+        return (self.get_logotype(), self.leaf.lower())
