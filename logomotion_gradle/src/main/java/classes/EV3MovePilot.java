@@ -15,16 +15,18 @@ public class EV3MovePilot {
     EV3LargeRegulatedMotor leftMotor;
     EV3LargeRegulatedMotor rightMotor;
 
-    public EV3MovePilot(double wheelDiameter, double wheelDistance) {
-        this.wheelDiameter = wheelDiameter;
-        this.wheelDistance = wheelDistance;
+    public EV3MovePilot() {
+        // Start params
+		this.wheelDiameter = 5.6;
+		this.wheelDistance = 11.7;
         this.wheelCircumference = Math.PI*this.wheelDiameter;
         this.rotationCircumference = Math.PI*wheelDistance;
-        this.motorSpeed = 500;
-        this.leftMotor = new EV3LargeRegulatedMotor(MotorPort.B);
-        this.rightMotor = new EV3LargeRegulatedMotor(MotorPort.C);
+		this.motorSpeed = 500;
+		this.leftMotor = new EV3LargeRegulatedMotor(MotorPort.A);
+		this.rightMotor = new EV3LargeRegulatedMotor(MotorPort.B);
         this.leftMotor.brake();
         this.rightMotor.brake();
+        // End params
     }
 
     public void setSpeed(int speed) {
