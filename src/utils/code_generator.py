@@ -325,7 +325,6 @@ class JavaCodeGenerator:
 
     def add_env_variables(self, **kwargs):
         path = os.path.join(PATH, "../classes/EV3MovePilot.java")
-        #path = os.path.join(PATH, "../classes/Testeri.txt")
 
         try:
             params = self._get_params_as_code_lines(path)
