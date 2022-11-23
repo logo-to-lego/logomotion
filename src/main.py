@@ -49,6 +49,7 @@ def main():
             start_node.generate_code()
             code_generator.write()
         else:
+            error_handler.create_json_file()
             error_handler.write_errors_to_console()
 
     # Create required classes for the compiler

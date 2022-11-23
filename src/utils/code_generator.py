@@ -6,13 +6,13 @@ from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
 START_METHOD = (
-    "package logo; import classes.EV3MovePilot; import java.lang.Runnable;"\
+    "package logo; import classes.EV3MovePilot; import java.lang.Runnable; "\
         "public class Logo { "
 )
 START_MAIN = (
     "public static void main(String[] args) { "
     "EV3MovePilot robot = new EV3MovePilot(5.6, 11.7); "
-    "Logo logo = new Logo();"
+    "Logo logo = new Logo(); "
 )
 END = "} }"
 DEFAULT_NAME = "Logo"
@@ -243,10 +243,11 @@ class JavaCodeGenerator:
         code = "};"
         self._append_code(code)
 
-    def write(self):
+    def write(self, path=None):
         """write a Java file"""
+        path = path if path is not None else PATH
         try:
-            with open(PATH + self._name + ".java", mode="w+", encoding="utf-8") as file:
+            with open(path + self._name + ".java", mode="w+", encoding="utf-8") as file:
                 file.write(START_METHOD)
                 for fname in self._preconf_funcs_dict.keys():
                     file.write(self._preconf_funcs_dict[fname] + " ")

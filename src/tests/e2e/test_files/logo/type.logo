@@ -1,0 +1,5 @@
+make "animal "kissa
+make "num 2.5
+make "neg -700
+make "ok true
+make "notok false
