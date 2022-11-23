@@ -69,7 +69,7 @@ class Deref(Node):
             self._logger.error_handler.add_error(2007, var=self.leaf)
 
     def generate_code(self):
-        return self._code_generator.variable_name(self.leaf)
+        return self._code_generator.variable_name(self.leaf.lower())
 
 
 class StringLiteral(Node):
