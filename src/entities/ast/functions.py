@@ -38,6 +38,12 @@ class Output(Node):
 class ProcCall(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("ProcCall", children, leaf, **dependencies)
+        self.procedure: Function = None
+
+    def get_logotype(self):
+        if self.procedure:
+            return self.procedure.typeclass.logotype
+        return None
 
     def check_types(self):
         # Check the procedure has been declarated
@@ -74,12 +80,17 @@ class ProcCall(Node):
                     ptype=parameter_type.value,
                     row=self.position.get_pos()[0],
                 )
+        # Set the procedure as a parameter for use in code gen
+        self.procedure = procedure
 
     def generate_code(self):
         temp_vars = []
         for child in self.children:
             temp_vars.append(child.generate_code())
-        self._code_generator.function_call(self.leaf, temp_vars)
+        if self.get_logotype() == LogoType.VOID:
+            self._code_generator.function_call(self.leaf, temp_vars)
+            return None
+        return self._code_generator.returning_function_call(self.leaf, temp_vars)
 
 
 class ProcDecl(Node):
