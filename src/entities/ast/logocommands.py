@@ -21,6 +21,7 @@ class Make(Node):
         if variable_logotype != LogoType.STRING:
             self._logger.error_handler.add_error(
                 2010,
+                lexspan=self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 command=self.node_type.value,
                 curr_type=variable_node.get_logotype().value,
@@ -35,6 +36,7 @@ class Make(Node):
         if arg_logotype == LogoType.VOID:
             self._logger.error_handler.add_error(
                 2011,
+                self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 command=self.node_type.value,
                 value_type=arg_logotype.value,
@@ -52,6 +54,7 @@ class Make(Node):
         else:
             self._logger.error_handler.add_error(
                 2012,
+                self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 var_name=name,
                 curr_type=arg_logotype,
@@ -67,6 +70,7 @@ class Make(Node):
         elif var_type != arg_type:
             self._logger.error_handler.add_error(
                 2012,
+                self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 var_name=name,
                 curr_type=var_type.value,
@@ -85,6 +89,7 @@ class Make(Node):
         else:
             self._logger.error_handler.add_error(
                 2012,
+                self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 var_name=name,
                 curr_type=symbol_type,
@@ -131,7 +136,10 @@ class Make(Node):
         # Check for right amount of arguments
         if len(self.children) != 1 or not self.leaf:
             self._logger.error_handler.add_error(
-                2009, row=self.position.get_pos()[0], command=self.node_type.value
+                2009,
+                self.position.get_lexspan(),
+                row=self.position.get_pos()[0],
+                command=self.node_type.value,
             )
             return
 
@@ -147,9 +155,9 @@ class Make(Node):
         value_var_name = self.children[0].generate_code()
 
         if self._new_variable:
-            self._code_generator.create_new_variable(self.leaf.leaf, value_var_name)
+            self._code_generator.create_new_variable(self.leaf.leaf.lower(), value_var_name)
         else:
-            self._code_generator.assign_value(self.leaf.leaf, value_var_name)
+            self._code_generator.assign_value(self.leaf.leaf.lower(), value_var_name)
 
 
 class Show(Node):
@@ -159,7 +167,9 @@ class Show(Node):
     def check_types(self):
         # Must have at least 1 argument
         if len(self.children) == 0:
-            self._logger.error_handler.add_error(2013, row=self.position.get_pos()[0])
+            self._logger.error_handler.add_error(
+                2013, self.position.get_lexspan(), row=self.position.get_pos()[0]
+            )
 
         # Cannot be function call that returns VOID
         for child in self.children:
@@ -167,6 +177,7 @@ class Show(Node):
             if logo_type == LogoType.VOID:
                 self._logger.error_handler.add_error(
                     2014,
+                    self.position.get_lexspan(),
                     row=child.position.get_pos()[0],
                     command=self.node_type.value,
                     return_type=LogoType.VOID.value,
@@ -180,7 +191,9 @@ class Bye(Node):
 
     def check_types(self):
         if self.children:
-            self._logger.error_handler.add_error(2015, command=self.node_type.value)
+            self._logger.error_handler.add_error(
+                2015, self.position.get_lexspan(), command=self.node_type.value
+            )
 
 
 class Move(Node):
@@ -192,7 +205,10 @@ class Move(Node):
     def check_types(self):
         if len(self.children) != 1:
             self._logger.error_handler.add_error(
-                2009, row=self.position.get_pos()[0], command=self.node_type.value
+                2009,
+                self.position.get_lexspan(),
+                row=self.position.get_pos()[0],
+                command=self.node_type.value,
             )
             return
 
@@ -206,6 +222,7 @@ class Move(Node):
         if child_type != LogoType.FLOAT:
             self._logger.error_handler.add_error(
                 2010,
+                self.position.get_lexspan(),
                 row=child.position.get_pos()[0],
                 command=self.node_type.value,
                 curr_type=child_type.value,
