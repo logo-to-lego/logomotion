@@ -81,15 +81,23 @@ class ProcCall(Node):
             argument_type = child.get_logotype()
             parameter_type = procedure.parameters[index].get_logotype()
             if argument_type != parameter_type:
-                self._logger.error_handler.add_error(
-                    2022,
-                    self.position.get_lexspan(),
-                    proc=self.leaf,
-                    arg=child.leaf,
-                    atype=argument_type.value,
-                    ptype=parameter_type.value,
-                    row=self.position.get_pos()[0],
-                )
+                if parameter_type == LogoType.UNKNOWN:
+                    self._logger.error_handler.add_error(
+                        2026,
+                        self.position.get_lexspan(),
+                        proc=self.leaf,
+                        atype=argument_type.value,
+                    )
+                else:
+                    self._logger.error_handler.add_error(
+                        2022,
+                        self.position.get_lexspan(),
+                        proc=self.leaf,
+                        arg=child.leaf,
+                        atype=argument_type.value,
+                        ptype=parameter_type.value,
+                        row=self.position.get_pos()[0],
+                    )
         # Set the procedure as a parameter for use in code gen
         self.procedure = procedure
 
@@ -142,7 +150,7 @@ class ProcDecl(Node):
             # Check function with output statements ends to output statement
             if not self.children[1].children[-1].__class__ == Output:
                 self._logger.error_handler.add_error(
-                    2026,
+                    2027,
                     self.position.get_lexspan(),
                     proc=self.leaf
                 )

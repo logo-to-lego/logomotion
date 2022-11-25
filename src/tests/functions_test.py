@@ -95,7 +95,7 @@ class TestFunctions(unittest.TestCase):
         test_code = """TO f :x if :x > 1 { output :x+1 } END"""
         ast = self.parser.parse(test_code)
         ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2026))
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2027))
 
     def test_make_statement_works_in_functions(self):
         test_code = """TO f :x if :x > 0 { make "x :x-1 output :x }
@@ -103,3 +103,9 @@ class TestFunctions(unittest.TestCase):
         ast = self.parser.parse(test_code)
         ast.check_types()
         self.assertEqual(0, len(self.error_handler.get_error_ids()))
+    
+    def test_function_calls_argument_is_not_right_type_in_proccall_when_parameter_type_is_unknown(self):
+        test_code = """TO f :a output :a END make "a (f 3)"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2026))
