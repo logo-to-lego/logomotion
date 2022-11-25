@@ -106,6 +106,14 @@ class JavaCodeGenerator:
         code = f"logo.{java_func_name}({arguments});"
         self._append_code(code)
 
+    def returning_function_call(self, logo_func_name, arg_vars):
+        temp_var = self._generate_temp_var()
+        java_func_name = self._mangle_java_function_name(logo_func_name)
+        arguments = ", ".join(arg_vars)
+        code = f"var {temp_var} = logo.{java_func_name}({arguments});"
+        self._append_code(code)
+        return temp_var
+
     def _generate_temp_var(self):
         """create an unique temp variable name"""
         return f"temp{self._increase_temp_var_index()}"
