@@ -24,7 +24,7 @@ def _repeat():
     fname = "repeat"
     # initialize params as variables
     repeat_n = Variable("n", Type(logotype=LogoType.FLOAT))
-    nameless = Variable("block", Type(logotype=LogoType.NAMELESS_FUNCTION))
+    nameless = Variable("nameless", Type(logotype=LogoType.NAMELESS_FUNCTION))
     # Initialize function, pass name and parans, define typeclass
     # typeclasses logotype should reflect the return value
     procedure = Function(
@@ -46,7 +46,7 @@ def _for():
     start = Variable("start", Type(logotype=LogoType.FLOAT))
     limit = Variable("limit", Type(logotype=LogoType.FLOAT))
     stepsize = Variable("stepsize", Type(logotype=LogoType.FLOAT))
-    nameless = Variable("block", Type(logotype=LogoType.NAMELESS_FUNCTION))
+    nameless = Variable("nameless", Type(logotype=LogoType.NAMELESS_FUNCTION))
     procedure = Function(
         fname,
         params=[iterator_name, start, limit, stepsize, nameless],

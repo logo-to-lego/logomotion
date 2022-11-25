@@ -68,7 +68,18 @@ class ProcCall(Node):
                     ptype=parameter_type.value,
                     row=self.position.get_pos()[0],
                 )
-
+            #DEBUG
+            if self.leaf == "for":
+                self.for_iter_init()
+            
+    def for_iter_init(self):
+        """Gives first and second argument (string, float) to the unknown function"""
+        varname = self.children[0]
+        start = self.children[1]
+        self.children[-1].param_specs = [varname, start]
+        
+    #DEBUGEND
+    
     def generate_code(self):
         temp_vars = []
         for child in self.children:

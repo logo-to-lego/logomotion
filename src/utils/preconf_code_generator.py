@@ -44,15 +44,15 @@ class JavaPreconfFuncsGenerator:
     def _for_code(self):
         #itr -> variable taulusta
         mangled_for = self.jcg._mangle_java_function_name("for")
-        java_for_code = f"public void {mangled_for}(double itr, double start, double limit, Runnable f) {{\
-        for(itr=start;itr<=limit;itr++) {{\
-            f.run();\
+        java_for_code = f"public void {mangled_for}(String placeholder, double start, double limit, Consumer<Double> f) {{\
+        for(double itr=start;itr<=limit;itr++) {{\
+            f.accept(itr);\
             }}\
             }}\
             \
-            public void {mangled_for}(double itr, double start, double limit, double step, Runnable f) {{\
-                for (itr = start; itr <= limit; itr+=step) {{\
-                    f.run();\
+            public void {mangled_for}(String placeholder, double start, double limit, double step, Consumer<Double> f) {{\
+                for (double itr = start; itr <= limit; itr+=step) {{\
+                    f.accept(itr);\
                 }}\
             }}"
         return java_for_code

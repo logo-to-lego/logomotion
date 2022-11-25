@@ -1,4 +1,6 @@
+make "a 3
 
-for "wasd 2 3 4 {
-    fd 20
+
+for ["wasd :a 3 4] { ;itr start limit step
+    make "i :wasd+1
 }

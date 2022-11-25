@@ -8,6 +8,7 @@ from entities.ast.logocommands import *
 from entities.ast.operations import *
 from entities.ast.statementlist import *
 from entities.ast.variables import *
+from entities.ast.unknown_function import *
 from lexer.token_types import TokenType
 
 
@@ -188,11 +189,19 @@ def p_proc_call(prod):
     
 def p_for_call(prod):
     "proc_call : FOR LBRACKET expressions RBRACKET LBRACE statement_list RBRACE"
+    unknown_f = shared.node_factory.create_node(
+        UnknownFunction,
+        arg_type = LogoType.FLOAT,
+        children=[prod[6]],
+        position=Position(prod),
+        iter_param=prod[3][0],
+        iter_value=prod[3][1]
+    )
     prod[0] = shared.node_factory.create_node(
         ProcCall,
-        children=[prod[3], prod[6]],
+        children=prod[3] + [unknown_f],
         leaf=prod[1],
-        position=Position[prod],
+        position=Position(prod)
     )
 
 

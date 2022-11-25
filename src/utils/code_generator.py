@@ -6,7 +6,7 @@ from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
 START_METHOD = (
-    "package logo; import classes.EV3MovePilot; import java.lang.Runnable;"\
+    "package logo; import classes.EV3MovePilot; import java.lang.Runnable; import java.util.function.Consumer;"\
         "public class Logo { "
 )
 START_MAIN = (
@@ -26,6 +26,12 @@ JAVA_TYPES = {
     LogoType.VOID: "void",
 }
 
+JAVA_TYPES_OBJECTS = {
+    LogoType.FLOAT : "Double",
+    LogoType.STRING : "String",
+    LogoType.BOOL : "Boolean"
+    
+}
 
 class JavaCodeGenerator:
     """A class for generating Java code"""
@@ -240,10 +246,12 @@ class JavaCodeGenerator:
         self._append_code(code)
         return temp_var
     
-    def lambda_param_start(self):
+    def lambda_param_start(self, param_type, param_name):
         """Generate the start of a parametered Java lambda, return lambda variable's name"""
         temp_var = self._generate_temp_var()
-        code = f"Runnable {temp_var} = (double a) -> " + "{"
+        type_var = JAVA_TYPES_OBJECTS[param_type]
+        java_param_name = self._mangle_logo_var_name(param_name)
+        code = f"Consumer<{type_var}> {temp_var} = ({type_var} {java_param_name}) -> " + "{"
         self._append_code(code)
         return temp_var
 
@@ -255,7 +263,6 @@ class JavaCodeGenerator:
     def write(self):
         """write a Java file"""
         try:
-            print("DEBUG CODEGEN DEBUG",self._java_function_names)
             with open(PATH + self._name + ".java", mode="w+", encoding="utf-8") as file:
                 file.write(START_METHOD)
                 for fname in self._preconf_funcs_dict.keys():
