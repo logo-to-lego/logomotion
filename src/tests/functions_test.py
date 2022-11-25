@@ -84,3 +84,15 @@ class TestFunctions(unittest.TestCase):
         ast = self.parser.parse(test_code)
         ast.check_types()
         self.assertEqual(True, self.error_handler.check_id_is_in_errors(2022))
+
+    def test_function_calls_are_case_insensitive(self):
+        test_code = """TO Test output 1 END make "x (tEST)"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(len(self.error_handler.error_ids), 0)
+
+    def test_function_params_are_case_insensitive(self):
+        test_code = """TO test.func :test.param make "x :tEST.pARAM+0 END"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(len(self.error_handler.error_ids), 0)
