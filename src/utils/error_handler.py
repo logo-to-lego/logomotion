@@ -42,7 +42,7 @@ class ErrorHandler:
         #     pass
         raise Exception(f"Message id {msg_id} was not found from error message files")
 
-    def add_error(self, msg_id: int, **kwargs):
+    def add_error(self, msg_id: int, lexspan, **kwargs):
         """Gets the error message frame in the defined language (ENG/FIN),
         replaces the @-tags with the params given as **kwargs.
         These messages are then added to a list of messages.
@@ -64,7 +64,7 @@ class ErrorHandler:
         # We want to have only one test file for error testing, and because in this parser,
         # there is only one instance of the Shared class (defined in parser/globals.py), only
         # one parser object can be defined in the testing setup.
-        err_msgs = {FIN: fin_msg, ENG: eng_msg}
+        err_msgs = {FIN: fin_msg, ENG: eng_msg, "Start": lexspan[0], "End": lexspan[1]}
         self.errors.append(err_msgs)
 
     def get_error_messages(self):
