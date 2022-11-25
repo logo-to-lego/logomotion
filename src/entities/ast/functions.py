@@ -107,7 +107,7 @@ class ProcCall(Node):
         for child in self.children:
             temp_vars.append(child.generate_code())
         if self.get_logotype() == LogoType.VOID:
-            self._code_generator.function_call(self.leaf, temp_vars)
+            self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
             return None
         return self._code_generator.returning_function_call(to_lowercase(self.leaf), temp_vars)
 
