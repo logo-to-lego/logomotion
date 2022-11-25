@@ -6,8 +6,9 @@ from entities.type import Type
 
 class UnknownFunction(Node):
     """Todo:
-        Tän pitäis saada tietää for looppia kutsuttaessa for:in argumenteista 2 ekaa eli esim kutsulla
-        for ["wasd 3 2 1] {tää} pitäis saada tietää "wasd ja 3 jolloin näistä muodostetaan oma variaabeli
+        Tän pitäis saada tietää for looppia kutsuttaessa for:in argumenteista
+        2 ekaa eli esim kutsulla for ["wasd 3 2 1] {tää} pitäis saada tietää
+        "wasd ja 3 jolloin näistä muodostetaan oma variaabeli
         jonka jälkeen aloitetaan oma funktioskope
     Args:
         arg_type: either a LogoType or False.
@@ -21,22 +22,22 @@ class UnknownFunction(Node):
             self._iter_param = pos_iter_param.leaf
         else:
             self._iter_param = None
-        
+
 
     def get_logotype(self) -> LogoType:
         return LogoType.NAMELESS_FUNCTION
 
     def check_types(self):
-        """Creates a variable to scope 
+        """Creates a variable to scope
         if given code is `for ["a 1 2 3] {...}` creates variable 'a'
         """
         self._symbol_tables.variables.initialize_scope()
         # if we're handling a for loop, we need to add the iterator to the scope
         if self._iter_param:
-            symbol = Variable(self._iter_param, Type(LogoType.FLOAT, variables={self._iter_param}))  
+            symbol = Variable(self._iter_param, Type(LogoType.FLOAT, variables={self._iter_param}))
             self._symbol_tables.variables.insert(self._iter_param, symbol)
         for child in self.children:
-            child.check_types() 
+            child.check_types()
         self._symbol_tables.variables.finalize_scope()
 
     def generate_code(self):

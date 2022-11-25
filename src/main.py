@@ -34,7 +34,6 @@ def main():
         Prints lexer & parser results if debug flag (-d, --debug) is on."""
 
         logger.debug(LOGO_CODE + "\n")
-    
         # Tokenize
         tokens = lexer.tokenize_input(LOGO_CODE)
         logger.debug("Lexer tokens:")
@@ -45,7 +44,6 @@ def main():
         start_node.check_types()
         logger.debug("Parser AST:")
         logger.debug(console_io.get_formatted_ast(start_node))
-        
         # Code generation, if there are no errors
         if not error_handler.errors:
             logger.debug("Generated code:")

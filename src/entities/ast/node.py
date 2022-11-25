@@ -12,10 +12,6 @@ class Node:
     def __init__(self, node_type, children=None, leaf=None, **dependencies):
         self.node_type = node_type
         self.children = children if children else []
-        #if self.children:
-        #    for child in self.children:
-        #        print("CHILD:",child)
-        #        child.parent = self
         self.leaf = leaf
         self._logger: Logger = dependencies.get("logger", default_logger)
         self._symbol_tables: SymbolTables = dependencies.get("symbol_tables", default_symbol_tables)
@@ -24,12 +20,6 @@ class Node:
 
     def get_logotype(self) -> LogoType:
         return None
-    
-    def get_parent(self):
-        if not self.parent:
-            return None
-        else:
-            return self.parent
 
     def check_types(self):
         return

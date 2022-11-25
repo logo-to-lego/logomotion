@@ -186,7 +186,7 @@ def p_proc_call(prod):
         leaf=prod[2],
         position=Position(prod),
     )
-    
+
 def p_for_call(prod):
     "proc_call : FOR LBRACKET expressions RBRACKET LBRACE statement_list RBRACE"
     unknown_f = shared.node_factory.create_node(
@@ -194,8 +194,7 @@ def p_for_call(prod):
         arg_type = LogoType.FLOAT,
         children=[prod[6]],
         position=Position(prod),
-        iter_param=prod[3][0],
-        iter_value=prod[3][1]
+        iter_param=prod[3][0]
     )
     prod[0] = shared.node_factory.create_node(
         ProcCall,

@@ -6,7 +6,8 @@ from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
 START_METHOD = (
-    "package logo; import classes.EV3MovePilot; import java.lang.Runnable; import java.util.function.Consumer;"\
+    "package logo; import classes.EV3MovePilot; import java.lang.Runnable; \
+        import java.util.function.Consumer;"\
         "public class Logo { "
 )
 START_MAIN = (
@@ -30,7 +31,6 @@ JAVA_TYPES_OBJECTS = {
     LogoType.FLOAT : "Double",
     LogoType.STRING : "String",
     LogoType.BOOL : "Boolean"
-    
 }
 
 class JavaCodeGenerator:
@@ -45,8 +45,9 @@ class JavaCodeGenerator:
         self._logger: Logger = dependencies.get("logger", default_logger)
         self._java_variable_names = {}
         self._java_function_names = {}
-        
+
     def give_preconf_funcs_dict(self, pre_func_dict):
+        # pylint: disable=W0201
         self._preconf_funcs_dict = pre_func_dict
 
     def _increase_temp_var_index(self):
@@ -245,7 +246,7 @@ class JavaCodeGenerator:
         code = f"Runnable {temp_var} = () -> " + "{"
         self._append_code(code)
         return temp_var
-    
+
     def lambda_param_start(self, param_type, param_name):
         """Generate the start of a parametered Java lambda, return lambda variable's name"""
         temp_var = self._generate_temp_var()
