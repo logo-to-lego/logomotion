@@ -107,5 +107,13 @@
     "2025": {
         "FIN": "Funktion '@proc' palautusarvo ei ole oikeaa tyyppiä",
         "ENG": "Function @proc's output isn't right type"
+    },
+    "2026": {
+        "FIN": "En tiedä, ottaako funktio '@proc' tyyppiä @atype parametrina",
+        "ENG": "I don't know if function '@proc' takes @atype as its parameter"
+    },
+    "2027": {
+        "FIN": "En tykkää, ettei '@proc' anna arvoa lopussa, vaikka se antaa arvon muualla.",
+        "ENG": "I don't like that '@proc' does not return value at it's end althought it returns value elsewhere."
     }
 }
