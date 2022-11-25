@@ -165,6 +165,7 @@ class Show(Node):
         return LogoType.VOID
 
     def check_types(self):
+        print("SHOW TYPE", self.node_type)
         # Must have at least 1 argument
         if len(self.children) == 0:
             self._logger.error_handler.add_error(
@@ -183,6 +184,11 @@ class Show(Node):
                     return_type=LogoType.VOID.value,
                 )
             child.check_types()
+
+    def generate_code(self):
+        for child in self.children:
+            arg_var = child.generate_code()
+            self._code_generator.show(arg_var)
 
 
 class Bye(Node):

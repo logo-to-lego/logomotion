@@ -169,6 +169,11 @@ class JavaCodeGenerator:
         code = f"robot.rotate(-{arg_var});"
         self._append_code(code)
 
+    def show(self, arg_var):
+        """create Java code for show"""
+        code = f"System.out.println({arg_var});"
+        self._append_code(code)
+
     def float(self, value):
         """create Java code for defining double variable with given value
         and return the variable name"""
