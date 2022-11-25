@@ -7,6 +7,10 @@ from entities.ast.variables import Deref
 
 
 class Output(Node):
+
+    def get_logotype(self):
+        return LogoType.VOID
+
     def check_types(self):
         self.children[0].check_types()
         output_value = self.children[0]
@@ -20,10 +24,16 @@ class Output(Node):
         if procedure.get_logotype() == LogoType.UNKNOWN:
             if output_value.__class__ == Deref:
                 deref_symbol = self._symbol_tables.variables.lookup(output_value.leaf)
-                self._symbol_tables.concatenate_typeclasses(deref_symbol, procedure)
+                if deref_symbol:
+                    self._symbol_tables.concatenate_typeclasses(deref_symbol, procedure)
             else:
                 procedure.typeclass.logotype = output_value.get_logotype()
         else:
+            if output_value.get_logotype() == LogoType.UNKNOWN \
+               and output_value.__class__ == Deref:
+                deref_symbol = self._symbol_tables.variables.lookup(output_value.leaf)
+                self._symbol_tables.concatenate_typeclasses(deref_symbol, procedure)
+                return
             # Check output value's type is same as funtion's other output values' types
             if procedure.get_logotype() != output_value.get_logotype():
                 self._logger.error_handler.add_error(
@@ -137,6 +147,14 @@ class ProcDecl(Node):
             and len(self.procedure.typeclass.variables) == 0
         ):
             self.procedure.typeclass.logotype = LogoType.VOID
+        else:
+            # Check function with output statements ends to output statement
+            if not self.children[1].children[-1].__class__ == Output:
+                self._logger.error_handler.add_error(
+                    2027,
+                    self.position.get_lexspan(),
+                    proc=self.leaf
+                )
 
         self._symbol_tables.variables.finalize_scope()
 

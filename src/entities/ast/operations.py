@@ -12,13 +12,13 @@ class BinOp(Node):
     def check_types(self):
         """Checks that the types of both operands is LogoFloat"""
         for child in self.children:
+            child.check_types()
             if child.node_type == "Deref" and child.get_logotype() == LogoType.UNKNOWN:
                 child.set_logotype(LogoType.FLOAT)
             if child.get_logotype() != LogoType.FLOAT:
                 self._logger.error_handler.add_error(
                     2002, self.position.get_lexspan(), row=child.position.get_pos()[0]
                 )
-            child.check_types()
 
     def generate_code(self):
         """Generate binop to java"""
