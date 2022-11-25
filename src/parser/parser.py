@@ -62,6 +62,7 @@ list
 from parser.globals import *
 from parser.command import *
 from parser.expression import *
+from parser.preparser import Preparser
 from ply import yacc
 from lexer.lexer import Lexer
 from utils.code_generator import default_code_generator
@@ -131,6 +132,7 @@ class Parser:
     ):
         self._current_lexer = current_lexer
         shared.update(current_lexer, logger, symbol_tables, code_generator)
+        self._preparser = Preparser(current_lexer, shared.node_factory, logger)
         globals()["tokens"] = current_lexer.tokens
         self._parser = None
 
@@ -148,6 +150,8 @@ class Parser:
             start_node (parser.ast.Start): AST
         """
         self._current_lexer.reset()
+        for function_name, function in self._preparser.export_grammar_rules(code).items():
+            globals()[function_name] = function
         ply_parser = self.get_ply_parser()
         ply_lexer = self._current_lexer.get_ply_lexer()
 

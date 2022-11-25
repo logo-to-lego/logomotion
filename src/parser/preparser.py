@@ -5,7 +5,8 @@ to the parser grammar, so that the user can call procedures without parantheses.
 from lexer.lexer import Lexer
 from lexer.token_types import TokenType
 from entities.ast.functions import ProcCall
-from parser.globals import Position, shared
+from entities.ast.node import NodeFactory
+from parser.globals import Position
 from utils.logger import default_logger
 
 
@@ -13,9 +14,10 @@ class Preparser:
     """Preparser is used to create new grammar rules from the program code, to allow the user to call
     procedures without parantheses."""
 
-    def __init__(self, lexer: Lexer, logger=default_logger):
+    def __init__(self, lexer: Lexer, node_factory: NodeFactory, logger=default_logger):
         self._lexer = lexer
         self._logger = logger
+        self._node_factory = node_factory
         self._grammar_rules = dict()
 
     def export_grammar_rules(self, code):
@@ -23,7 +25,9 @@ class Preparser:
         and the parse function as value."""
 
         tokens = self._lexer.tokenize_input(code)
-        to_indices = [index for index, token in enumerate(tokens) if token == TokenType.TO]
+        to_indices = [
+            index for index, token in enumerate(tokens) if token.type == TokenType.TO.value
+        ]
 
         for index in to_indices:
             self._create_procedure_rules(index, tokens)
@@ -40,15 +44,15 @@ class Preparser:
 
         # The proc_call function definition
         def p_proc_call(prod):
-            prod[0] = shared.node_factory.create_node(
+            prod[0] = self._node_factory.create_node(
                 ProcCall,
-                children=[product for product in prod[3:3 + procedure_param_count]],
+                children=[product for product in prod[3 : 3 + procedure_param_count]],
                 leaf=prod[2],
                 position=Position(prod),
             )
 
-        # Create the grammar rule (doc string).
-        p_proc_call.__doc__ = f"proc_call : {procedure_name} "
+        # Define the grammar rule as a doc string.
+        p_proc_call.__doc__ = f"proc_call : {procedure_name.lower()} "
         p_proc_call.__doc__ += " ".join(["expression"] * procedure_param_count)
 
         procedure_count = len(self._grammar_rules)
@@ -63,7 +67,7 @@ class Preparser:
 
         name_token = tokens[index]
 
-        if name_token != TokenType.IDENT:
+        if name_token.type != TokenType.IDENT.value:
             return None
 
         return name_token.value
@@ -76,7 +80,7 @@ class Preparser:
         param_count = 0
 
         for token in tokens[index:]:
-            if token != TokenType.DEREF:
+            if token.type != TokenType.DEREF.value:
                 break
             param_count += 1
 
