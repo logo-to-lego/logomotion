@@ -84,3 +84,9 @@ class TestFunctions(unittest.TestCase):
         ast = self.parser.parse(test_code)
         ast.check_types()
         self.assertEqual(True, self.error_handler.check_id_is_in_errors(2022))
+    
+    def test_function_calls_argument_is_not_right_type_in_proccall_when_parameter_type_is_unknown(self):
+        test_code = """TO f :a output :a END make "a (f 3)"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2026))
