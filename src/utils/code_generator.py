@@ -174,6 +174,11 @@ class JavaCodeGenerator:
         code = f"System.out.println({arg_var});"
         self._append_code(code)
 
+    def bye(self):
+        """create Java code for bye"""
+        code = "System.exit(0);"
+        self._append_code(code)
+
     def float(self, value):
         """create Java code for defining double variable with given value
         and return the variable name"""

@@ -200,6 +200,9 @@ class Bye(Node):
                 2015, self.position.get_lexspan(), command=self.node_type.value
             )
 
+    def generate_code(self):
+        self._code_generator.bye()
+
 
 class Move(Node):
     """FD, BK, LT, RT"""
