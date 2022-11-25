@@ -2,5 +2,5 @@ make "a 3
 
 
 for ["wasd :a 3 4] { ;itr start limit step
-    make "i :wasd+1
+    make "a 3+:wasd
 }
