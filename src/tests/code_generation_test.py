@@ -12,6 +12,10 @@ from entities.ast.operations import BinOp
 from entities.ast.operations import RelOp
 from entities.ast.operations import UnaryOp
 from entities.ast.conditionals import If
+from entities.ast.functions import ProcCall
+from entities.logotypes import LogoType
+from entities.symbol import Function
+from entities.type import Type
 from lexer.token_types import TokenType
 from entities.symbol_table import default_variable_table
 
@@ -121,3 +125,17 @@ class CodegenTest(unittest.TestCase):
         self.assertEqual('String temp1 = "sana";', node_list[0])
         self.assertEqual('String temp2 = "anas";', node_list[1])
         self.assertEqual("boolean temp3 = temp1 != temp2;", node_list[2])
+
+    def test_void_function_call(self):
+        node_function = ProcCall(leaf="test", children=None)
+        node_function.procedure = Function(name="test", typeclass=Type(logotype=LogoType.VOID))
+        node_function.generate_code()
+        node_list = default_code_generator.get_generated_code()
+        self.assertEqual("logo.func2();", node_list[0])
+
+    def test_non_void_function_call(self):
+        node_function = ProcCall(leaf="test", children=None)
+        node_function.procedure = Function(name="test", typeclass=Type(logotype=LogoType.FLOAT))
+        node_function.generate_code()
+        node_list = default_code_generator.get_generated_code()
+        self.assertEqual("var temp1 = logo.func2();", node_list[0])

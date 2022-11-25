@@ -15,7 +15,9 @@ class BinOp(Node):
             if child.node_type == "Deref" and child.get_logotype() == LogoType.UNKNOWN:
                 child.set_logotype(LogoType.FLOAT)
             if child.get_logotype() != LogoType.FLOAT:
-                self._logger.error_handler.add_error(2002, row=child.position.get_pos()[0])
+                self._logger.error_handler.add_error(
+                    2002, self.position.get_lexspan(), row=child.position.get_pos()[0]
+                )
             child.check_types()
 
     def generate_code(self):
@@ -38,6 +40,7 @@ class UnaryOp(Node):
         if unary_type != LogoType.FLOAT:
             self._logger.error_handler.add_error(
                 2003,
+                self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 curr_type=self.get_logotype().value,  # _logo_type.value,
                 expected_type=LogoType.FLOAT.value,
@@ -49,6 +52,7 @@ class UnaryOp(Node):
             if child_type != LogoType.FLOAT:
                 self._logger.error_handler.add_error(
                     2003,
+                    self.position.get_lexspan(),
                     row=child.position.get_pos()[0],
                     curr_type=child_type.value,
                     expected_type=LogoType.FLOAT.value,
@@ -84,7 +88,11 @@ class RelOp(Node):
         # Check that given types are comparable
         if child1.get_logotype() not in allowed_types or child2.get_logotype() not in allowed_types:
             self._logger.error_handler.add_error(
-                2005, row=row, type1=child1.get_logotype().value, type2=child2.get_logotype().value
+                2005,
+                self.position.get_lexspan(),
+                row=row,
+                type1=child1.get_logotype().value,
+                type2=child2.get_logotype().value,
             )
             return
 
@@ -97,7 +105,11 @@ class RelOp(Node):
         # If after setting unknown types the types are still not the same -> error
         if child1.get_logotype() != child2.get_logotype():
             self._logger.error_handler.add_error(
-                2005, row=row, type1=child1.get_logotype().value, type2=child2.get_logotype().value
+                2005,
+                self.position.get_lexspan(),
+                row=row,
+                type1=child1.get_logotype().value,
+                type2=child2.get_logotype().value,
             )
             return
 
@@ -108,7 +120,7 @@ class RelOp(Node):
                 child1.get_logotype() == LogoType.UNKNOWN
                 and child2.get_logotype() == LogoType.UNKNOWN
             ):
-                self._logger.error_handler.add_error(2004, row=row)
+                self._logger.error_handler.add_error(2004, self.position.get_lexspan(), row=row)
                 return
 
         # <, >, <= and >= can only be used with type FLOAT
@@ -124,6 +136,7 @@ class RelOp(Node):
             ):
                 self._logger.error_handler.add_error(
                     2016,
+                    self.position.get_lexspan(),
                     row=row,
                     type1=child1.get_logotype().value,
                     type2=child2.get_logotype().value,
