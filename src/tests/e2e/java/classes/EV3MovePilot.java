@@ -2,7 +2,7 @@ package classes;
 
 public class EV3MovePilot {
 
-    public EV3MovePilot(double wheelDiameter, double wheelDistance) {
+    public EV3MovePilot() {
     }
 
     public void travel(double distance) {

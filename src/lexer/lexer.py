@@ -104,6 +104,7 @@ class Lexer:
     def t_IDENT(self, token):
         """Used for tokenizing all identifiers, keywords."""
         word = token.value.lower()
+        token.value = word
         token.type = self.reserved_words.get(word, TokenType.IDENT).value
         return token
 
