@@ -165,7 +165,6 @@ class Show(Node):
         return LogoType.VOID
 
     def check_types(self):
-        print("SHOW TYPE", self.node_type)
         # Must have at least 1 argument
         if len(self.children) == 0:
             self._logger.error_handler.add_error(
