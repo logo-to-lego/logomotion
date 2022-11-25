@@ -91,7 +91,7 @@ class ProcCall(Node):
         if self.get_logotype() == LogoType.VOID:
             self._code_generator.function_call(self.leaf, temp_vars)
             return None
-        return self._code_generator.returning_function_call(self.leaf, temp_vars)
+        return self._code_generator.returning_function_call(to_lowercase(self.leaf), temp_vars)
 
 
 class ProcDecl(Node):
@@ -134,7 +134,7 @@ class ProcDecl(Node):
 
     def generate_code(self):
         self._code_generator.start_function_declaration(
-            logo_func_name=self.leaf, logo_func_type=self.get_logotype()
+            logo_func_name=to_lowercase(self.leaf), logo_func_type=self.get_logotype()
         )
         for child in self.children:
             child.generate_code()
