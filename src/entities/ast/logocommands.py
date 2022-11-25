@@ -3,6 +3,7 @@ from entities.logotypes import LogoType
 from entities.symbol import Variable
 from entities.type import Type
 from lexer.token_types import TokenType
+from utils.lowercase_converter import convert_to_lowercase as to_lowercase
 
 
 class Make(Node):
@@ -155,9 +156,9 @@ class Make(Node):
         value_var_name = self.children[0].generate_code()
 
         if self._new_variable:
-            self._code_generator.create_new_variable(self.leaf.leaf.lower(), value_var_name)
+            self._code_generator.create_new_variable(to_lowercase(self.leaf.leaf), value_var_name)
         else:
-            self._code_generator.assign_value(self.leaf.leaf.lower(), value_var_name)
+            self._code_generator.assign_value(to_lowercase(self.leaf.leaf), value_var_name)
 
 
 class Show(Node):

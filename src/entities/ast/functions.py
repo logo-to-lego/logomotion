@@ -4,6 +4,7 @@ from entities.logotypes import LogoType
 from entities.symbol import Function, Variable
 from entities.type import Type
 from entities.ast.variables import Deref
+from utils.lowercase_converter import convert_to_lowercase as to_lowercase
 
 
 class Output(Node):
@@ -178,4 +179,4 @@ class ProcArg(Node):
 
     def get_param_data(self):
         """Return function parameter's type and name in tuple for ProgArgs' generate_code"""
-        return (self.get_logotype(), self.leaf.lower())
+        return (self.get_logotype(), to_lowercase(self.leaf))
