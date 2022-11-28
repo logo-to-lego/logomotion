@@ -80,25 +80,25 @@ class TestParser(unittest.TestCase):
     def test_parser_output_with_deref(self):
         test_string = "output :value"
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, children: [(Deref, value)])])])"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(Deref, value)])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_output_with_float(self):
         test_string = "output 10"
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, children: [(Float, 10.0, logo type: LogoType.FLOAT)])])])"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(Float, 10.0, logo type: LogoType.FLOAT)])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_output_with_string_literal(self):
         test_string = 'output "kissa'
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, children: [(StringLiteral, kissa, logo type: LogoType.STRING)])])])"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(StringLiteral, kissa, logo type: LogoType.STRING)])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_output_with_bool(self):
         test_string = "output true"
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, children: [(Bool, TokenType.TRUE, logo type: LogoType.BOOL)])])])"
+        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(Bool, TokenType.TRUE, logo type: LogoType.BOOL)])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_make_call_is_parsed_correctly(self):

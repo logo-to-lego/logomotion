@@ -48,7 +48,7 @@ class Node:
         """
         undefined = []
         for symbol in self._symbol_tables.variables.get_current_scope().values():
-            if symbol.type is LogoType.UNKNOWN:
+            if symbol.get_logotype() is LogoType.UNKNOWN:
                 undefined.append(symbol.name)
         return undefined
 
