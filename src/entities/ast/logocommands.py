@@ -95,7 +95,6 @@ class Make(Node):
         # Check if the symbol has already been defined
         var_name = var_node.leaf
         var_symbol = self._symbol_tables.variables.lookup(var_name)
-        
         # Check if referenced value has already been defined.
         # e.g. 'make "b :a', where the referenced value is 'a'
         arg_symbol = None

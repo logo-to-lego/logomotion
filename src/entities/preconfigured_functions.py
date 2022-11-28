@@ -12,7 +12,6 @@ def initialize_logo_functions(function_tables):
     """
     function_tables.insert("for", _for())
     function_tables.insert("repeat", _repeat())
-    
     return function_tables
 
 def _repeat():

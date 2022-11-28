@@ -156,7 +156,6 @@ class JavaCodeGenerator:
         temp_var = self._generate_temp_var()
         code = f"var {temp_var} = {java_var_name}.value;"
         self._append_code(code)
-        
         return temp_var
 
     def move_forward(self, arg_var):
