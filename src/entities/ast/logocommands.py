@@ -192,6 +192,11 @@ class Show(Node):
                 )
             child.check_types()
 
+    def generate_code(self):
+        for child in self.children:
+            arg_var = child.generate_code()
+            self._code_generator.show(arg_var)
+
 
 class Bye(Node):
     def get_logotype(self):
@@ -202,6 +207,9 @@ class Bye(Node):
             self._logger.error_handler.add_error(
                 2015, self.position.get_lexspan(), command=self.node_type.value
             )
+
+    def generate_code(self):
+        self._code_generator.bye()
 
 
 class Move(Node):
