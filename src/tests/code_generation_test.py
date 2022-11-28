@@ -2,7 +2,7 @@ import unittest
 from entities.ast.statementlist import StatementList
 from utils.code_generator import default_code_generator
 from entities.ast.node import Node
-from entities.ast.logocommands import Make, Move
+from entities.ast.logocommands import Bye, Make, Move, Show
 from entities.ast.variables import Deref, Float, StringLiteral
 from entities.ast.logocommands import Move
 from entities.ast.operations import RelOp
@@ -166,3 +166,20 @@ class CodegenTest(unittest.TestCase):
         node_list = default_code_generator.get_generated_code()
         self.assertEqual("var var2 = temp1;", node_list[1])
         self.assertEqual("var var3 = var2;", node_list[2])
+
+    def test_show(self):
+        node_float = Float(leaf=4.2)
+        node_str = StringLiteral(leaf="kissa")
+        node_function = Show(node_type=TokenType.SHOW, children=[node_float, node_str])
+        node_function.generate_code()
+        node_list = default_code_generator.get_generated_code()
+        self.assertEqual("double temp1 = 4.2;", node_list[0])
+        self.assertEqual("System.out.println(temp1);", node_list[1])
+        self.assertEqual("String temp2 = \"kissa\";", node_list[2])
+        self.assertEqual("System.out.println(temp2);", node_list[3])
+
+    def test_bye(self):
+        node_function = Bye(node_type=TokenType.BYE, children=[])
+        node_function.generate_code()
+        node_list = default_code_generator.get_generated_code()
+        self.assertEqual("System.exit(0);", node_list[0])
