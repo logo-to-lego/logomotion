@@ -11,12 +11,14 @@ class If(Node):
 
     def check_types(self):
         if self.leaf.get_logotype() is not LogoType.BOOL:
-            self._logger.error_handler.add_error(2006, row=self.position.get_pos()[0])
+            self._logger.error_handler.add_error(
+                2006, self.position.get_lexspan(), row=self.position.get_pos()[0]
+            )
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()
         self.children[0].check_types()
         for variable in self.undefined_variables():
-            self._logger.error_handler.add_error(2007, var=variable)
+            self._logger.error_handler.add_error(2007, self.position.get_lexspan(), var=variable)
         self._symbol_tables.variables.finalize_scope()
 
     def generate_code(self):
@@ -37,13 +39,15 @@ class IfElse(Node):
 
     def check_types(self):
         if self.leaf.get_logotype() is not LogoType.BOOL:
-            self._logger.error_handler.add_error(2006, row=self.position.get_pos()[0])
+            self._logger.error_handler.add_error(
+                2006, self.position.get_lexspan(), row=self.position.get_pos()[0]
+            )
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()
         for child in self.children:
             child.check_types()
         for variable in self.undefined_variables():
-            self._logger.error_handler.add_error(2007, var=variable)
+            self._logger.error_handler.add_error(2007, self.position.get_lexspan(), var=variable)
         self._symbol_tables.variables.finalize_scope()
 
     def generate_code(self):

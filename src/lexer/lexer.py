@@ -6,6 +6,7 @@ Lexer module used by PLY's lexer-generator.
 from ply.lex import lex, TOKEN
 from lexer.token_types import TokenType
 from utils.logger import default_logger
+from utils.lowercase_converter import convert_to_lowercase as to_lowercase
 
 
 class Lexer:
@@ -103,7 +104,8 @@ class Lexer:
     @TOKEN(FUNCTION_NAME)
     def t_IDENT(self, token):
         """Used for tokenizing all identifiers, keywords."""
-        word = token.value.lower()
+        word = to_lowercase(token.value)
+        token.value = word
         token.type = self.reserved_words.get(word, TokenType.IDENT).value
         return token
 

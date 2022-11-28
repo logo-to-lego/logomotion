@@ -111,9 +111,13 @@ def p_error(prod):
     colpos = shared.ply_lexer.lexpos - shared.ply_lexer.linestartpos
 
     if prod:
-        shared.logger.error_handler.add_error(2000, row=lineno, column=colpos, prodval=prod.value)
+        lexspan = (prod.lexpos, prod.lexpos + len(prod.value) - 1)
+        shared.logger.error_handler.add_error(
+            2000, lexspan, row=lineno, column=colpos, prodval=prod.value
+        )
     else:
-        shared.logger.error_handler.add_error(2001, row=lineno, column=colpos)
+        lexspan = (prod.lexpos, prod.lexpos)
+        shared.logger.error_handler.add_error(2001, lexspan, row=lineno, column=colpos)
 
 
 class Parser:

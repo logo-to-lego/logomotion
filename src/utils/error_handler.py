@@ -8,6 +8,8 @@ from utils.console_io import default_console_io
 
 FIN = "FIN"
 ENG = "ENG"
+DEFAULT_NAME = "error_messages"
+PATH = os.path.join(os.path.dirname(os.path.relpath(__file__)), "../../src/error_messages/")
 
 
 class ErrorHandler:
@@ -15,11 +17,12 @@ class ErrorHandler:
     The messages are stored in a list
     """
 
-    def __init__(self, console_io=default_console_io, language=FIN):
+    def __init__(self, console_io=default_console_io, language=FIN, name=DEFAULT_NAME):
         if language not in (FIN, ENG):
             raise Exception(f"Language {language} is not defined or valid")
         self.errors = []
-
+        self.err_dict = {}
+        self._name = name
         self.console_io = console_io
         self.language = language
         self.error_dir = os.path.join(
@@ -39,7 +42,7 @@ class ErrorHandler:
         #     pass
         raise Exception(f"Message id {msg_id} was not found from error message files")
 
-    def add_error(self, msg_id: int, **kwargs):
+    def add_error(self, msg_id: int, lexspan, **kwargs):
         """Gets the error message frame in the defined language (ENG/FIN),
         replaces the @-tags with the params given as **kwargs.
         These messages are then added to a list of messages.
@@ -61,12 +64,23 @@ class ErrorHandler:
         # We want to have only one test file for error testing, and because in this parser,
         # there is only one instance of the Shared class (defined in parser/globals.py), only
         # one parser object can be defined in the testing setup.
-        err_msgs = {FIN: fin_msg, ENG: eng_msg}
+        err_msgs = {FIN: fin_msg, ENG: eng_msg, "Start": lexspan[0], "End": lexspan[1]}
         self.errors.append(err_msgs)
 
     def get_error_messages(self):
         """Returns error messages"""
         return self.errors
+
+    def create_json_file(self):
+        for index, msg in enumerate(self.errors, start=1):
+            self.err_dict[index] = msg
+        try:
+            with open(PATH + self._name + ".json", mode="w+", encoding="utf-8") as file:
+                json_object = json.dumps(self.err_dict, ensure_ascii=False).encode("utf8")
+                file.write(json_object.decode())
+        except Exception as error:
+            print(f"An error occurred when writing {self._name}.json file:\n{error}")
+            raise
 
     def write_errors_to_console(self):
         """Writes error messages to console in the selected language"""

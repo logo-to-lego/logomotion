@@ -1,5 +1,6 @@
 """Symbol table module"""
 from collections import deque
+from utils.lowercase_converter import convert_to_lowercase as to_lowercase
 
 
 class SymbolTable:
@@ -18,11 +19,13 @@ class SymbolTable:
 
     def insert(self, key, value):
         """Inserts a new entry to the symbol table"""
+        key = to_lowercase(key)
         self._stack[0][key] = value
 
     def lookup(self, key):
         """Searches for a symbol and returns its value.
         Global scope can't be reached in function scope"""
+        key = to_lowercase(key)
         if self._in_function:
             for i in range(len(self._stack) - 1):
                 if key in self._stack[i]:

@@ -41,8 +41,9 @@ END
 
 MAKE "x 42
 foo
-ERR
+ERROR
 ```
+
 
 FOR määritetään seuraavalla tavalla
 ``` 
@@ -52,6 +53,13 @@ for ["a 0 10 1] { show :a }
 ```
 Ensimmäinen argumentti on iteraattori, toinen argumentti on iteraation alkuarvo, kolmas lopetusarvo ja neljäs on millä arvolla iteraattoria korotetaan per sykli.
 '{}'-merkkien väliin sijoitetaan loopissa toistettavat toimenpiteet.
+
+## Scopet
+
+Päätasolla (globaalilla) määritellyt muuttujat eivät näy funktioiden sisään. Funktioiden sisäiset muuttujat eivät näy päätasolla.
+
+Ehtolauseiden sisällä määritellyt muuttujat eivät näy ehtolauseen ulkopuolelle. Ehtolause voi kuitenkin käyttää ylemmän tason muuttujia, kuten globaaleita muuttujia.
+
 
 ## Ehtolauseet
 
@@ -70,5 +78,15 @@ if :x < 100 {
     make "y 123
 }
 show :y
-ERR
+ERROR
 ```
+
+## Laskutoimitukset
+
+Vain FLOAT-tyyppisillä muuttujilla. Operaatiot ovat `+`, `-`, `*` ja `/`.
+
+## Vertailuoperaatiot
+
+FLOAT-tyyppisiä muuttujia voidaan vertailla operaattoreilla `<`, `<=`, `>`, `>=`, `=` ja `<>`. 
+
+STRING-tyyppisillä muuttujilla voidaan vertailla vain yhtäsuuruutta operaattorilla `=` ja erisuuruutta operaattorilla `<>`.
