@@ -108,7 +108,7 @@
     },
     "2025": {
         "FIN": "Olet antanut väärän palautusarvon funktion '@proc' palautusarvoksi.",
-        "ENG": "You have given the wrong type of output value for function."
+        "ENG": "You have given the wrong type of output value for function @proc."
     },
     "2026": {
         "FIN": "En tiedä, ottaako funktio '@proc' tyyppiä @atype parametrina",
