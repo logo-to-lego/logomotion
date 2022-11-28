@@ -111,5 +111,9 @@
     "2026": {
         "FIN": "En tiedä, ottaako funktio '@proc' tyyppiä @atype parametrina",
         "ENG": "I don't know if function '@proc' takes @atype as its parameter"
+    },
+    "2027": {
+        "FIN": "En tykkää, ettei '@proc' anna arvoa lopussa, vaikka se antaa arvon muualla.",
+        "ENG": "I don't like that '@proc' does not return value at it's end althought it returns value elsewhere."
     }
 }
