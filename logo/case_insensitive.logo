@@ -1,0 +1,12 @@
+To Sum :First :Second
+	Make "Result :first + :second
+	Output :result
+End
+
+TO MULTIPLY :FIRST :SECOND
+	MAKE "RESULT :first * :second
+	OUTPUT :result
+END
+
+make "x (SUM 2 2)
+make "y (multiply 2 2)

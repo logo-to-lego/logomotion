@@ -12,9 +12,9 @@ from entities.ast.operations import BinOp
 from entities.ast.operations import RelOp
 from entities.ast.operations import UnaryOp
 from entities.ast.conditionals import If
-from entities.ast.functions import ProcCall
+from entities.ast.functions import ProcCall, ProcDecl, ProcArgs, ProcArg
 from entities.logotypes import LogoType
-from entities.symbol import Function
+from entities.symbol import Function, Variable
 from entities.type import Type
 from lexer.token_types import TokenType
 from entities.symbol_table import default_variable_table
@@ -139,6 +139,33 @@ class CodegenTest(unittest.TestCase):
         node_function.generate_code()
         node_list = default_code_generator.get_generated_code()
         self.assertEqual("var temp1 = logo.func2();", node_list[0])
+
+    def test_make_leaf_is_case_insensitive(self):
+        node_float1 = Float(leaf=1.0)
+        node_float2 = Float(leaf=2.0)
+        node_name1 = StringLiteral(leaf="Test")
+        node_name2 = StringLiteral(leaf="tEST")
+        node_make1 = Make(children=[node_float1], leaf=node_name1)
+        node_make2 = Make(children=[node_float2], leaf=node_name2)
+        nodes = StatementList(children=[node_make1, node_make2])
+        nodes.check_types()
+        nodes.generate_code()
+        node_list = default_code_generator.get_generated_code()
+        self.assertEqual("var var2 = temp1;", node_list[1])
+        self.assertEqual("var2 = temp3;", node_list[3])
+
+    def test_variables_are_case_insensitive(self):
+        node_float = Float(leaf=1.0)
+        node_name1 = StringLiteral(leaf="Test1")
+        node_name2 = StringLiteral(leaf="Test2")
+        node_make1 = Make(children=[node_float], leaf=node_name1)
+        node_make2 = Make(children=[Deref(leaf="tEST1")], leaf=node_name2)
+        nodes = StatementList(children=[node_make1, node_make2])
+        nodes.check_types()
+        nodes.generate_code()
+        node_list = default_code_generator.get_generated_code()
+        self.assertEqual("var var2 = temp1;", node_list[1])
+        self.assertEqual("var var3 = var2;", node_list[2])
 
     def test_show(self):
         node_float = Float(leaf=4.2)
