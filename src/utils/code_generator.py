@@ -8,6 +8,12 @@ from lexer.token_types import TokenType
 START_METHOD = (
     "package logo; import classes.EV3MovePilot; import java.lang.Runnable; \
         import java.util.function.Consumer;"\
+        "class Variable { \
+    public double value;\
+    public Variable(double value) {\
+        this.value = value;\
+    }\
+}"\
         "public class Logo { "
 )
 START_MAIN = (
@@ -135,19 +141,23 @@ class JavaCodeGenerator:
     def create_new_variable(self, logo_var_name, value_name):
         """Create a new Java variable and assign it a value."""
         java_var_name = self._mangle_logo_var_name(logo_var_name)
-        line = f"var {java_var_name} = {value_name};"
+        line = f"Variable {java_var_name} = new Variable({value_name});"
         self._append_code(line)
 
     def assign_value(self, logo_var_name, value_name):
         """Assign a new value to an already existing variable."""
         java_var_name = self._mangle_logo_var_name(logo_var_name)
-        line = f"{java_var_name} = {value_name};"
+        line = f"{java_var_name}.value = {value_name};"
         self._append_code(line)
 
     def variable_name(self, logo_var_name):
         """Returns the java variable name of the logo variable."""
         java_var_name = self._mangle_logo_var_name(logo_var_name)
-        return java_var_name
+        temp_var = self._generate_temp_var()
+        code = f"var {temp_var} = {java_var_name}.value;"
+        self._append_code(code)
+        
+        return temp_var
 
     def move_forward(self, arg_var):
         """create Java code for moving forward"""
@@ -247,12 +257,12 @@ class JavaCodeGenerator:
         self._append_code(code)
         return temp_var
 
-    def lambda_param_start(self, param_type, param_name):
+    def lambda_param_start(self, param_name):
         """Generate the start of a parametered Java lambda, return lambda variable's name"""
         temp_var = self._generate_temp_var()
-        type_var = JAVA_TYPES_OBJECTS[param_type]
+        #type_var = JAVA_TYPES_OBJECTS[param_type]
         java_param_name = self._mangle_logo_var_name(param_name)
-        code = f"Consumer<{type_var}> {temp_var} = ({type_var} {java_param_name}) -> " + "{"
+        code = f"Consumer<Variable> {temp_var} = (Variable {java_param_name}) -> " + "{"
         self._append_code(code)
         return temp_var
 

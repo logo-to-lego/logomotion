@@ -63,7 +63,7 @@ def main():
     parser = Parser(lexer, logger, symbol_tables, code_generator)
     parser.build()
 
-    symbol_tables = initialize_logo_functions(symbol_tables)
+    symbol_tables.functions = initialize_logo_functions(symbol_tables.functions)
 
     # Compile from logo to language defined with CODE_GEN .env variable
     compile_logo()

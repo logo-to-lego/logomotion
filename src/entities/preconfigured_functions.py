@@ -3,17 +3,17 @@ from entities.type import Type
 from entities.logotypes import LogoType
 
 
-def initialize_logo_functions(symbol_tables):
+def initialize_logo_functions(function_tables):
     """Initializes premade functions to symbol table, such as repeat/toista
     Args
         symbol_tables: class SymbolTables
     Returns
         symbol_tables: class SymbolTables
     """
-    symbol_tables.functions.insert("repeat", _repeat())
-    symbol_tables.functions.insert("for", _for())
-    return symbol_tables
-
+    function_tables.insert("for", _for())
+    function_tables.insert("repeat", _repeat())
+    
+    return function_tables
 
 def _repeat():
     """Definition for repeat/toista nameless function

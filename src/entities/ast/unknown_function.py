@@ -33,7 +33,7 @@ class UnknownFunction(Node):
         """
         # pass 'fake' Function instance to symbol table, so it'll create a local scope
         self.procedure = Function("for", typeclass=Type(functions={"for"}))
-        self._symbol_tables.variables.initialize_scope(in_function=self.procedure)
+        self._symbol_tables.variables.initialize_scope()
         # if we're handling a for loop, we need to add the iterator to the scope
         if self._iter_param:
             symbol = Variable(self._iter_param, Type(LogoType.FLOAT, variables={self._iter_param}))
@@ -43,9 +43,9 @@ class UnknownFunction(Node):
         self._symbol_tables.variables.finalize_scope()
 
     def generate_code(self):
-        """Generate block into for statement"""
-        if self._arg_type and self._iter_param:
-            tmpvar = self._code_generator.lambda_param_start(self._arg_type, self._iter_param)
+        """Generate block into for or repeat lambda-statement"""
+        if self._iter_param:
+            tmpvar = self._code_generator.lambda_param_start(self._iter_param)
         else:
             tmpvar = self._code_generator.lambda_no_param_start()
         for child in self.children:

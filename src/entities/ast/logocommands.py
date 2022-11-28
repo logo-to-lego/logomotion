@@ -95,7 +95,7 @@ class Make(Node):
         # Check if the symbol has already been defined
         var_name = var_node.leaf
         var_symbol = self._symbol_tables.variables.lookup(var_name)
-
+        
         # Check if referenced value has already been defined.
         # e.g. 'make "b :a', where the referenced value is 'a'
         arg_symbol = None
@@ -147,6 +147,8 @@ class Make(Node):
         value_var_name = self.children[0].generate_code()
 
         if self._new_variable:
+            #DEBUG
+            print("MAKE NEW VARIABLE:", self._new_variable)
             self._code_generator.create_new_variable(self.leaf.leaf, value_var_name)
         else:
             self._code_generator.assign_value(self.leaf.leaf, value_var_name)
