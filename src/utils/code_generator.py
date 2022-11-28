@@ -326,7 +326,8 @@ class JavaCodeGenerator:
                 new_line = f"\t\t{search_key}new EV3LargeRegulatedMotor(MotorPort.{value});\n"
             else:
                 new_line = f"\t\t{search_key}{value};\n"
-            params = list(map(lambda x: x.replace(line_to_modify, new_line), params)) # pylint: disable=W0640
+            params = list(
+                map(lambda x: x.replace(line_to_modify, new_line), params))  # pylint: disable=W0640
         return params
 
     def _write_new_params_to_file(self, path, param_lines):
