@@ -115,5 +115,9 @@
     "2027": {
         "FIN": "En tykkää, ettei '@proc' anna arvoa lopussa, vaikka se antaa arvon muualla.",
         "ENG": "I don't like that '@proc' does not return value at it's end althought it returns value elsewhere."
+    },
+    "2028": {
+        "FIN": "Kirjoitit :@var_name, tarkoititko \"@var_name ?",
+        "ENG": "You wrote :@var_name, did you mean \"@var_name ?"
     }
 }
