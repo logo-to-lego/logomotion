@@ -37,7 +37,7 @@ class CodegenTest(unittest.TestCase):
         node_fd.generate_code()
         node_list = default_code_generator.get_generated_code()
         self.assertEqual("double temp1 = 100.0;", node_list[0])
-        self.assertEqual("robot.travel(temp1);", node_list[1])
+        self.assertEqual("this.robot.travel(temp1);", node_list[1])
 
     def test_backwards(self):
         node_float = Float(leaf=100.0)
@@ -45,7 +45,7 @@ class CodegenTest(unittest.TestCase):
         node_bk.generate_code()
         node_list = default_code_generator.get_generated_code()
         self.assertEqual("double temp1 = 100.0;", node_list[0])
-        self.assertEqual("robot.travel(-temp1);", node_list[1])
+        self.assertEqual("this.robot.travel(-temp1);", node_list[1])
 
     def test_right_turn(self):
         node_float = Float(leaf=100.0)
@@ -53,7 +53,7 @@ class CodegenTest(unittest.TestCase):
         node_rt.generate_code()
         node_list = default_code_generator.get_generated_code()
         self.assertEqual("double temp1 = 100.0;", node_list[0])
-        self.assertEqual("robot.rotate(-temp1);", node_list[1])
+        self.assertEqual("this.robot.rotate(-temp1);", node_list[1])
 
     def test_left_turn(self):
         node_float = Float(leaf=100.0)
@@ -61,7 +61,7 @@ class CodegenTest(unittest.TestCase):
         node_lt.generate_code()
         code_list = default_code_generator.get_generated_code()
         self.assertEqual("double temp1 = 100.0;", code_list[0])
-        self.assertEqual("robot.rotate(temp1);", code_list[1])
+        self.assertEqual("this.robot.rotate(temp1);", code_list[1])
 
     def test_make(self):
         node_float = Float(leaf=10.0)
