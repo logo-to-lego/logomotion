@@ -52,8 +52,9 @@ class ProcCall(Node):
         self.procedure: Function = None
 
     def get_logotype(self):
-        if self.procedure:
-            return self.procedure.typeclass.logotype
+        proc = self.procedure if self.procedure else self._symbol_tables.functions.lookup(self.leaf)
+        if proc:
+            return proc.get_logotype()
         return None
 
     def check_types(self):

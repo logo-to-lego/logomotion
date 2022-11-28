@@ -272,3 +272,16 @@ class TestErrorHandler(unittest.TestCase):
 
         self.assertEqual(self.error_handler.get_error_messages()[1]["FIN"], fin_expected_msg2)
         self.assertEqual(self.error_handler.get_error_messages()[1]["ENG"], eng_expected_msg2)
+
+    def test_make_raises_error_if_variable_name_is_deref(self):
+        test_string = "make :muuttuja 42"
+
+        fin_expected_msg1 = "Kirjoitit :muuttuja, tarkoititko \"muuttuja ?"
+        eng_expected_msg1 = "You wrote :muuttuja, did you mean \"muuttuja ?"
+
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg1)

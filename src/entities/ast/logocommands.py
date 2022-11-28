@@ -16,6 +16,14 @@ class Make(Node):
 
     def _check_variable_node(self, variable_node):
         # Check that variable name is string
+        if variable_node.node_type == "Deref":
+            self._logger.error_handler.add_error(
+                2028,
+                lexspan=self.position.get_lexspan(),
+                var_name=variable_node.leaf
+            )
+            return
+
         variable_node.check_types()
         variable_logotype = variable_node.get_logotype()
 
