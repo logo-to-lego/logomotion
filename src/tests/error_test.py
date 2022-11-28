@@ -39,9 +39,11 @@ class TestErrorHandler(unittest.TestCase):
 
         self.parser.parse(test_string)
         fin_expected_msg = (
-            "En saanut selvää komennosta 'mak'. Löysin tämän riviltä 1 ja sarakkeelta 3."
+            "En saanut selvää komennosta 'mak'. Tarkista, että komento on oikein kirjoitettu"
         )
-        eng_expected_msg = "I could not understand 'mak'. I found this on row 1 and column 3."
+        eng_expected_msg = (
+            "I could not understand 'mak'. Check that the command is written correctly."
+        )
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
@@ -56,8 +58,8 @@ class TestErrorHandler(unittest.TestCase):
         ast = self.parser.parse(test_string)
         ast.check_types()
 
-        fin_expected_msg = "Rivillä 3 yritit tehdä laskutoimituksen jollakin joka ei ole numero."
-        eng_expected_msg = "In row 3 you tried to calculate with something that is not a number."
+        fin_expected_msg = "Sinä yritit tehdä laskutoimituksen jollakin joka ei ole numero."
+        eng_expected_msg = "You tried to do a calculation with something that is not a number."
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
@@ -71,12 +73,8 @@ class TestErrorHandler(unittest.TestCase):
         ast = self.parser.parse(test_string)
         ast.check_types()
 
-        fin_expected_msg = (
-            "Rivillä 2 negatiivisen luvun tyyppi on BOOL, vaikka sen pitäisi olla FLOAT."
-        )
-        eng_expected_msg = (
-            "In row 2 the type of a negative number is BOOL, even though it should be FLOAT."
-        )
+        fin_expected_msg = "Sinä kirjoitit, että tyyppi olisi 'BOOL', mutta se ei ole mahdollista. Tyypin pitää olla negatiivinen numero."
+        eng_expected_msg = "You wrote that the type is 'BOOL', but that is impossible. Type should be a negative number"
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
@@ -90,12 +88,8 @@ class TestErrorHandler(unittest.TestCase):
         ast = self.parser.parse(test_string)
         ast.check_types()
 
-        fin_expected_msg = (
-            "Rivillä 2 negatiivisen luvun tyyppi on STRING, vaikka sen pitäisi olla FLOAT."
-        )
-        eng_expected_msg = (
-            "In row 2 the type of a negative number is STRING, even though it should be FLOAT."
-        )
+        fin_expected_msg = "Sinä kirjoitit, että tyyppi olisi 'STRING', mutta se ei ole mahdollista. Tyypin pitää olla negatiivinen numero."
+        eng_expected_msg = "You wrote that the type is 'STRING', but that is impossible. Type should be a negative number"
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
@@ -120,10 +114,10 @@ class TestErrorHandler(unittest.TestCase):
         ast = self.parser.parse(test_string)
         ast.check_types()
 
-        fin_expected_msg1 = "Muuttujaa 'a' ei ole määritelty."
-        eng_expected_msg1 = "Variable 'a' is not defined."
-        fin_expected_msg2 = "Muuttujaa 'b' ei ole määritelty."
-        eng_expected_msg2 = "Variable 'b' is not defined."
+        fin_expected_msg1 = "Et ole määritellyt muuttujaa 'a'."
+        eng_expected_msg1 = "You have not defined variable 'a'."
+        fin_expected_msg2 = "Et ole määritellyt muuttujaa 'b'."
+        eng_expected_msg2 = "You have not defined variable 'b'."
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 2)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg1)
@@ -141,8 +135,8 @@ class TestErrorHandler(unittest.TestCase):
         ast = self.parser.parse(test_string)
         ast.check_types()
 
-        fin_expected_msg = "Rivillä 4 koitit vertailla tyyppejä STRING ja FLOAT. Katso, että tyypit ovat joko FLOAT tai STRING tyyppisiä ja keskenään samat"
-        eng_expected_msg = "In row 4 you tried to compare types STRING and FLOAT. Check that you are comparing FLOAT or STRING types and that the types are equal"
+        fin_expected_msg = "Sinä yritit vertailla vääränlaisia tyyppejä keskenään. Vain numeroita ja merkkijonoja voi vertailla ja vertailtavien tyyppien pitää olla samat."
+        eng_expected_msg = "You tried to compare wrong kind of types. Only numbers and strings can be compared and comparable types have to be the same kind of type."
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
@@ -154,8 +148,8 @@ class TestErrorHandler(unittest.TestCase):
         ast = self.parser.parse(test_string)
         ast.check_types()
 
-        fin_expected_msg = "Muuttujaa 'x' ei ole määritelty."
-        eng_expected_msg = "Variable 'x' is not defined."
+        fin_expected_msg = "Et ole määritellyt muuttujaa 'x'."
+        eng_expected_msg = "You have not defined variable 'x'."
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
         self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg)
@@ -170,31 +164,15 @@ class TestErrorHandler(unittest.TestCase):
             rt :a
             """
 
-        fin_expected_msg1 = (
-            "Rivillä 3 komennon 'FD' parametri on tyyppiä STRING, vaikka sen pitäisi olla FLOAT."
-        )
-        fin_expected_msg2 = (
-            "Rivillä 4 komennon 'BK' parametri on tyyppiä BOOL, vaikka sen pitäisi olla FLOAT."
-        )
-        fin_expected_msg3 = (
-            "Rivillä 5 komennon 'LT' parametri on tyyppiä BOOL, vaikka sen pitäisi olla FLOAT."
-        )
-        fin_expected_msg4 = (
-            "Rivillä 6 komennon 'RT' parametri on tyyppiä STRING, vaikka sen pitäisi olla FLOAT."
-        )
+        fin_expected_msg1 = "Sinä yritit antaa komennon FD parametrin tyypiksi STRING. Haluan, että parametri on tyyppi FLOAT."
+        fin_expected_msg2 = "Sinä yritit antaa komennon BK parametrin tyypiksi BOOL. Haluan, että parametri on tyyppi FLOAT."
+        fin_expected_msg3 = "Sinä yritit antaa komennon LT parametrin tyypiksi BOOL. Haluan, että parametri on tyyppi FLOAT."
+        fin_expected_msg4 = "Sinä yritit antaa komennon RT parametrin tyypiksi STRING. Haluan, että parametri on tyyppi FLOAT."
 
-        eng_expected_msg1 = (
-            "In row 3 the parameter of 'FD' was type STRING, even though it should be FLOAT."
-        )
-        eng_expected_msg2 = (
-            "In row 4 the parameter of 'BK' was type BOOL, even though it should be FLOAT."
-        )
-        eng_expected_msg3 = (
-            "In row 5 the parameter of 'LT' was type BOOL, even though it should be FLOAT."
-        )
-        eng_expected_msg4 = (
-            "In row 6 the parameter of 'RT' was type STRING, even though it should be FLOAT."
-        )
+        eng_expected_msg1 = "You tried to give STRING as the parameter's type for the command FD. I want the parameter type to be FLOAT."
+        eng_expected_msg2 = "You tried to give BOOL as the parameter's type for the command BK. I want the parameter type to be FLOAT."
+        eng_expected_msg3 = "You tried to give BOOL as the parameter's type for the command LT. I want the parameter type to be FLOAT."
+        eng_expected_msg4 = "You tried to give STRING as the parameter's type for the command RT. I want the parameter type to be FLOAT."
 
         ast = self.parser.parse(test_string)
         ast.check_types()
@@ -218,19 +196,11 @@ class TestErrorHandler(unittest.TestCase):
             make 123 456
             make "foo "bar
         """
-        fin_expected_msg1 = (
-            "Rivillä 2 komennon 'MAKE' parametri on tyyppiä BOOL, vaikka sen pitäisi olla STRING."
-        )
-        fin_expected_msg2 = (
-            "Rivillä 3 komennon 'MAKE' parametri on tyyppiä FLOAT, vaikka sen pitäisi olla STRING."
-        )
+        fin_expected_msg1 = "Sinä yritit antaa komennon MAKE parametrin tyypiksi BOOL. Haluan, että parametri on tyyppi STRING."
+        fin_expected_msg2 = "Sinä yritit antaa komennon MAKE parametrin tyypiksi FLOAT. Haluan, että parametri on tyyppi STRING."
 
-        eng_expected_msg1 = (
-            "In row 2 the parameter of 'MAKE' was type BOOL, even though it should be STRING."
-        )
-        eng_expected_msg2 = (
-            "In row 3 the parameter of 'MAKE' was type FLOAT, even though it should be STRING."
-        )
+        eng_expected_msg1 = "You tried to give BOOL as the parameter's type for the command MAKE. I want the parameter type to be STRING."
+        eng_expected_msg2 = "You tried to give FLOAT as the parameter's type for the command MAKE. I want the parameter type to be STRING."
 
         ast = self.parser.parse(test_string)
         ast.check_types()
@@ -250,17 +220,17 @@ class TestErrorHandler(unittest.TestCase):
             make "a 456
         """
         fin_expected_msg1 = (
-            "Rivillä 3 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä FLOAT tyyppiin STRING."
+            "Yritit muuttaa muuttujan 'a' tyyppiä tyypistä FLOAT tyyppiin STRING. En hyväksy tätä."
         )
         fin_expected_msg2 = (
-            "Rivillä 4 muuttujan 'a' tyyppiä ei voi vaihtaa tyypistä FLOAT tyyppiin BOOL."
+            "Yritit muuttaa muuttujan 'a' tyyppiä tyypistä FLOAT tyyppiin BOOL. En hyväksy tätä."
         )
 
         eng_expected_msg1 = (
-            "In row 3 variable 'a' has type FLOAT which cannot be changed to type STRING."
+            "You tried to change variables a type from FLOAT to STRING. I don't like this."
         )
         eng_expected_msg2 = (
-            "In row 4 variable 'a' has type FLOAT which cannot be changed to type BOOL."
+            "You tried to change variables a type from FLOAT to BOOL. I don't like this."
         )
 
         ast = self.parser.parse(test_string)
