@@ -103,6 +103,11 @@ class ProcCall(Node):
 
 class ProcDecl(Node):
     def __init__(self, children, leaf, **dependencies):
+        # Add this function as a defined function in the lexer.
+        functions = dependencies["lexer"].defined_functions
+        proc_name = leaf.lower()
+        if proc_name not in functions:
+            functions.add(proc_name)
         super().__init__("ProcDecl", children, leaf, **dependencies)
         self.procedure: Function = None
 

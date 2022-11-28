@@ -20,7 +20,6 @@ class TestErrorHandler(unittest.TestCase):
         self.symbol_tables = SymbolTables(SymbolTable(), SymbolTable())
 
         self.parser = Parser(self.lexer, self.logger, self.symbol_tables)
-        self.parser.build()
 
     def test_valid_logo_code_does_not_yield_errors(self):
         test_string = """

@@ -90,12 +90,19 @@ class Lexer:
 
     def __init__(self, logger=default_logger):
         self._ply_lexer = None
-        self.tokens = [token_type.value for token_type in TokenType]
+        self.tokens = []
+        self._init_tokens()
+        self.defined_functions = set()
         self._logger = logger
 
         # Set regex only tokens.
         for name, value in self.token_types.items():
             setattr(self, "t_" + name.value, value)
+
+    def _init_tokens(self):
+        "Resets the tokens list to initial values."
+        self.tokens.clear()
+        self.tokens.extend([token_type.value for token_type in TokenType])
 
     # Token methods. Name as t_<TOKEN_NAME>, where TOKEN_NAME is in the tokens-list.
     # Declaration order matters for matching, i.e. longest similar regex first.
@@ -106,6 +113,11 @@ class Lexer:
         word = token.value.lower()
         token.value = word
         token.type = self.reserved_words.get(word, TokenType.IDENT).value
+
+        # Check if the token value is a defined function
+        if token.type == TokenType.IDENT.value and token.value in self.defined_functions:
+            token.type = token.value
+
         return token
 
     @TOKEN(r"\d+[\.\,]\d+")
@@ -150,6 +162,10 @@ class Lexer:
 
         return self._ply_lexer
 
+    def get_tokens(self):
+        "Returns a list of lexer tokens for the parser."
+        return self.tokens
+
     def reset(self):
         """Resets the lexer's internal state."""
         if not self._ply_lexer:
@@ -157,6 +173,10 @@ class Lexer:
 
         self._ply_lexer.lineno = 1  # Must reset here, since it isn't done by PLY.
         self._ply_lexer.linestartpos = 0
+
+        # Each parse-call adds new tokens and defined functions, so we clear these
+        self._init_tokens()
+        self.defined_functions.clear()
 
     def tokenize_input(self, code):
         """Turns input code into a list of tokens."""

@@ -21,7 +21,6 @@ class TestFunctions(unittest.TestCase):
         self.lexer.build()
         symbol_tables = SymbolTables(SymbolTable(), SymbolTable())
         self.parser = Parser(self.lexer, self.logger, symbol_tables)
-        self.parser.build()
 
     def test_function_has_already_been_made_in_procdecl(self):
         test_code = "TO f END TO f END"

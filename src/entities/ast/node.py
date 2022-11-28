@@ -4,6 +4,7 @@ from entities.logotypes import LogoType
 from entities.symbol_tables import SymbolTables, default_symbol_tables
 from utils.code_generator import default_code_generator
 from utils.logger import Logger, default_logger
+from lexer.lexer import Lexer
 
 
 class Node:
@@ -77,14 +78,16 @@ class NodeFactory:
 
     def __init__(
         self,
+        lexer: Lexer,
         logger=default_logger,
         symbol_tables=default_symbol_tables,
-        code_generator=default_code_generator,
+        code_generator=default_code_generator
     ):
 
         self._logger = logger
         self._symbol_tables = symbol_tables
         self._code_generator = code_generator
+        self._lexer = lexer
 
     def create_node(self, node_class: Node, **kwargs):
         """Creates a new node of node_class, with the given keyword arguments."""
@@ -93,4 +96,5 @@ class NodeFactory:
             logger=self._logger,
             symbol_tables=self._symbol_tables,
             code_generator=self._code_generator,
+            lexer=self._lexer
         )
