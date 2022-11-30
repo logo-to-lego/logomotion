@@ -15,4 +15,3 @@ output.xml
 report.html
 src/tests/e2e/java/classes/EV3MovePilot.class
 src/tests/e2e/java/logo/Logo.class
-src/error_messages/error_messages.json
