@@ -196,8 +196,8 @@ class CodegenTest(unittest.TestCase):
         nodes.check_types()
         nodes.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("var var2 = temp1;", node_list[1])
-        self.assertEqual("var2 = temp3;", node_list[3])
+        self.assertEqual("Variable var2 = new Variable(temp1);", node_list[1])
+        self.assertEqual("var2.value = temp3;", node_list[3])
 
     def test_variables_are_case_insensitive(self):
         node_float = Float(leaf=1.0)
@@ -209,8 +209,8 @@ class CodegenTest(unittest.TestCase):
         nodes.check_types()
         nodes.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("var var2 = temp1;", node_list[1])
-        self.assertEqual("var var3 = var2;", node_list[2])
+        self.assertEqual("Variable var2 = new Variable(temp1);", node_list[1])
+        self.assertEqual("var temp3 = var2.value;", node_list[2])
 
     def test_show(self):
         node_float = Float(leaf=4.2)
