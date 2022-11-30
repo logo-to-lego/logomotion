@@ -12,24 +12,13 @@ class UnknownFunction(Node):
     """
     def __init__(self, children=None, **dependencies):
         super().__init__("UnknownFunction", children, None, **dependencies)
-        self._arg_type = dependencies.get("arg_type", False)
-        pos_iter_param = dependencies.get("iter_param", None)
-        if pos_iter_param:
-            self._iter_param = pos_iter_param.leaf
-        else:
-            self._iter_param = None
-
+        iter = dependencies.get("iter_param", None)
+        self._iter_param = iter.leaf if iter else None
 
     def get_logotype(self) -> LogoType:
         return LogoType.NAMELESS_FUNCTION
 
     def check_types(self):
-        """Creates a variable to scope
-        if given code is `for ["a 1 2 3] {...}` creates variable 'a'
-        """
-        # pass 'fake' Function instance to symbol table, so it'll create a local scope
-        # pylint: disable=w0201
-        self.procedure = Function("for", typeclass=Type(functions={"for"}))
         self._symbol_tables.variables.initialize_scope()
         # if we're handling a for loop, we need to add the iterator to the scope
         if self._iter_param:

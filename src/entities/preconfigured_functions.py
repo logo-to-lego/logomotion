@@ -33,11 +33,10 @@ def _repeat():
     )
     return procedure
 
-#Typical for loop. The controllist specifies three or four members:
-# the local varname, start value, limit value, and optional step size
 def _for():
     """Definition for 'for' nameless function
     Returns
+        class Function
     """
     fname = "for"
     iterator_name = Variable("iterator_name", Type(logotype=LogoType.STRING))

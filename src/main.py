@@ -25,7 +25,7 @@ def main():
         if CODE_GEN_LANG == "Java":
             preconf_gen = JavaPreconfFuncsGenerator()
             jcg = JavaCodeGenerator(logger=logger)
-            preconf_gen.give_code_generator(jcg)
+            preconf_gen.set_code_generator(jcg)
             funcs_dict = preconf_gen.get_funcs()
             #code_gen = JavaCodeGenerator(funcs_dict=funcs_dict, logger=logger)
             jcg.set_preconf_funcs_dict(funcs_dict)

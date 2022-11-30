@@ -1,13 +1,11 @@
 class JavaPreconfFuncsGenerator:
     """A class for generating preconfigured functions Java code
-    TODO
-    koodi generoituu logo.func1(temp18, temp19) -> miksi 'logo.funktio'
     """
 
     def __init__(self):
         pass
 
-    def give_code_generator(self, jcg):
+    def set_code_generator(self, jcg):
         # pylint: disable=W0201
         self.jcg = jcg
 
