@@ -26,6 +26,32 @@ class TestParser(unittest.TestCase):
         self.parser = Parser(self.lexer, self.logger)
         self.maxDiff = None
 
+    def test_procedure_call_without_parentheses(self):
+        test_string = "miten turha.funktio end turha.funktio"
+        ast = self.parser.parse(test_string)
+        expected = "(Start, children: [(StatementList, children: [(ProcDecl, turha.funktio, children: [(ProcArgs), (StatementList)]), (ProcCall, turha.funktio)])])"
+        self.assertEqual(str(ast), expected)
+    
+    def test_procedure_call_without_parantheses_with_argument(self):
+        test_string = """
+        miten lisää.ykkönen :numero
+            output :numero + 1
+        end
+        fd lisää.ykkönen 2"""
+        ast = self.parser.parse(test_string)
+        expected = "(Start, children: [(StatementList, children: [(ProcDecl, lisää.ykkönen, children: [(ProcArgs, children: [(ProgArg, numero)]), (StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(BinOp, +, logo type: LogoType.FLOAT, children: [(Deref, numero), (Float, 1.0, logo type: LogoType.FLOAT)])])])]), (TokenType.FD, logo type: LogoType.VOID, children: [(ProcCall, lisää.ykkönen, children: [(Float, 2.0, logo type: LogoType.FLOAT)])])])])"
+        self.assertEqual(str(ast), expected)
+
+    def test_procedure_call_without_parantheses_with_multiple_args(self):
+        test_string = """
+        miten summa :numero1 :numero2
+            output :numero1 + :numero2
+        end
+        show summa 5.5 4.5"""
+        ast = self.parser.parse(test_string)
+        expected = "(Start, children: [(StatementList, children: [(ProcDecl, summa, children: [(ProcArgs, children: [(ProgArg, numero1), (ProgArg, numero2)]), (StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(BinOp, +, logo type: LogoType.FLOAT, children: [(Deref, numero1), (Deref, numero2)])])])]), (TokenType.SHOW, logo type: LogoType.VOID, children: [(ProcCall, summa, children: [(Float, 5.5, logo type: LogoType.FLOAT), (Float, 4.5, logo type: LogoType.FLOAT)])])])])"
+        self.assertEqual(str(ast), expected)
+
     def test_parser_start_node(self):
         test_string = 'show "kissa'
         res = self.parser.parse(test_string)
