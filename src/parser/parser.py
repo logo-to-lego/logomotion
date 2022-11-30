@@ -135,6 +135,7 @@ class Parser:
         self._preparser = Preparser(current_lexer, shared.node_factory, logger)
         globals()["tokens"] = current_lexer.get_tokens()
         self._parser = None
+        self._logger = logger
 
     def reset(self):
         "Resets the parser internals."
@@ -160,6 +161,7 @@ class Parser:
         self._preparser.reset()
 
         for function_name, function in self._preparser.export_grammar_rules(code).items():
+            self._logger.debug(f"Preparser procedure call grammar rule added: {function_name}")
             globals()[function_name] = function
 
         self._parser = yacc.yacc(**kwargs)

@@ -92,7 +92,8 @@ class Lexer:
         self._ply_lexer = None
         self.tokens = []
         self._init_tokens()
-        self.defined_functions = set()
+        self._procedure_tokens = {}
+        self._expect_procedure_name_as_ident = False
         self._logger = logger
 
         # Set regex only tokens.
@@ -114,9 +115,19 @@ class Lexer:
         token.value = word
         token.type = self.reserved_words.get(word, TokenType.IDENT).value
 
-        # Check if the token value is a defined function
-        if token.type == TokenType.IDENT.value and token.value in self.defined_functions:
-            token.type = token.value
+        # Check if the token value is a user defined procedure
+        if token.type == TokenType.IDENT.value and token.value in self._procedure_tokens:
+            if not self._expect_procedure_name_as_ident:
+                # Change token type to that of the mapped token value for this procedure
+                # when the token appears outside of the TO IDENT - procedure declaration
+                # context.
+                token.type = self._procedure_tokens[token.value]
+
+        self._expect_procedure_name_as_ident = False
+
+        if token.type == TokenType.TO.value:
+            # Update state to be inside a TO IDENT - context.
+            self._expect_procedure_name_as_ident = True
 
         return token
 
@@ -162,6 +173,16 @@ class Lexer:
 
         return self._ply_lexer
 
+    def get_procedure_tokens(self):
+        """Returns a dict of procedure name, token name pairs. Used to map a user defined
+        procedure to lexer token names."""
+        return self._procedure_tokens
+
+    def add_procedure_token(self, procedure_name, token_name):
+        "Adds a new procedure token to the lexer."
+        self._procedure_tokens[procedure_name] = token_name
+        self.tokens.append(token_name)
+
     def get_tokens(self):
         "Returns a list of lexer tokens for the parser."
         return self.tokens
@@ -174,9 +195,10 @@ class Lexer:
         self._ply_lexer.lineno = 1  # Must reset here, since it isn't done by PLY.
         self._ply_lexer.linestartpos = 0
 
-        # Each parse-call adds new tokens and defined functions, so we clear these
+        # Each parse can add new tokens, so we clear these
         self._init_tokens()
-        self.defined_functions.clear()
+        self._procedure_tokens.clear()
+        self._expect_procedure_name_as_ident = False
 
     def tokenize_input(self, code):
         """Turns input code into a list of tokens."""

@@ -44,20 +44,31 @@ class Preparser:
         procedure_name = self._get_procedure_name(index + 1, tokens)
         procedure_param_count = self._get_procedure_param_count(index + 2, tokens)
 
-        if not procedure_name or procedure_name in self._lexer.get_tokens():
+        if not procedure_name or procedure_name in self._lexer.get_procedure_tokens():
             return
 
-        p_proc_call = self._create_call_rule(procedure_name, procedure_param_count)
-        p_proc_call_paren = self._create_call_with_parantheses_rule(procedure_name)
-
         procedure_count = len(self._grammar_rules)
+
+        mangled_name = self._get_new_procedure_name(procedure_count)
+
+        p_proc_call = self._create_call_rule(mangled_name, procedure_param_count)
+        p_proc_call_paren = self._create_call_with_parantheses_rule(mangled_name)
 
         # Add the 2 rules to the rules dict.
         self._grammar_rules[f"p_preparser_proc{procedure_count}_call"] = p_proc_call
         self._grammar_rules[f"p_preparser_proc{procedure_count}_call_paren"] = p_proc_call_paren
 
         # Add token to Lexer tokens list.
-        self._lexer.get_tokens().append(procedure_name)
+        self._lexer.add_procedure_token(procedure_name, mangled_name)
+
+        self._logger.debug(
+            f"User defined procedure '{procedure_name}' found, internal token '{mangled_name}'"
+        )
+
+    def _get_new_procedure_name(self, procedure_count):
+        """Returns a new procedure token name to be used by the lexer/parser."""
+        mangled_name = f"PROC{procedure_count}"
+        return mangled_name
 
     def _create_call_rule(self, procedure_name, procedure_param_count):
         "Create grammar rule for procedure call without parantheses. Returns a function."
