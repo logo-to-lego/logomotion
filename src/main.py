@@ -17,22 +17,26 @@ from utils.logger import Logger
 def main():
     def get_code_generator():
         """Checks that given programming language is valid in
-        .env file and returns a new instance of CodeGenerator class"""
+        .env file and returns a new instance of CodeGenerator class,
+        and creates the preconfigured functions generator.
+        Preconf generator needs to use the same generator so that
+        the mangled namespace is  the same"""
 
         if CODE_GEN_LANG == "Java":
             preconf_gen = JavaPreconfFuncsGenerator()
             jcg = JavaCodeGenerator(logger=logger)
             preconf_gen.give_code_generator(jcg)
             funcs_dict = preconf_gen.get_funcs()
-            code_gen = JavaCodeGenerator(funcs_dict=funcs_dict, logger=logger)
-            code_gen.add_env_variables(
+            #code_gen = JavaCodeGenerator(funcs_dict=funcs_dict, logger=logger)
+            jcg.give_preconf_funcs_dict(funcs_dict)
+            jcg.add_env_variables(
                 wheelDiameter=os.getenv("WHEEL_DIAM"),
                 wheelDistance=os.getenv("AXLE_LEN"),
                 leftMotor=os.getenv("LEFT_MOTOR_PORT"),
                 rightMotor=os.getenv("RIGHT_MOTOR_PORT"),
                 motorSpeed=os.getenv("MOVEMENT_SPD"),
             )
-            return code_gen
+            return jcg
 
         err_msg = f"{CODE_GEN_LANG} is not an implemented" "programming language for code generator"
         raise Exception(err_msg)

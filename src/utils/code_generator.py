@@ -14,7 +14,6 @@ START_METHOD = (
         this.value = value;\
     }\
 }"\
-        "package logo; import classes.EV3MovePilot; import java.lang.Runnable; "\
     "public class Logo { "\
         "EV3MovePilot robot; "\
     "public Logo() { "\
@@ -62,6 +61,7 @@ class JavaCodeGenerator:
         self._name = name
         self._temp_var_index = 0
         self._logger: Logger = dependencies.get("logger", default_logger)
+        self._preconf_funcs_dict = dependencies.get("funcs_dict", {})
         self._java_variable_names = {}
         self._java_function_names = {}
 
