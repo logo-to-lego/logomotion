@@ -48,7 +48,7 @@ Template project source https://github.com/EV3dev-lang-java/template-project-gra
 
 Run the logo code with `poetry run invoke start path_to_your_logo_code.logo`, so for example `poetry run invoke start logo/move.logo`. If there are no errors, java code is generated to logomotion_gradle/src/java/Logo.java. Change your directory to logomotion_gradle with `cd logomotion_gradle` and then run `./gradlew deployAndRun`. That should be all there is.
 
-Maven?
+There was a problem with timeout errors, which was caused be incompatible java and gradle wrapper versions. The solution was to update gradle wrapper.
 
 ## Create your own code generator
 
