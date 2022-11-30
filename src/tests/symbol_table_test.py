@@ -128,3 +128,8 @@ class TestSymbolTable(unittest.TestCase):
         self.st.initialize_scope(in_function="function x's symbol")
         result = self.st.get_in_scope_function_symbol()
         self.assertEqual(result, "function x's symbol")
+
+    def test_symbols_in_the_table_are_case_insensitive(self):
+        self.st.insert("x", self.value1)
+        re = self.st.lookup("X")
+        self.assertEqual(re, self.value1)
