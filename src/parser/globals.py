@@ -66,7 +66,9 @@ class Shared:
         self.logger = logger
         self.symbol_tables = symbol_tables
         self.code_generator = code_generator
-        self.node_factory = NodeFactory(self.logger, self.symbol_tables, self.code_generator)
+        self.node_factory = NodeFactory(
+            current_lexer, self.logger, self.symbol_tables, self.code_generator
+        )
 
 
 shared = Shared()
