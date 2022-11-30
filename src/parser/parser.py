@@ -62,6 +62,7 @@ list
 from parser.globals import *
 from parser.command import *
 from parser.expression import *
+from parser.preparser import Preparser
 from ply import yacc
 from lexer.lexer import Lexer
 from utils.code_generator import default_code_generator
@@ -131,15 +132,42 @@ class Parser:
     ):
         self._current_lexer = current_lexer
         shared.update(current_lexer, logger, symbol_tables, code_generator)
-        globals()["tokens"] = current_lexer.tokens
+        self._preparser = Preparser(current_lexer, shared.node_factory, logger)
+        globals()["tokens"] = current_lexer.get_tokens()
         self._parser = None
+        self._logger = logger
 
-    def build(self, **kwargs):
-        """Builds the PLY parser. Passes arguments to PLY's yacc.yacc()."""
+    def reset(self):
+        "Resets the parser internals."
+
+        # Initialize grammar to only contain non-preparser rules.
+        preparser_rules = []
+
+        for item in globals():
+            if "p_preparser_" in item:
+                preparser_rules.append(item)
+
+        for rule in preparser_rules:
+            globals().pop(rule)
+
+        globals()["tokens"] = self._current_lexer.get_tokens()
+
+    def _build(self, code, **kwargs):
+        """Preparses the logo program for function declarations and builds the PLY parser.
+        Clears previously added rules. Passes arguments to PLY's yacc.yacc()."""
+
+        self.reset()
+        self._current_lexer.reset()
+        self._preparser.reset()
+
+        for function_name, function in self._preparser.export_grammar_rules(code).items():
+            self._logger.debug(f"Preparser procedure call grammar rule added: {function_name}")
+            globals()[function_name] = function
+
         self._parser = yacc.yacc(**kwargs)
 
     def parse(self, code, **kwargs):
-        """Calls the PLY parser on given code and parser arguments.
+        """Builds the PLY parser and runs it on given code and parser arguments.
 
         Args:
             code (str): Logo source code.
@@ -147,7 +175,10 @@ class Parser:
         Returns:
             start_node (parser.ast.Start): AST
         """
-        self._current_lexer.reset()
+
+        # Build the PLY parser with the added function tokens.
+        self._build(code, **kwargs)
+
         ply_parser = self.get_ply_parser()
         ply_lexer = self._current_lexer.get_ply_lexer()
 
@@ -156,7 +187,5 @@ class Parser:
         return start_node
 
     def get_ply_parser(self, **kwargs):
-        """Returns the built PLY parser. Automatically calls build() if it doesn't exist."""
-        if not self._parser:
-            self.build(**kwargs)
+        """Returns the built PLY parser."""
         return self._parser
