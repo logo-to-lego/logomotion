@@ -12,12 +12,14 @@ from entities.ast.operations import BinOp
 from entities.ast.operations import RelOp
 from entities.ast.operations import UnaryOp
 from entities.ast.conditionals import If
+from entities.ast.unknown_function import UnknownFunction
 from entities.ast.functions import ProcCall, ProcDecl, ProcArgs, ProcArg
 from entities.logotypes import LogoType
 from entities.symbol import Function, Variable
 from entities.type import Type
 from lexer.token_types import TokenType
-from entities.symbol_table import default_variable_table
+from entities.symbol_table import default_variable_table, default_function_table
+from entities.preconfigured_functions import initialize_logo_functions
 
 
 class CodegenTest(unittest.TestCase):
@@ -26,10 +28,13 @@ class CodegenTest(unittest.TestCase):
     def setUp(self):
         default_code_generator.reset()
         default_variable_table.reset()
+        default_function_table.reset()
+        self.function_table = initialize_logo_functions(default_function_table)
 
     def tearDown(self):
         default_code_generator.reset()
         default_variable_table.reset()
+        default_function_table.reset()
 
     def test_forward(self):
         node_float = Float(leaf=100.0)
@@ -71,7 +76,7 @@ class CodegenTest(unittest.TestCase):
         node_make.generate_code()
         code_list = default_code_generator.get_generated_code()
         self.assertEqual("double temp1 = 10.0;", code_list[0])
-        self.assertEqual("var var2 = temp1;", code_list[1])
+        self.assertEqual("Variable var2 = new Variable(temp1);", code_list[1])
 
     def test_make_with_deref(self):
         node_float = Float(leaf=19.0)
@@ -85,9 +90,49 @@ class CodegenTest(unittest.TestCase):
         nodes.generate_code()
         code_list = default_code_generator.get_generated_code()
         self.assertEqual("double temp1 = 19.0;", code_list[0])
-        self.assertEqual("var var2 = temp1;", code_list[1])
-        self.assertEqual("var var3 = var2;", code_list[2])
+        self.assertEqual("Variable var2 = new Variable(temp1);", code_list[1])
+        self.assertEqual("var temp3 = var2.value;", code_list[2])
 
+    def test_assign_value_to_existing(self):
+        node_float = Float(leaf=3)
+        node_a_name = StringLiteral(leaf="a_variable")
+        node_make_a = Make(leaf=node_a_name, children=[node_float])
+        node_float_2nd = Float(leaf=4)
+        node_make_b = Make(leaf=node_a_name, children=[node_float_2nd])
+        nodes = StatementList(children=[node_make_a, node_make_b])
+        nodes.check_types()
+        nodes.generate_code()
+        code_list = default_code_generator.get_generated_code()
+        self.assertEqual("double temp1 = 3;", code_list[0])
+        self.assertEqual("Variable var2 = new Variable(temp1);", code_list[1])
+        self.assertEqual("double temp3 = 4;", code_list[2])
+        self.assertEqual("var2.value = temp3;", code_list[3])
+    
+    def test_for_make(self):
+        node_str = StringLiteral(leaf="yksi")
+        node_float_start = Float(leaf=0)
+        node_float_limit = Float(leaf=5)
+        node_float_step = Float(leaf=1)
+        node_str_2 = StringLiteral(leaf="kaksi")
+        node_float_yksi = Float(leaf=1)
+        node_make_a = Make(leaf=node_str_2, children=[node_float_yksi])
+        node_nameless = UnknownFunction(children=[StatementList(children=[node_make_a])], iter_param=node_str)
+        node_proccall = ProcCall(leaf="for", children=[node_str, node_float_start, \
+            node_float_limit, node_float_step, node_nameless])
+        nodes = StatementList(children=[node_proccall])
+        nodes.check_types()
+        nodes.generate_code()
+        code_list = default_code_generator.get_generated_code()
+        self.assertEqual("""String temp1 = "yksi";""", code_list[0])
+        self.assertEqual("double temp2 = 0;", code_list[1])
+        self.assertEqual("double temp3 = 5;", code_list[2])
+        self.assertEqual("double temp4 = 1;", code_list[3])
+        self.assertEqual("Consumer<Variable> temp5 = (Variable var6) -> {", code_list[4])
+        self.assertEqual("double temp7 = 1;", code_list[5])
+        self.assertEqual("Variable var8 = new Variable(temp7);", code_list[6])
+        self.assertEqual("this.func9(temp1, temp2, temp3, temp4, temp5);", code_list[8])
+        
+    
     def test_binop(self):
         node_float1 = Float(leaf=1)
         node_float2 = Float(leaf=2)
@@ -151,8 +196,8 @@ class CodegenTest(unittest.TestCase):
         nodes.check_types()
         nodes.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("var var2 = temp1;", node_list[1])
-        self.assertEqual("var2 = temp3;", node_list[3])
+        self.assertEqual("Variable var2 = new Variable(temp1);", node_list[1])
+        self.assertEqual("var2.value = temp3;", node_list[3])
 
     def test_variables_are_case_insensitive(self):
         node_float = Float(leaf=1.0)
@@ -164,8 +209,8 @@ class CodegenTest(unittest.TestCase):
         nodes.check_types()
         nodes.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("var var2 = temp1;", node_list[1])
-        self.assertEqual("var var3 = var2;", node_list[2])
+        self.assertEqual("Variable var2 = new Variable(temp1);", node_list[1])
+        self.assertEqual("var temp3 = var2.value;", node_list[2])
 
     def test_show(self):
         node_float = Float(leaf=4.2)
