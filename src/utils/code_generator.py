@@ -65,7 +65,7 @@ class JavaCodeGenerator:
         self._java_variable_names = {}
         self._java_function_names = {}
 
-    def give_preconf_funcs_dict(self, pre_func_dict):
+    def set_preconf_funcs_dict(self, pre_func_dict):
         # pylint: disable=W0201
         self._preconf_funcs_dict = pre_func_dict
 

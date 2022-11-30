@@ -5,11 +5,7 @@ from entities.type import Type
 
 
 class UnknownFunction(Node):
-    """Todo:
-        Tän pitäis saada tietää for looppia kutsuttaessa for:in argumenteista
-        2 ekaa eli esim kutsulla for ["wasd 3 2 1] {tää} pitäis saada tietää
-        "wasd ja 3 jolloin näistä muodostetaan oma variaabeli
-        jonka jälkeen aloitetaan oma funktioskope
+    """
     Args:
         arg_type: either a LogoType or False.
         param_specs: for loop iter information passed from proccall
