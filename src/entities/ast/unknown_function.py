@@ -1,6 +1,6 @@
 from entities.ast.node import Node
 from entities.logotypes import LogoType
-from entities.symbol import Variable, Function
+from entities.symbol import Variable
 from entities.type import Type
 
 
@@ -12,8 +12,8 @@ class UnknownFunction(Node):
     """
     def __init__(self, children=None, **dependencies):
         super().__init__("UnknownFunction", children, None, **dependencies)
-        iter = dependencies.get("iter_param", None)
-        self._iter_param = iter.leaf if iter else None
+        iteri = dependencies.get("iter_param", None)
+        self._iter_param = iteri.leaf if iteri else None
 
     def get_logotype(self) -> LogoType:
         return LogoType.NAMELESS_FUNCTION
