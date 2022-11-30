@@ -74,7 +74,6 @@ def main():
     symbol_tables = SymbolTables()
     code_generator = get_code_generator()
     parser = Parser(lexer, logger, symbol_tables, code_generator)
-    parser.build()
 
     symbol_tables.functions = initialize_logo_functions(symbol_tables.functions)
 
