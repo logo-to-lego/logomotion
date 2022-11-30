@@ -8,7 +8,7 @@ class ErrorHandlerMock:
     def __init__(self):
         self.error_ids = []
 
-    def add_error(self, msg_id: int, lexspan, **_): # pylint: disable = W0613
+    def add_error(self, msg_id: int, lexspan, **_):  # pylint: disable = W0613
         """Add error ID"""
         self.error_ids.append(msg_id)
 

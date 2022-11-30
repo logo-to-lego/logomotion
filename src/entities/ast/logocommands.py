@@ -3,6 +3,7 @@ from entities.logotypes import LogoType
 from entities.symbol import Variable
 from entities.type import Type
 from lexer.token_types import TokenType
+from utils.lowercase_converter import convert_to_lowercase as to_lowercase
 
 
 class Make(Node):
@@ -15,6 +16,14 @@ class Make(Node):
 
     def _check_variable_node(self, variable_node):
         # Check that variable name is string
+        if variable_node.node_type == "Deref":
+            self._logger.error_handler.add_error(
+                2028,
+                lexspan=self.position.get_lexspan(),
+                var_name=variable_node.leaf
+            )
+            return
+
         variable_node.check_types()
         variable_logotype = variable_node.get_logotype()
 
@@ -155,9 +164,9 @@ class Make(Node):
         value_var_name = self.children[0].generate_code()
 
         if self._new_variable:
-            self._code_generator.create_new_variable(self.leaf.leaf.lower(), value_var_name)
+            self._code_generator.create_new_variable(to_lowercase(self.leaf.leaf), value_var_name)
         else:
-            self._code_generator.assign_value(self.leaf.leaf.lower(), value_var_name)
+            self._code_generator.assign_value(to_lowercase(self.leaf.leaf), value_var_name)
 
 
 class Show(Node):
@@ -184,6 +193,11 @@ class Show(Node):
                 )
             child.check_types()
 
+    def generate_code(self):
+        for child in self.children:
+            arg_var = child.generate_code()
+            self._code_generator.show(arg_var)
+
 
 class Bye(Node):
     def get_logotype(self):
@@ -194,6 +208,9 @@ class Bye(Node):
             self._logger.error_handler.add_error(
                 2015, self.position.get_lexspan(), command=self.node_type.value
             )
+
+    def generate_code(self):
+        self._code_generator.bye()
 
 
 class Move(Node):

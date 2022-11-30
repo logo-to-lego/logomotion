@@ -24,11 +24,11 @@ def main():
             funcs_dict = preconf_gen.get_funcs()
             code_gen = JavaCodeGenerator(funcs_dict=funcs_dict, logger=logger)
             code_gen.add_env_variables(
-                wheelDiameter = os.getenv("WHEEL_DIAM"),
-                wheelDistance = os.getenv("AXLE_LEN"),
-                leftMotor = os.getenv("LEFT_MOTOR_PORT"),
-                rightMotor = os.getenv("RIGHT_MOTOR_PORT"),
-                motorSpeed = os.getenv("MOVEMENT_SPD"),
+                wheelDiameter=os.getenv("WHEEL_DIAM"),
+                wheelDistance=os.getenv("AXLE_LEN"),
+                leftMotor=os.getenv("LEFT_MOTOR_PORT"),
+                rightMotor=os.getenv("RIGHT_MOTOR_PORT"),
+                motorSpeed=os.getenv("MOVEMENT_SPD"),
             )
             return code_gen
         err_msg = f"{CODE_GEN_LANG} is not an implemented" "programming language for code generator"

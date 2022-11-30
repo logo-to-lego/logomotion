@@ -11,16 +11,16 @@ from utils.error_handler import ErrorHandler
 from utils.logger import Logger
 
 CWD = os.getcwd()
-CURR_DIR = os.path.dirname(os.path.relpath(__file__)) 
+CURR_DIR = os.path.dirname(os.path.relpath(__file__))
 JAVA_GEN_PATH = os.path.join(CURR_DIR, "tests/e2e/java/logo/")
 JAVA_TEST_PATH = os.path.join(CURR_DIR, "tests/e2e/test_files/java/")
 LOGO_TEST_PATH = os.path.join(CURR_DIR, "tests/e2e/test_files/logo/")
 
 
-class MockIO():
+class MockIO:
     def __init__(self) -> None:
         self._messages = []
-    
+
     def write(self, message):
         self._messages.append(message)
 
@@ -35,7 +35,9 @@ class AppLibrary:
         self._lexer.build()
         self._symbol_tables = SymbolTables(SymbolTable(), SymbolTable())
         self._java_code_generator = JavaCodeGenerator(logger=self._logger)
-        self._parser = Parser(self._lexer, self._logger, self._symbol_tables, self._java_code_generator)
+        self._parser = Parser(
+            self._lexer, self._logger, self._symbol_tables, self._java_code_generator
+        )
         self._parser.build()
 
     def _get_file_as_str(self, path):
@@ -88,8 +90,8 @@ class AppLibrary:
         """Compiles the generated java code (located in e2e/java/logo/Logo.java).
         Raises AssertionError if the compilation fails."""
         path = os.path.join(JAVA_GEN_PATH, "..")
-        os.chdir(path) # Change dir to make the compile
+        os.chdir(path)  # Change dir to make the compile
         output = subprocess.run(["javac", "logo/Logo.java"], capture_output=True)
-        os.chdir(CWD) # Change dir back to make tests work after this
+        os.chdir(CWD)  # Change dir back to make tests work after this
         if output.returncode != 0:
             raise AssertionError("Java compilation failed: \n", output.stderr.decode("utf-8"))

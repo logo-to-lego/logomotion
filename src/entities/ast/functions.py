@@ -4,6 +4,7 @@ from entities.logotypes import LogoType
 from entities.symbol import Function, Variable
 from entities.type import Type
 from entities.ast.variables import Deref
+from utils.lowercase_converter import convert_to_lowercase as to_lowercase
 
 
 class Output(Node):
@@ -51,8 +52,9 @@ class ProcCall(Node):
         self.procedure: Function = None
 
     def get_logotype(self):
-        if self.procedure:
-            return self.procedure.typeclass.logotype
+        proc = self.procedure if self.procedure else self._symbol_tables.functions.lookup(self.leaf)
+        if proc:
+            return proc.get_logotype()
         return None
 
     def check_types(self):
@@ -106,9 +108,9 @@ class ProcCall(Node):
         for child in self.children:
             temp_vars.append(child.generate_code())
         if self.get_logotype() == LogoType.VOID:
-            self._code_generator.function_call(self.leaf, temp_vars)
+            self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
             return None
-        return self._code_generator.returning_function_call(self.leaf, temp_vars)
+        return self._code_generator.returning_function_call(to_lowercase(self.leaf), temp_vars)
 
 
 class ProcDecl(Node):
@@ -160,7 +162,7 @@ class ProcDecl(Node):
 
     def generate_code(self):
         self._code_generator.start_function_declaration(
-            logo_func_name=self.leaf, logo_func_type=self.get_logotype()
+            logo_func_name=to_lowercase(self.leaf), logo_func_type=self.get_logotype()
         )
         for child in self.children:
             child.generate_code()
@@ -205,4 +207,4 @@ class ProcArg(Node):
 
     def get_param_data(self):
         """Return function parameter's type and name in tuple for ProgArgs' generate_code"""
-        return (self.get_logotype(), self.leaf.lower())
+        return (self.get_logotype(), to_lowercase(self.leaf))

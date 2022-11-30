@@ -7,13 +7,24 @@ from lexer.token_types import TokenType
 
 START_METHOD = (
     "package logo; import classes.EV3MovePilot; import java.lang.Runnable; "\
-        "public class Logo { "
-
+    "public class Logo { "\
+        "EV3MovePilot robot; "\
+    "public Logo() { "\
+        "this.robot = new EV3MovePilot(); "\
+    "}"
 )
+
+START_RUN = (
+    "public void run() { "\
+        "Logo logo = new Logo();"
+)
+
+END_RUN = "}"
+
 START_MAIN = (
-    "public static void main(String[] args) { "
-    "EV3MovePilot robot = new EV3MovePilot(); "
-    "Logo logo = new Logo(); "
+    "public static void main(String[] args) { "\
+        "Logo logo = new Logo(); "\
+        "logo.run();"
 )
 END = "} }"
 DEFAULT_NAME = "Logo"
@@ -151,22 +162,32 @@ class JavaCodeGenerator:
 
     def move_forward(self, arg_var):
         """create Java code for moving forward"""
-        code = f"robot.travel({arg_var});"
+        code = f"this.robot.travel({arg_var});"
         self._append_code(code)
 
     def move_backwards(self, arg_var):
         """create Java code for moving backward"""
-        code = f"robot.travel(-{arg_var});"
+        code = f"this.robot.travel(-{arg_var});"
         self._append_code(code)
 
     def left_turn(self, arg_var):
         """create Java code for turning left"""
-        code = f"robot.rotate({arg_var});"
+        code = f"this.robot.rotate({arg_var});"
         self._append_code(code)
 
     def right_turn(self, arg_var):
         """create Java code for turning right"""
-        code = f"robot.rotate(-{arg_var});"
+        code = f"this.robot.rotate(-{arg_var});"
+        self._append_code(code)
+
+    def show(self, arg_var):
+        """create Java code for show"""
+        code = f"System.out.println({arg_var});"
+        self._append_code(code)
+
+    def bye(self):
+        """create Java code for bye"""
+        code = "System.exit(0);"
         self._append_code(code)
 
     def float(self, value):
@@ -262,9 +283,11 @@ class JavaCodeGenerator:
                     file.write(self._preconf_funcs_dict[fname] + " ")
                 for method_line in self._method:
                     file.write(method_line + " ")
-                file.write(START_MAIN)
+                file.write(START_RUN)
                 for line in self._main:
                     file.write(line + " ")
+                file.write(END_RUN)
+                file.write(START_MAIN)
                 file.write(END)
                 file.close()
         except Exception as error:
@@ -303,7 +326,8 @@ class JavaCodeGenerator:
                 new_line = f"\t\t{search_key}new EV3LargeRegulatedMotor(MotorPort.{value});\n"
             else:
                 new_line = f"\t\t{search_key}{value};\n"
-            params = list(map(lambda x: x.replace(line_to_modify, new_line), params)) # pylint: disable=W0640
+            params = list(
+                map(lambda x: x.replace(line_to_modify, new_line), params))  # pylint: disable=W0640
         return params
 
     def _write_new_params_to_file(self, path, param_lines):
