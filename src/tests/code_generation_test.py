@@ -176,14 +176,14 @@ class CodegenTest(unittest.TestCase):
         node_function.procedure = Function(name="test", typeclass=Type(logotype=LogoType.VOID))
         node_function.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("logo.func2();", node_list[0])
+        self.assertEqual("this.func2();", node_list[0])
 
     def test_non_void_function_call(self):
         node_function = ProcCall(leaf="test", children=None)
         node_function.procedure = Function(name="test", typeclass=Type(logotype=LogoType.FLOAT))
         node_function.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("var temp1 = logo.func2();", node_list[0])
+        self.assertEqual("var temp1 = this.func2();", node_list[0])
 
     def test_make_leaf_is_case_insensitive(self):
         node_float1 = Float(leaf=1.0)
