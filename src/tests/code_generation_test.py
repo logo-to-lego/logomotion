@@ -130,7 +130,7 @@ class CodegenTest(unittest.TestCase):
         self.assertEqual("Consumer<Variable> temp5 = (Variable var6) -> {", code_list[4])
         self.assertEqual("double temp7 = 1;", code_list[5])
         self.assertEqual("Variable var8 = new Variable(temp7);", code_list[6])
-        self.assertEqual("logo.func9(temp1, temp2, temp3, temp4, temp5);", code_list[8])
+        self.assertEqual("this.func9(temp1, temp2, temp3, temp4, temp5);", code_list[8])
         
     
     def test_binop(self):
