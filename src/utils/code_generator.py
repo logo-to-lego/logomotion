@@ -275,7 +275,7 @@ class JavaCodeGenerator:
 
     def if_statement(self, conditional):
         """Create Java code to start an if statement in Java."""
-        code = f"if ({conditional}) " + "{"
+        code = f"if ({conditional}.value) " + "{"
         self._append_code(code)
 
     def else_statement(self):
@@ -290,7 +290,7 @@ class JavaCodeGenerator:
 
     def if_statement_lambda(self, conditional, lambda_variable):
         """Create Java code for if statements utilising Java's lambda"""
-        code = f"if ({conditional}) {lambda_variable}.run();"
+        code = f"if ({conditional}.value) {lambda_variable}.run();"
         self._append_code(code)
 
     def lambda_no_param_start(self):
