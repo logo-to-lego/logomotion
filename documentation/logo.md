@@ -44,11 +44,22 @@ foo
 ERROR
 ```
 
+
+FOR määritetään seuraavalla tavalla
+``` 
+for ["a 1 2 3] {}
+
+for ["a 0 10 1] { show :a }
+```
+Ensimmäinen argumentti on iteraattori, toinen argumentti on iteraation alkuarvo, kolmas lopetusarvo ja neljäs on millä arvolla iteraattoria korotetaan per sykli.
+'{}'-merkkien väliin sijoitetaan loopissa toistettavat toimenpiteet.
+
 ## Scopet
 
 Päätasolla (globaalilla) määritellyt muuttujat eivät näy funktioiden sisään. Funktioiden sisäiset muuttujat eivät näy päätasolla.
 
 Ehtolauseiden sisällä määritellyt muuttujat eivät näy ehtolauseen ulkopuolelle. Ehtolause voi kuitenkin käyttää ylemmän tason muuttujia, kuten globaaleita muuttujia.
+
 
 ## Ehtolauseet
 
