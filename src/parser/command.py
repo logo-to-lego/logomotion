@@ -202,7 +202,7 @@ def p_for_call(prod):
         leaf=prod[1],
         position=Position(prod)
     )
-    
+
 def p_repeat_call(prod):
     "proc_call : REPEAT expressions LBRACE statement_list RBRACE"
     unknown_f = shared.node_factory.create_node(

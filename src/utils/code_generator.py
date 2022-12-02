@@ -262,6 +262,7 @@ class JavaCodeGenerator:
         elif operation == "=":
             operation = "=="
         temp_var = self._generate_temp_var()
+        # pylint: disable= C0301
         code = f"BoolVariable {temp_var} = new BoolVariable({value1}.value {operation} {value2}.value);"
         self._append_code(code)
         return temp_var
