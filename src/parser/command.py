@@ -8,6 +8,7 @@ from entities.ast.logocommands import *
 from entities.ast.operations import *
 from entities.ast.statementlist import *
 from entities.ast.variables import *
+from entities.ast.unknown_function import *
 from lexer.token_types import TokenType
 
 
@@ -186,6 +187,22 @@ def p_proc_call(prod):
         position=Position(prod),
     )
 
+def p_for_call(prod):
+    "proc_call : FOR LBRACKET expressions RBRACKET LBRACE statement_list RBRACE"
+    unknown_f = shared.node_factory.create_node(
+        UnknownFunction,
+        arg_type = LogoType.FLOAT,
+        children=[prod[6]],
+        position=Position(prod),
+        iter_param=prod[3][0]
+    )
+    prod[0] = shared.node_factory.create_node(
+        ProcCall,
+        children=prod[3] + [unknown_f],
+        leaf=prod[1],
+        position=Position(prod)
+    )
+
 
 def p_bye(prod):
     "bye : BYE"
@@ -202,35 +219,35 @@ def p_bye_paren(prod):
 
 
 def p_if(prod):
-    "if : IF LBRACE expression RBRACE block"
+    "if : IF LBRACE expression RBRACE unknown_function"
     prod[0] = shared.node_factory.create_node(
         If, children=prod[5].children, leaf=prod[3], position=Position(prod)
     )
 
 
 def p_if_paren(prod):
-    "if : LPAREN IF LBRACE expression RBRACE block RPAREN"
+    "if : LPAREN IF LBRACE expression RBRACE unknown_function RPAREN"
     prod[0] = shared.node_factory.create_node(
         If, children=prod[6].children, leaf=prod[4], position=Position(prod)
     )
 
 
 def p_if_without_braces(prod):
-    "if : IF expression block"
+    "if : IF expression unknown_function"
     prod[0] = shared.node_factory.create_node(
         If, children=prod[3].children, leaf=prod[2], position=Position(prod)
     )
 
 
 def p_if_without_braces_paren(prod):
-    "if : LPAREN IF expression block RPAREN"
+    "if : LPAREN IF expression unknown_function RPAREN"
     prod[0] = shared.node_factory.create_node(
         If, children=prod[4].children, leaf=prod[3], position=Position(prod)
     )
 
 
 def p_ifelse(prod):
-    "ifelse : IFELSE LBRACE expression RBRACE block block"
+    "ifelse : IFELSE LBRACE expression RBRACE unknown_function unknown_function"
     prod[0] = shared.node_factory.create_node(
         IfElse,
         children=[prod[5].children[0], prod[6].children[0]],
@@ -240,7 +257,7 @@ def p_ifelse(prod):
 
 
 def p_ifelse_paren(prod):
-    "ifelse : LPAREN IFELSE LBRACE expression RBRACE block block RPAREN"
+    "ifelse : LPAREN IFELSE LBRACE expression RBRACE unknown_function unknown_function RPAREN"
     prod[0] = shared.node_factory.create_node(
         IfElse,
         children=[prod[6].children[0], prod[7].children[0]],
@@ -250,7 +267,7 @@ def p_ifelse_paren(prod):
 
 
 def p_ifelse_without_braces(prod):
-    "ifelse : IFELSE expression block block"
+    "ifelse : IFELSE expression unknown_function unknown_function"
     prod[0] = shared.node_factory.create_node(
         IfElse,
         children=[prod[3].children[0], prod[4].children[0]],
@@ -260,7 +277,7 @@ def p_ifelse_without_braces(prod):
 
 
 def p_ifelse_without_braces_paren(prod):
-    "ifelse : LPAREN IFELSE expression block block RPAREN"
+    "ifelse : LPAREN IFELSE expression unknown_function unknown_function RPAREN"
     prod[0] = shared.node_factory.create_node(
         IfElse,
         children=[prod[4].children[0], prod[5].children[0]],
