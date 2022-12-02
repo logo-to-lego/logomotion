@@ -198,17 +198,17 @@ class JavaCodeGenerator:
 
     def move_backwards(self, arg_var):
         """create Java code for moving backward"""
-        code = f"this.robot.travel(-{arg_var});"
+        code = f"this.robot.travel(-{arg_var}.value);"
         self._append_code(code)
 
     def left_turn(self, arg_var):
         """create Java code for turning left"""
-        code = f"this.robot.rotate({arg_var});"
+        code = f"this.robot.rotate({arg_var}.value);"
         self._append_code(code)
 
     def right_turn(self, arg_var):
         """create Java code for turning right"""
-        code = f"this.robot.rotate(-{arg_var});"
+        code = f"this.robot.rotate(-{arg_var}.value);"
         self._append_code(code)
 
     def show(self, arg_var):
