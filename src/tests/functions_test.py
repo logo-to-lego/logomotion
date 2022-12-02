@@ -135,3 +135,9 @@ class TestFunctions(unittest.TestCase):
         ast.check_types()
         var = self.symbol_tables.variables.lookup('c')
         self.assertIsNotNone(var)
+    
+    def test_function_param_types_update_with_move_commands(self):
+        test_code = """TO f :a fd :a END (f 5)"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(0, len(self.error_handler.get_error_ids()))
