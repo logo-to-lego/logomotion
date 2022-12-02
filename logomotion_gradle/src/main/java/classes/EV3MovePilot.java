@@ -57,7 +57,7 @@ public class EV3MovePilot {
         this.rightMotor.setSpeed(this.motorRotationSpeed);
         double distance = angle*(Math.PI/180)*(this.wheelDistance/2);
         double fullRotations = Math.abs(distance)/this.wheelCircumference;
-        double fullRotationTime = 360.0/this.motorSpeed;
+        double fullRotationTime = 360.0/this.motorRotationSpeed;
         double travelTime = fullRotations * fullRotationTime;
         if(angle > 0) {
             this.leftMotor.backward();
