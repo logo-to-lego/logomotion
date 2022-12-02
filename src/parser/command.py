@@ -199,7 +199,7 @@ def p_for_call(prod):
     prod[0] = shared.node_factory.create_node(
         ProcCall,
         children=prod[3] + [unknown_f],
-        leaf=prod[1],
+        leaf="for",
         position=Position(prod)
     )
 
@@ -214,7 +214,7 @@ def p_repeat_call(prod):
     prod[0] = shared.node_factory.create_node(
         ProcCall,
         children=prod[2]+ [unknown_f],
-        leaf = prod[1],
+        leaf = "repeat",
         position=Position(prod)
     )
 
