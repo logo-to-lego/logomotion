@@ -28,11 +28,13 @@ Clone this repo by running `git clone git@github.com:logo-to-lego/logomotion.git
 
 ### Java and Gradle
 
-Gradle is required to be installed. We have used different Gradle version, but it different gradle versions might require different versions of Java.
+Gradle is required to be installed. We have used different Gradle versions with each computer we have tested, but it different gradle versions might require different versions of Java.
 
 Install gradle with `brew install gradle`
 
 You are going to need Java for compiling. The [build.gradle](https://github.com/logo-to-lego/logomotion/blob/main/logomotion_gradle/build.gradle) uses Java 11. We have used openjdk 11.0.16. Java 11 can be downloaded from [oracle](https://www.oracle.com/java/technologies/downloads/)
+
+With OSX users, multiple java versions can be installed. Check out this [link](https://medium.com/reachnow-tech/change-default-java-version-on-mac-a7f01647f126) on how to change the default java version on your computer.
 
 ### EV3
 
@@ -44,11 +46,18 @@ The brick must be in connected to the same wifi as your computer. We have used h
 
 Once your brick has connection to internet, the IP should be at the top of the screen of your brick. Set the IP-address of the brick in /logomotion_gradle/config.gradle
 
-Template project source https://github.com/EV3dev-lang-java/template-project-gradle
+### Running the code
+Run the logo code with `poetry run invoke start path_to_your_logo_code.logo`, so for example `poetry run invoke start logo/move.logo`. If there are no errors, java code is generated to logomotion_gradle/src/java/Logo.java. If there were errors, the java is not generated. 
 
-Run the logo code with `poetry run invoke start path_to_your_logo_code.logo`, so for example `poetry run invoke start logo/move.logo`. If there are no errors, java code is generated to logomotion_gradle/src/java/Logo.java. Change your directory to logomotion_gradle with `cd logomotion_gradle` and then run `./gradlew deployAndRun`. That should be all there is.
+Change your directory to logomotion_gradle with `cd logomotion_gradle` and then run `./gradlew deployAndRun`. That should be all there is. The robot should be doing what the given logo code defined.
 
-There was a problem with timeout errors, which was caused be incompatible java and gradle wrapper versions. The solution was to update gradle wrapper.
+### Problems and checks
+
+We had some problems with gradle. For some reason, the gradle project did not connect to the robot and threw a timeout error after about 1.5min. The solution was caused by incompatible java version and gradle wrapper version. The solution was to update gradle wrapper, which was done from Visual Studio Code.
+
+VPN can also cause problems with connecting to the robot. So turn off VPN.
+
+Check also that you have the right motor ports configured in [.env](https://github.com/logo-to-lego/logomotion/blob/user-manual/.env)
 
 ## Create your own code generator
 
