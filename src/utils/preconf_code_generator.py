@@ -16,8 +16,8 @@ class JavaPreconfFuncsGenerator:
     def _repeat_code(self):
         # pylint: disable=W0212
         mangled_name = self.jcg._mangle_java_function_name("repeat")
-        java_repeat_code = f"public static void {mangled_name}(double n, Runnable f) {{ \
-                    for(int i=0;i<n;i++) {{ \
+        java_repeat_code = f"public static void {mangled_name}(DoubleVariable n, Runnable f) {{ \
+                    for(int i=0;i<n.value;i++) {{ \
                         f.run();\
                     }} \
                   }}"
