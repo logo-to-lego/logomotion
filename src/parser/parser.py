@@ -30,7 +30,7 @@ command
     | STOP TODO
     | FORE TODO
     | RUN TODO
-    | REPEAT TODO
+    | REPEAT
 
 expression_list
     : expression expression_list

@@ -36,6 +36,7 @@ class TokenType(Enum):
     STOP = "STOP"
     MAKE = "MAKE"
     FOR = "FOR"
+    REPEAT = "REPEAT"
     IF = "IF"
     IFELSE = "IFELSE"
     SHOW = "SHOW"

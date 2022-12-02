@@ -47,6 +47,8 @@ class Lexer:
         "riippuen": TokenType.IFELSE,
         "for": TokenType.FOR,
         "luvuille": TokenType.FOR,
+        "repeat": TokenType.REPEAT,
+        "toista": TokenType.REPEAT,
         "show": TokenType.SHOW,
         "tulosta": TokenType.SHOW,
         "true": TokenType.TRUE,

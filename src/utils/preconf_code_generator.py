@@ -16,8 +16,8 @@ class JavaPreconfFuncsGenerator:
     def _repeat_code(self):
         # pylint: disable=W0212
         mangled_name = self.jcg._mangle_java_function_name("repeat")
-        java_repeat_code = f"public static void {mangled_name}(double n, Runnable f) {{ \
-                    for(int i=0;i<n;i++) {{ \
+        java_repeat_code = f"public void {mangled_name}(DoubleVariable n, Runnable f) {{ \
+                    for(int i=0;i<n.value;i++) {{ \
                         f.run();\
                     }} \
                   }}"
@@ -26,19 +26,10 @@ class JavaPreconfFuncsGenerator:
     def _for_code(self):
         # pylint: disable=W0212
         mangled_for = self.jcg._mangle_java_function_name("for")
-        java_for_code = f"public void {mangled_for}(String placeholder, double start, \
-            double limit, Consumer<Variable> f) {{\
-        Variable new_var = new Variable(0); \
-        for(double itr=start;itr<=limit;itr++) {{\
-            new_var.value = itr;\
-            f.accept(new_var);\
-            }}\
-            }}\
-            \
-            public void {mangled_for}(String placeholder, double start, double limit, double step, Consumer<Variable> f) {{\
-                Variable new_var = new Variable(0); \
-                for (double itr = start; itr <= limit; itr+=step) {{\
-                    new_var.value = itr;\
+        java_for_code = f"public void {mangled_for}(StrVariable placeholder, DoubleVariable start,\
+            DoubleVariable limit, DoubleVariable step, Consumer<DoubleVariable> f) {{\
+                DoubleVariable new_var = new DoubleVariable(0); \
+                for (new_var.value = start.value; new_var.value <= limit.value; new_var.value+=step.value) {{\
                     f.accept(new_var);\
                 }}\
             }}"
