@@ -30,11 +30,11 @@ Clone this repo by running `git clone git@github.com:logo-to-lego/logomotion.git
 
 Gradle is required to be installed. We have used different Gradle versions with each computer we have tested, but it different gradle versions might require different versions of Java.
 
-Install gradle with `brew install gradle`
+Install gradle. Check out instructions from [gradle](https://gradle.org/install/).
 
-You are going to need Java for compiling. The [build.gradle](https://github.com/logo-to-lego/logomotion/blob/main/logomotion_gradle/build.gradle) uses Java 11. We have used openjdk 11.0.16. Java 11 can be downloaded from [oracle](https://www.oracle.com/java/technologies/downloads/)
+You are going to need Java for compiling. The [build.gradle](https://github.com/logo-to-lego/logomotion/blob/main/logomotion_gradle/build.gradle) uses Java 11 which can be downloaded from [here](https://www.oracle.com/java/technologies/downloads/). Oracle requires you to have account to install java.
 
-With OSX users, multiple java versions can be installed. Check out this [link](https://medium.com/reachnow-tech/change-default-java-version-on-mac-a7f01647f126) on how to change the default java version on your computer.
+Atleast with MacOS users multiple java versions can be installed. Check out this [link](https://medium.com/reachnow-tech/change-default-java-version-on-mac-a7f01647f126) on how to change the default java version on your computer.
 
 ### EV3
 
@@ -44,20 +44,22 @@ Download EV3dev image from [ev3dev](https://www.ev3dev.org/docs/getting-started/
 #### Connecting to the EV3 Brick via wifi dongle
 The brick must be in connected to the same wifi as your computer. We have used hotspots from our phones. 
 
-Once your brick has connection to internet, the IP should be at the top of the screen of your brick. Set the IP-address of the brick in /logomotion_gradle/config.gradle
+Once your brick has connection to internet, the IP should be at the top of the screen of your brick. Set the IP-address of the brick in **/logomotion_gradle/config.gradle**
 
 ### Running the code
-Run the logo code with `poetry run invoke start path_to_your_logo_code.logo`, so for example `poetry run invoke start logo/move.logo`. If there are no errors, java code is generated to logomotion_gradle/src/java/Logo.java. If there were errors, the java is not generated. 
+Run the logo code with `poetry run invoke start path_to_your_logo_code.logo` so for example `poetry run invoke start logo/move.logo`. If there are no errors, java code is generated to logomotion_gradle/src/java/Logo.java. If there were errors, java is not generated. 
 
-Change your directory to logomotion_gradle with `cd logomotion_gradle` and then run `./gradlew deployAndRun`. That should be all there is. The robot should be doing what the given logo code defined.
+Change your directory to logomotion_gradle with `cd logomotion_gradle` and run `./gradlew deployAndRun`. 
+
+That should be all there is. After about a minute the robot should be doing what the given logo code defined.
 
 ### Problems and checks
 
-We had some problems with gradle. For some reason, the gradle project did not connect to the robot and threw a timeout error after about 1.5min. The solution was caused by incompatible java version and gradle wrapper version. The solution was to update gradle wrapper, which was done from Visual Studio Code.
+We had some problems with gradle. For some reason, the gradle project did not connect to the robot and threw a timeout error after about 100 seconds. The solution was caused by incompatible java version and gradle wrapper version. The solution was to update gradle wrapper, which was done from Visual Studio Code.
 
 VPN can also cause problems with connecting to the robot. So turn off VPN.
 
-Check also that you have the right motor ports configured in [.env](https://github.com/logo-to-lego/logomotion/blob/user-manual/.env)
+Check also that you have the correct motor ports configured in [.env](https://github.com/logo-to-lego/logomotion/blob/user-manual/.env)
 
 ## Create your own code generator
 
@@ -65,5 +67,5 @@ If you wish to compile logo to some other language than java, like python, you n
 
 In [main.py](https://github.com/logo-to-lego/logomotion/blob/main/src/main.py) add your language settings in method [get_code_generator](https://github.com/logo-to-lego/logomotion/blob/main/src/main.py#L18). The [CODE_GEN_LANG](https://github.com/logo-to-lego/logomotion/blob/main/src/main.py#L100) is defined in the [.env](https://github.com/logo-to-lego/logomotion/blob/main/.env) file.
 
-Muun kuin javan siirto robotille?
+For testing purposes we transfered python code to the EV3 Brick with SSH. There might be more automated tools to do the job.
 
