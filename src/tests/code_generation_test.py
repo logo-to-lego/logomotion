@@ -50,7 +50,7 @@ class CodegenTest(unittest.TestCase):
         node_bk.generate_code()
         node_list = default_code_generator.get_generated_code()
         self.assertEqual("DoubleVariable temp1 = new DoubleVariable(100.0);", node_list[0])
-        self.assertEqual("this.robot.travel(-temp1);", node_list[1])
+        self.assertEqual("this.robot.travel(-temp1.value);", node_list[1])
 
     def test_right_turn(self):
         node_float = Float(leaf=100.0)
@@ -58,7 +58,7 @@ class CodegenTest(unittest.TestCase):
         node_rt.generate_code()
         node_list = default_code_generator.get_generated_code()
         self.assertEqual("DoubleVariable temp1 = new DoubleVariable(100.0);", node_list[0])
-        self.assertEqual("this.robot.rotate(-temp1);", node_list[1])
+        self.assertEqual("this.robot.rotate(-temp1.value);", node_list[1])
 
     def test_left_turn(self):
         node_float = Float(leaf=100.0)
@@ -66,7 +66,7 @@ class CodegenTest(unittest.TestCase):
         node_lt.generate_code()
         code_list = default_code_generator.get_generated_code()
         self.assertEqual("DoubleVariable temp1 = new DoubleVariable(100.0);", code_list[0])
-        self.assertEqual("this.robot.rotate(temp1);", code_list[1])
+        self.assertEqual("this.robot.rotate(temp1.value);", code_list[1])
 
     def test_make(self):
         node_float = Float(leaf=10.0)
@@ -159,7 +159,7 @@ class CodegenTest(unittest.TestCase):
         node_list = default_code_generator.get_generated_code()
         self.assertEqual("DoubleVariable temp1 = new DoubleVariable(1);", node_list[0])
         self.assertEqual("DoubleVariable temp2 = new DoubleVariable(1);", node_list[1])
-        self.assertEqual("BoolVariable temp3 = new BoolVariable(temp1 == temp2);", node_list[2])
+        self.assertEqual("BoolVariable temp3 = new BoolVariable(temp1.value == temp2.value);", node_list[2])
 
     def test_boolean_string(self):
         node_string1 = StringLiteral(leaf="sana")
@@ -169,7 +169,7 @@ class CodegenTest(unittest.TestCase):
         node_list = default_code_generator.get_generated_code()
         self.assertEqual('StrVariable temp1 = new StrVariable("sana");', node_list[0])
         self.assertEqual('StrVariable temp2 = new StrVariable("anas");', node_list[1])
-        self.assertEqual("BoolVariable temp3 = new BoolVariable(temp1 != temp2);", node_list[2])
+        self.assertEqual("BoolVariable temp3 = new BoolVariable(temp1.value != temp2.value);", node_list[2])
 
     def test_void_function_call(self):
         node_function = ProcCall(leaf="test", children=None)
