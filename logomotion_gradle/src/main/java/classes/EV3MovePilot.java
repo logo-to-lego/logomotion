@@ -2,7 +2,6 @@ package classes;
 
 import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
-import lejos.robotics.RegulatedMotor;
 import lejos.utility.Delay;
 import java.lang.Math;
 
@@ -12,6 +11,7 @@ public class EV3MovePilot {
     double wheelCircumference;
     double rotationCircumference;
     int motorSpeed;
+    int motorRotationSpeed;
     EV3LargeRegulatedMotor leftMotor;
     EV3LargeRegulatedMotor rightMotor;
 
@@ -22,6 +22,7 @@ public class EV3MovePilot {
         this.wheelCircumference = Math.PI*this.wheelDiameter;
         this.rotationCircumference = Math.PI*wheelDistance;
 		this.motorSpeed = 500;
+		this.motorRotationSpeed = 250;
 		this.leftMotor = new EV3LargeRegulatedMotor(MotorPort.A);
 		this.rightMotor = new EV3LargeRegulatedMotor(MotorPort.B);
         this.leftMotor.brake();
@@ -52,11 +53,11 @@ public class EV3MovePilot {
     }
 
     public void rotate(double angle) {
-        this.leftMotor.setSpeed(this.motorSpeed);
-        this.rightMotor.setSpeed(this.motorSpeed);
+        this.leftMotor.setSpeed(this.motorRotationSpeed);
+        this.rightMotor.setSpeed(this.motorRotationSpeed);
         double distance = angle*(Math.PI/180)*(this.wheelDistance/2);
         double fullRotations = Math.abs(distance)/this.wheelCircumference;
-        double fullRotationTime = 360.0/this.motorSpeed;
+        double fullRotationTime = 360.0/this.motorRotationSpeed;
         double travelTime = fullRotations * fullRotationTime;
         if(angle > 0) {
             this.leftMotor.backward();

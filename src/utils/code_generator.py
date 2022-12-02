@@ -6,17 +6,36 @@ from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
 START_METHOD = (
-    "package logo; import classes.EV3MovePilot; import java.lang.Runnable; "\
-    "public class Logo { "\
-        "EV3MovePilot robot; "\
-    "public Logo() { "\
-        "this.robot = new EV3MovePilot(); "\
-    "}"
+    "package logo; import classes.EV3MovePilot; import java.lang.Runnable; \
+        import java.util.function.Consumer;"\
+
+    "public class Logo { \
+        class DoubleVariable { \
+    public double value; \
+    public DoubleVariable(double value) { \
+        this.value = value; \
+    } \
+}\
+class BoolVariable { \
+    public boolean value;\
+    public BoolVariable(boolean value) {\
+        this.value = value;\
+    }\
+}\
+class StrVariable {\
+    public String value;\
+    public StrVariable(String value) {\
+        this.value = value;\
+    }\
+}\
+        EV3MovePilot robot; \
+    public Logo() { \
+        this.robot = new EV3MovePilot(); \
+    }"
 )
 
 START_RUN = (
-    "public void run() { "\
-        "Logo logo = new Logo();"
+    "public void run() { "
 )
 
 END_RUN = "}"
@@ -32,12 +51,17 @@ PATH = os.path.join(
     os.path.dirname(os.path.relpath(__file__)), "../../logomotion_gradle/src/main/java/logo/"
 )
 JAVA_TYPES = {
-    LogoType.FLOAT: "double",
-    LogoType.STRING: "String",
-    LogoType.BOOL: "boolean",
+    LogoType.FLOAT: "DoubleVariable",
+    LogoType.STRING: "StrVariable",
+    LogoType.BOOL: "BoolVariable",
     LogoType.VOID: "void",
 }
 
+JAVA_TYPES_OBJECTS = {
+    LogoType.FLOAT : "Double",
+    LogoType.STRING : "String",
+    LogoType.BOOL : "Boolean"
+}
 
 class JavaCodeGenerator:
     """A class for generating Java code"""
@@ -49,9 +73,13 @@ class JavaCodeGenerator:
         self._name = name
         self._temp_var_index = 0
         self._logger: Logger = dependencies.get("logger", default_logger)
+        self._preconf_funcs_dict = dependencies.get("funcs_dict", {})
         self._java_variable_names = {}
         self._java_function_names = {}
-        self._preconf_funcs_dict = dependencies.get("funcs_dict", {})
+
+    def set_preconf_funcs_dict(self, pre_func_dict):
+        # pylint: disable=W0201
+        self._preconf_funcs_dict = pre_func_dict
 
     def _increase_temp_var_index(self):
         """increase index for temp variables"""
@@ -115,14 +143,14 @@ class JavaCodeGenerator:
     def function_call(self, logo_func_name, arg_vars):
         java_func_name = self._mangle_java_function_name(logo_func_name)
         arguments = ", ".join(arg_vars)
-        code = f"logo.{java_func_name}({arguments});"
+        code = f"this.{java_func_name}({arguments});"
         self._append_code(code)
 
     def returning_function_call(self, logo_func_name, arg_vars):
         temp_var = self._generate_temp_var()
         java_func_name = self._mangle_java_function_name(logo_func_name)
         arguments = ", ".join(arg_vars)
-        code = f"var {temp_var} = logo.{java_func_name}({arguments});"
+        code = f"var {temp_var} = this.{java_func_name}({arguments});"
         self._append_code(code)
         return temp_var
 
@@ -152,37 +180,40 @@ class JavaCodeGenerator:
     def assign_value(self, logo_var_name, value_name):
         """Assign a new value to an already existing variable."""
         java_var_name = self._mangle_logo_var_name(logo_var_name)
-        line = f"{java_var_name} = {value_name};"
+        line = f"{java_var_name}.value = {value_name}.value;"
         self._append_code(line)
 
     def variable_name(self, logo_var_name):
         """Returns the java variable name of the logo variable."""
         java_var_name = self._mangle_logo_var_name(logo_var_name)
-        return java_var_name
+        temp_var = self._generate_temp_var()
+        code = f"var {temp_var} = {java_var_name};"
+        self._append_code(code)
+        return temp_var
 
     def move_forward(self, arg_var):
         """create Java code for moving forward"""
-        code = f"this.robot.travel({arg_var});"
+        code = f"this.robot.travel({arg_var}.value);"
         self._append_code(code)
 
     def move_backwards(self, arg_var):
         """create Java code for moving backward"""
-        code = f"this.robot.travel(-{arg_var});"
+        code = f"this.robot.travel(-{arg_var}.value);"
         self._append_code(code)
 
     def left_turn(self, arg_var):
         """create Java code for turning left"""
-        code = f"this.robot.rotate({arg_var});"
+        code = f"this.robot.rotate({arg_var}.value);"
         self._append_code(code)
 
     def right_turn(self, arg_var):
         """create Java code for turning right"""
-        code = f"this.robot.rotate(-{arg_var});"
+        code = f"this.robot.rotate(-{arg_var}.value);"
         self._append_code(code)
 
     def show(self, arg_var):
         """create Java code for show"""
-        code = f"System.out.println({arg_var});"
+        code = f"System.out.println({arg_var}.value);"
         self._append_code(code)
 
     def bye(self):
@@ -194,7 +225,7 @@ class JavaCodeGenerator:
         """create Java code for defining double variable with given value
         and return the variable name"""
         temp_var = self._generate_temp_var()
-        code = f"double {temp_var} = {value};"
+        code = f"DoubleVariable {temp_var} = new DoubleVariable({value});"
         self._append_code(code)
         return temp_var
 
@@ -206,20 +237,21 @@ class JavaCodeGenerator:
             value = "true"
         else:
             value = "false"
-        code = f"boolean {temp_var} = {value};"
+        code = f"BoolVariable {temp_var} = new BoolVariable({value});"
         self._append_code(code)
         return temp_var
 
     def string(self, value):
         temp_var = self._generate_temp_var()
-        code = f'String {temp_var} = "{value}";'
+        code = f'StrVariable {temp_var} = new StrVariable("{value}");'
         self._append_code(code)
         return temp_var
 
     def binop(self, value1, value2, operation):
         """create java code for binops and return variable name"""
         temp_var = self._generate_temp_var()
-        code = f"double {temp_var} = {value1} {operation} {value2};"
+        #pylint: disable=c0301
+        code = f"DoubleVariable {temp_var} = new DoubleVariable({value1}.value {operation} {value2}.value);"
         self._append_code(code)
         return temp_var
 
@@ -230,20 +262,21 @@ class JavaCodeGenerator:
         elif operation == "=":
             operation = "=="
         temp_var = self._generate_temp_var()
-        code = f"boolean {temp_var} = {value1} {operation} {value2};"
+        # pylint: disable= C0301
+        code = f"BoolVariable {temp_var} = new BoolVariable({value1}.value {operation} {value2}.value);"
         self._append_code(code)
         return temp_var
 
     def unary_op(self, value):
         """Create Java code for unaryops and return variable name"""
         temp_var = self._generate_temp_var()
-        code = f"double {temp_var} = -{value};"
+        code = f"DoubleVariable {temp_var} = new DoubleVariable(-{value}.value);"
         self._append_code(code)
         return temp_var
 
     def if_statement(self, conditional):
         """Create Java code to start an if statement in Java."""
-        code = f"if ({conditional}) " + "{"
+        code = f"if ({conditional}.value) " + "{"
         self._append_code(code)
 
     def else_statement(self):
@@ -258,13 +291,22 @@ class JavaCodeGenerator:
 
     def if_statement_lambda(self, conditional, lambda_variable):
         """Create Java code for if statements utilising Java's lambda"""
-        code = f"if ({conditional}) {lambda_variable}.run();"
+        code = f"if ({conditional}.value) {lambda_variable}.run();"
         self._append_code(code)
 
     def lambda_no_param_start(self):
         """Generate the start of a paramless Java lambda, return lambda variable's name"""
         temp_var = self._generate_temp_var()
         code = f"Runnable {temp_var} = () -> " + "{"
+        self._append_code(code)
+        return temp_var
+
+    def lambda_param_start(self, param_name):
+        """Generate the start of a parametered Java lambda, return lambda variable's name"""
+        temp_var = self._generate_temp_var()
+        #type_var = JAVA_TYPES_OBJECTS[param_type]
+        java_param_name = self._mangle_logo_var_name(param_name)
+        code = f"Consumer<DoubleVariable> {temp_var} = (DoubleVariable {java_param_name}) -> " + "{"
         self._append_code(code)
         return temp_var
 
