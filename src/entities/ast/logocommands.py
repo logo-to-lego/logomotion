@@ -231,18 +231,20 @@ class Move(Node):
 
         child = self.children[0]
         child.check_types()
-        child_type = child.get_logotype()
 
-        if child_type is None:
+        if child.node_type == "Deref" and child.get_logotype() == LogoType.UNKNOWN:
+            child.set_logotype(LogoType.FLOAT)
+
+        if child.get_logotype() is None:
             return
 
-        if child_type != LogoType.FLOAT:
+        if child.get_logotype() != LogoType.FLOAT:
             self._logger.error_handler.add_error(
                 2010,
                 self.position.get_lexspan(),
                 row=child.position.get_pos()[0],
                 command=self.node_type.value,
-                curr_type=child_type.value,
+                curr_type=child.get_logotype().value,
                 expected_type=LogoType.FLOAT.value,
             )
 
