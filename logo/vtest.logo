@@ -1,1 +1,1 @@
-repeat 3 {fd 20}
+repeat 1+1+1 {fd 20}
