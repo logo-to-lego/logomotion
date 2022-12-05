@@ -57,6 +57,19 @@ class ProcCall(Node):
             return proc.get_logotype()
         return None
 
+    def get_typeclass(self):
+        proc = self.procedure if self.procedure else self._symbol_tables.functions.lookup(self.leaf)
+        if proc:
+            return proc.typeclass
+        return None
+
+    def set_arguments_logotype(self, argument, parameter):
+        """Get ProcCall's argument/child Node and Procedures parameter Node as arguments
+        and set parameters logotype to arguments logotype"""
+        if argument.__class__ in (Deref, Function):
+            arg_typeclass = argument.get_typeclass()
+            arg_typeclass.logotype = parameter.get_logotype()
+
     def check_types(self):
         # Check the procedure has been declarated
         procedure = self._symbol_tables.functions.lookup(self.leaf)
@@ -80,8 +93,10 @@ class ProcCall(Node):
             child.check_types()
             if index >= len(procedure.parameters):
                 break
+            parameter_symbol = procedure.parameters[index]
+            self.set_arguments_logotype(child, parameter_symbol)
             argument_type = child.get_logotype()
-            parameter_type = procedure.parameters[index].get_logotype()
+            parameter_type = parameter_symbol.get_logotype()
             if argument_type != parameter_type:
                 if parameter_type == LogoType.UNKNOWN:
                     self._logger.error_handler.add_error(

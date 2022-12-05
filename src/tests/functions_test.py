@@ -135,3 +135,16 @@ class TestFunctions(unittest.TestCase):
         ast.check_types()
         var = self.symbol_tables.variables.lookup('c')
         self.assertIsNotNone(var)
+
+    def test_function_param_types_update_with_move_commands(self):
+        test_code = """TO f :a fd :a END (f 5)"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(0, len(self.error_handler.get_error_ids()))
+
+    def test_proccall_with_arguments_in_procdecl_doesnt_cause_type_errors(self):
+        test_code = """TO f :x output :x+0 END TO g :y output f :y END g f 1"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        errors = self.error_handler.get_error_ids()
+        self.assertEqual(0, len(errors))

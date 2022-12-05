@@ -38,10 +38,10 @@ class TestErrorHandler(unittest.TestCase):
 
         self.parser.parse(test_string)
         fin_expected_msg = (
-            "En saanut selvää komennosta 'mak'. Tarkista, että komento on oikein kirjoitettu"
+            "Kirjoitit 'mak'. En ymmärrä mitä tarkoitat."
         )
         eng_expected_msg = (
-            "I could not understand 'mak'. Check that the command is written correctly."
+            "I could not understand 'mak'."
         )
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
@@ -247,6 +247,19 @@ class TestErrorHandler(unittest.TestCase):
 
         fin_expected_msg1 = "Kirjoitit :muuttuja, tarkoititko \"muuttuja ?"
         eng_expected_msg1 = "You wrote :muuttuja, did you mean \"muuttuja ?"
+
+        ast = self.parser.parse(test_string)
+        ast.check_types()
+
+        self.assertEqual(len(self.error_handler.get_error_messages()), 1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["FIN"], fin_expected_msg1)
+        self.assertEqual(self.error_handler.get_error_messages()[0]["ENG"], eng_expected_msg1)
+
+    def test_ifelse_raises_error_if_variable_referred_to_in_different_scope(self):
+        test_string = "ifelse true {make \"test 10} {show :test}"
+
+        fin_expected_msg1 = "Et ole määritellyt muuttujaa 'test'."
+        eng_expected_msg1 = "You have not defined variable 'test'."
 
         ast = self.parser.parse(test_string)
         ast.check_types()
