@@ -1,8 +1,5 @@
 from entities.ast.node import Node
 from entities.logotypes import LogoType
-from entities.symbol import Variable
-from entities.type import Type
-
 
 class UnknownFunction(Node):
     """
@@ -18,9 +15,6 @@ class UnknownFunction(Node):
 
     def get_logotype(self) -> LogoType:
         return LogoType.NAMELESS_FUNCTION
-    
-    def set_iter_param(self, new_iter):
-        self._iter_param = new_iter
 
     def check_types(self):
         self._symbol_tables.variables.initialize_scope()
