@@ -35,6 +35,7 @@ def main():
                 leftMotor=os.getenv("LEFT_MOTOR_PORT"),
                 rightMotor=os.getenv("RIGHT_MOTOR_PORT"),
                 motorSpeed=os.getenv("MOVEMENT_SPD"),
+                motorRotationSpeed = os.getenv("ROTATION_SPD"),
             )
             return jcg
 

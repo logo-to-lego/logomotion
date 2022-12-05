@@ -199,10 +199,24 @@ def p_for_call(prod):
     prod[0] = shared.node_factory.create_node(
         ProcCall,
         children=prod[3] + [unknown_f],
-        leaf=prod[1],
+        leaf="for",
         position=Position(prod)
     )
 
+def p_repeat_call(prod):
+    "proc_call : REPEAT expressions LBRACE statement_list RBRACE"
+    unknown_f = shared.node_factory.create_node(
+        UnknownFunction,
+        arg_type = LogoType.VOID,
+        children=[prod[4]],
+        position=Position(prod)
+    )
+    prod[0] = shared.node_factory.create_node(
+        ProcCall,
+        children=prod[2]+ [unknown_f],
+        leaf = "repeat",
+        position=Position(prod)
+    )
 
 def p_bye(prod):
     "bye : BYE"

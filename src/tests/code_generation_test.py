@@ -41,32 +41,32 @@ class CodegenTest(unittest.TestCase):
         node_fd = Move(node_type=TokenType.FD, children=[node_float])
         node_fd.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("double temp1 = 100.0;", node_list[0])
-        self.assertEqual("this.robot.travel(temp1);", node_list[1])
+        self.assertEqual("DoubleVariable temp1 = new DoubleVariable(100.0);", node_list[0])
+        self.assertEqual("this.robot.travel(temp1.value);", node_list[1])
 
     def test_backwards(self):
         node_float = Float(leaf=100.0)
         node_bk = Move(node_type=TokenType.BK, children=[node_float])
         node_bk.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("double temp1 = 100.0;", node_list[0])
-        self.assertEqual("this.robot.travel(-temp1);", node_list[1])
+        self.assertEqual("DoubleVariable temp1 = new DoubleVariable(100.0);", node_list[0])
+        self.assertEqual("this.robot.travel(-temp1.value);", node_list[1])
 
     def test_right_turn(self):
         node_float = Float(leaf=100.0)
         node_rt = Move(node_type=TokenType.RT, children=[node_float])
         node_rt.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("double temp1 = 100.0;", node_list[0])
-        self.assertEqual("this.robot.rotate(-temp1);", node_list[1])
+        self.assertEqual("DoubleVariable temp1 = new DoubleVariable(100.0);", node_list[0])
+        self.assertEqual("this.robot.rotate(-temp1.value);", node_list[1])
 
     def test_left_turn(self):
         node_float = Float(leaf=100.0)
         node_lt = Move(node_type=TokenType.LT, children=[node_float])
         node_lt.generate_code()
         code_list = default_code_generator.get_generated_code()
-        self.assertEqual("double temp1 = 100.0;", code_list[0])
-        self.assertEqual("this.robot.rotate(temp1);", code_list[1])
+        self.assertEqual("DoubleVariable temp1 = new DoubleVariable(100.0);", code_list[0])
+        self.assertEqual("this.robot.rotate(temp1.value);", code_list[1])
 
     def test_make(self):
         node_float = Float(leaf=10.0)
@@ -75,8 +75,8 @@ class CodegenTest(unittest.TestCase):
         node_make.check_types()
         node_make.generate_code()
         code_list = default_code_generator.get_generated_code()
-        self.assertEqual("double temp1 = 10.0;", code_list[0])
-        self.assertEqual("Variable var2 = new Variable(temp1);", code_list[1])
+        self.assertEqual("DoubleVariable temp1 = new DoubleVariable(10.0);", code_list[0])
+        self.assertEqual("var var2 = temp1;", code_list[1])
 
     def test_make_with_deref(self):
         node_float = Float(leaf=19.0)
@@ -89,9 +89,9 @@ class CodegenTest(unittest.TestCase):
         nodes.check_types()
         nodes.generate_code()
         code_list = default_code_generator.get_generated_code()
-        self.assertEqual("double temp1 = 19.0;", code_list[0])
-        self.assertEqual("Variable var2 = new Variable(temp1);", code_list[1])
-        self.assertEqual("var temp3 = var2.value;", code_list[2])
+        self.assertEqual("DoubleVariable temp1 = new DoubleVariable(19.0);", code_list[0])
+        self.assertEqual("var var2 = temp1;", code_list[1])
+        self.assertEqual("var temp3 = var2;", code_list[2])
 
     def test_assign_value_to_existing(self):
         node_float = Float(leaf=3)
@@ -103,10 +103,10 @@ class CodegenTest(unittest.TestCase):
         nodes.check_types()
         nodes.generate_code()
         code_list = default_code_generator.get_generated_code()
-        self.assertEqual("double temp1 = 3;", code_list[0])
-        self.assertEqual("Variable var2 = new Variable(temp1);", code_list[1])
-        self.assertEqual("double temp3 = 4;", code_list[2])
-        self.assertEqual("var2.value = temp3;", code_list[3])
+        self.assertEqual("DoubleVariable temp1 = new DoubleVariable(3);", code_list[0])
+        self.assertEqual("var var2 = temp1;", code_list[1])
+        self.assertEqual("DoubleVariable temp3 = new DoubleVariable(4);", code_list[2])
+        self.assertEqual("var2.value = temp3.value;", code_list[3])
     
     def test_for_make(self):
         node_str = StringLiteral(leaf="yksi")
@@ -123,13 +123,13 @@ class CodegenTest(unittest.TestCase):
         nodes.check_types()
         nodes.generate_code()
         code_list = default_code_generator.get_generated_code()
-        self.assertEqual("""String temp1 = "yksi";""", code_list[0])
-        self.assertEqual("double temp2 = 0;", code_list[1])
-        self.assertEqual("double temp3 = 5;", code_list[2])
-        self.assertEqual("double temp4 = 1;", code_list[3])
-        self.assertEqual("Consumer<Variable> temp5 = (Variable var6) -> {", code_list[4])
-        self.assertEqual("double temp7 = 1;", code_list[5])
-        self.assertEqual("Variable var8 = new Variable(temp7);", code_list[6])
+        self.assertEqual("""StrVariable temp1 = new StrVariable("yksi");""", code_list[0])
+        self.assertEqual("DoubleVariable temp2 = new DoubleVariable(0);", code_list[1])
+        self.assertEqual("DoubleVariable temp3 = new DoubleVariable(5);", code_list[2])
+        self.assertEqual("DoubleVariable temp4 = new DoubleVariable(1);", code_list[3])
+        self.assertEqual("Consumer<DoubleVariable> temp5 = (DoubleVariable var6) -> {", code_list[4])
+        self.assertEqual("DoubleVariable temp7 = new DoubleVariable(1);", code_list[5])
+        self.assertEqual("var var8 = temp7;", code_list[6])
         self.assertEqual("this.func9(temp1, temp2, temp3, temp4, temp5);", code_list[8])
         
     
@@ -139,17 +139,17 @@ class CodegenTest(unittest.TestCase):
         node_binoperation = BinOp(leaf="+", children=[node_float1, node_float2])
         node_binoperation.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("double temp1 = 1;", node_list[0])
-        self.assertEqual("double temp2 = 2;", node_list[1])
-        self.assertEqual("double temp3 = temp1 + temp2;", node_list[2])
+        self.assertEqual("DoubleVariable temp1 = new DoubleVariable(1);", node_list[0])
+        self.assertEqual("DoubleVariable temp2 = new DoubleVariable(2);", node_list[1])
+        self.assertEqual("DoubleVariable temp3 = new DoubleVariable(temp1.value + temp2.value);", node_list[2])
 
     def test_unop(self):
         node_float = Float(leaf=1)
         node_unop = UnaryOp(leaf="-", children=[node_float])
         node_unop.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("double temp1 = 1;", node_list[0])
-        self.assertEqual("double temp2 = -temp1;", node_list[1])
+        self.assertEqual("DoubleVariable temp1 = new DoubleVariable(1);", node_list[0])
+        self.assertEqual("DoubleVariable temp2 = new DoubleVariable(-temp1.value);", node_list[1])
 
     def test_boolean_float(self):
         node_float1 = Float(leaf=1)
@@ -157,9 +157,9 @@ class CodegenTest(unittest.TestCase):
         node_boolean_op = RelOp(children=[node_float1, node_float2], leaf="=")
         node_boolean_op.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("double temp1 = 1;", node_list[0])
-        self.assertEqual("double temp2 = 1;", node_list[1])
-        self.assertEqual("boolean temp3 = temp1 == temp2;", node_list[2])
+        self.assertEqual("DoubleVariable temp1 = new DoubleVariable(1);", node_list[0])
+        self.assertEqual("DoubleVariable temp2 = new DoubleVariable(1);", node_list[1])
+        self.assertEqual("BoolVariable temp3 = new BoolVariable(temp1.value == temp2.value);", node_list[2])
 
     def test_boolean_string(self):
         node_string1 = StringLiteral(leaf="sana")
@@ -167,9 +167,9 @@ class CodegenTest(unittest.TestCase):
         node_boolean_op = RelOp(children=[node_string1, node_string2], leaf="<>")
         node_boolean_op.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual('String temp1 = "sana";', node_list[0])
-        self.assertEqual('String temp2 = "anas";', node_list[1])
-        self.assertEqual("boolean temp3 = temp1 != temp2;", node_list[2])
+        self.assertEqual('StrVariable temp1 = new StrVariable("sana");', node_list[0])
+        self.assertEqual('StrVariable temp2 = new StrVariable("anas");', node_list[1])
+        self.assertEqual("BoolVariable temp3 = new BoolVariable(temp1.value != temp2.value);", node_list[2])
 
     def test_void_function_call(self):
         node_function = ProcCall(leaf="test", children=None)
@@ -196,8 +196,8 @@ class CodegenTest(unittest.TestCase):
         nodes.check_types()
         nodes.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("Variable var2 = new Variable(temp1);", node_list[1])
-        self.assertEqual("var2.value = temp3;", node_list[3])
+        self.assertEqual("var var2 = temp1;", node_list[1])
+        self.assertEqual("var2.value = temp3.value;", node_list[3])
 
     def test_variables_are_case_insensitive(self):
         node_float = Float(leaf=1.0)
@@ -209,8 +209,8 @@ class CodegenTest(unittest.TestCase):
         nodes.check_types()
         nodes.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("Variable var2 = new Variable(temp1);", node_list[1])
-        self.assertEqual("var temp3 = var2.value;", node_list[2])
+        self.assertEqual("var var2 = temp1;", node_list[1])
+        self.assertEqual("var temp3 = var2;", node_list[2])
 
     def test_show(self):
         node_float = Float(leaf=4.2)
@@ -218,10 +218,10 @@ class CodegenTest(unittest.TestCase):
         node_function = Show(node_type=TokenType.SHOW, children=[node_float, node_str])
         node_function.generate_code()
         node_list = default_code_generator.get_generated_code()
-        self.assertEqual("double temp1 = 4.2;", node_list[0])
-        self.assertEqual("System.out.println(temp1);", node_list[1])
-        self.assertEqual("String temp2 = \"kissa\";", node_list[2])
-        self.assertEqual("System.out.println(temp2);", node_list[3])
+        self.assertEqual("DoubleVariable temp1 = new DoubleVariable(4.2);", node_list[0])
+        self.assertEqual("System.out.println(temp1.value);", node_list[1])
+        self.assertEqual("StrVariable temp2 = new StrVariable(\"kissa\");", node_list[2])
+        self.assertEqual("System.out.println(temp2.value);", node_list[3])
 
     def test_bye(self):
         node_function = Bye(node_type=TokenType.BYE, children=[])
