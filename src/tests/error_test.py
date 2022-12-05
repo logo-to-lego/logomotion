@@ -174,4 +174,6 @@ class TestErrorHandler(unittest.TestCase):
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
 
+
         self.assertListEqual(error_ids, [2028])
+
