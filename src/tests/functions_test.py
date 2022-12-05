@@ -148,3 +148,10 @@ class TestFunctions(unittest.TestCase):
         ast.check_types()
         errors = self.error_handler.get_error_ids()
         self.assertEqual(0, len(errors))
+
+    def test_recursion_call_in_func_decl_infers_type(self):
+        test_code = """TO f :x :y f "kissa 42 end"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        errors = self.error_handler.get_error_ids()
+        self.assertEqual(0, len(errors))
