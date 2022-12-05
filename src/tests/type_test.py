@@ -23,7 +23,6 @@ class TestType(unittest.TestCase):
         self.symbol_tables = SymbolTables(SymbolTable(), SymbolTable())
 
         self.parser = Parser(self.lexer, self.logger, self.symbol_tables)
-        self.parser.build()
 
     def test_new_variable_and_function_saves_correct_params(self):
         var = Variable("var1")

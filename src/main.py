@@ -17,20 +17,28 @@ from utils.logger import Logger
 def main():
     def get_code_generator():
         """Checks that given programming language is valid in
-        .env file and returns a new instance of CodeGenerator class"""
+        .env file and returns a new instance of CodeGenerator class,
+        and creates the preconfigured functions generator.
+        Preconf generator needs to use the same generator so that
+        the mangled namespace is  the same"""
 
         if CODE_GEN_LANG == "Java":
             preconf_gen = JavaPreconfFuncsGenerator()
+            jcg = JavaCodeGenerator(logger=logger)
+            preconf_gen.set_code_generator(jcg)
             funcs_dict = preconf_gen.get_funcs()
-            code_gen = JavaCodeGenerator(funcs_dict=funcs_dict, logger=logger)
-            code_gen.add_env_variables(
-                wheelDiameter = os.getenv("WHEEL_DIAM"),
-                wheelDistance = os.getenv("AXLE_LEN"),
-                leftMotor = os.getenv("LEFT_MOTOR_PORT"),
-                rightMotor = os.getenv("RIGHT_MOTOR_PORT"),
-                motorSpeed = os.getenv("MOVEMENT_SPD"),
+            #code_gen = JavaCodeGenerator(funcs_dict=funcs_dict, logger=logger)
+            jcg.set_preconf_funcs_dict(funcs_dict)
+            jcg.add_env_variables(
+                wheelDiameter=os.getenv("WHEEL_DIAM"),
+                wheelDistance=os.getenv("AXLE_LEN"),
+                leftMotor=os.getenv("LEFT_MOTOR_PORT"),
+                rightMotor=os.getenv("RIGHT_MOTOR_PORT"),
+                motorSpeed=os.getenv("MOVEMENT_SPD"),
+                motorRotationSpeed = os.getenv("ROTATION_SPD"),
             )
-            return code_gen
+            return jcg
+
         err_msg = f"{CODE_GEN_LANG} is not an implemented" "programming language for code generator"
         raise Exception(err_msg)
 
@@ -39,7 +47,6 @@ def main():
         Prints lexer & parser results if debug flag (-d, --debug) is on."""
 
         logger.debug(LOGO_CODE + "\n")
-
         # Tokenize
         tokens = lexer.tokenize_input(LOGO_CODE)
         logger.debug("Lexer tokens:")
@@ -47,7 +54,7 @@ def main():
 
         # Parse and type analyzation
         start_node = parser.parse(LOGO_CODE)
-        if start_node:
+        if start_node and not error_handler.errors:
             start_node.check_types()
             logger.debug("Parser AST:")
             logger.debug(console_io.get_formatted_ast(start_node))
@@ -70,9 +77,8 @@ def main():
     symbol_tables = SymbolTables()
     code_generator = get_code_generator()
     parser = Parser(lexer, logger, symbol_tables, code_generator)
-    parser.build()
 
-    symbol_tables = initialize_logo_functions(symbol_tables)
+    symbol_tables.functions = initialize_logo_functions(symbol_tables.functions)
 
     # Compile from logo to language defined with CODE_GEN .env variable
     compile_logo()
