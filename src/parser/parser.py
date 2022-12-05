@@ -110,14 +110,14 @@ def p_empty(prod):
 def p_error(prod):
     lineno = shared.ply_lexer.lineno
     colpos = shared.ply_lexer.lexpos - shared.ply_lexer.linestartpos
-
     if prod:
         lexspan = (prod.lexpos, prod.lexpos + len(prod.value) - 1)
         shared.logger.error_handler.add_error(
             2000, lexspan, row=lineno, column=colpos, prodval=prod.value
         )
     else:
-        lexspan = (prod.lexpos, prod.lexpos)
+        lexspan = (-1, -1)
+        # täytyy sopia mitkä lexspan-arvot halutaan, kun ohjelma päättyy parser-virheeseen
         shared.logger.error_handler.add_error(2001, lexspan, row=lineno, column=colpos)
 
 
