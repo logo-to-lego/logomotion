@@ -26,11 +26,10 @@ class JavaPreconfFuncsGenerator:
     def _for_code(self):
         # pylint: disable=W0212
         mangled_for = self.jcg._mangle_java_function_name("for")
-        java_for_code = f"public void {mangled_for}(StrVariable placeholder, DoubleVariable start,\
-            DoubleVariable limit, DoubleVariable step, Consumer<DoubleVariable> f) {{\
-                DoubleVariable new_var = new DoubleVariable(0); \
-                for (new_var.value = start.value; new_var.value <= limit.value; new_var.value+=step.value) {{\
-                    f.accept(new_var);\
+        java_for_code = f"public void {mangled_for}(DoubleVariable itr, DoubleVariable start,\
+            DoubleVariable limit, DoubleVariable step, Runnable f) {{\
+                for (itr.value = start.value; itr.value <= limit.value; itr.value+=step.value) {{\
+                    f.run();\
                 }}\
             }}"
         return java_for_code

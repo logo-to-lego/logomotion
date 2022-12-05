@@ -82,3 +82,25 @@ class StringLiteral(Node):
 
     def generate_code(self):
         return self._code_generator.string(self.leaf)
+    
+class VariableNode(Node):
+    """Used as the first argument in for argument list"""
+    def __init__(self, leaf, **dependencies):
+        super().__init__("VariableNode",children=None, leaf=leaf, **dependencies)
+        
+    def get_logotype(self):
+        return LogoType.STRING
+
+    def check_types(self):
+        """Type check is passed as scoped_type_check 
+        will be called from unknown_function node"""
+        pass
+
+    def scoped_type_check(self):
+        symbol = Variable(self.leaf, Type(LogoType.FLOAT, variables={self.leaf}))
+        self._symbol_tables.variables.insert(self.leaf.leaf, symbol)
+        
+    def generate_code(self):
+        tmpvar = self._code_generator.float(0)
+        self._code_generator.create_new_variable(to_lowercase(self.leaf.leaf), tmpvar)
+        return tmpvar

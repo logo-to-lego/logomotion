@@ -187,33 +187,43 @@ def p_proc_call(prod):
         position=Position(prod),
     )
 
-def p_for_call(prod):
-    "proc_call : FOR LBRACKET expressions RBRACKET LBRACE statement_list RBRACE"
-    unknown_f = shared.node_factory.create_node(
-        UnknownFunction,
-        arg_type = LogoType.FLOAT,
-        children=[prod[6]],
-        position=Position(prod),
-        iter_param=prod[3][0]
-    )
+def p_for_call(prod): #for ["i 1 2 3] {}
+    "proc_call : FOR LBRACKET expressions RBRACKET unknown_function"
+    #unknown_f = shared.node_factory.create_node(
+    #    UnknownFunction,
+    #    arg_type = LogoType.FLOAT,
+    #    children=[prod[6]],
+    #    position=Position(prod),
+    #    iter_param=prod[3][0]
+    #)
+    vnode = shared.node_factory.create_node(
+            VariableNode,
+            leaf=prod[3][0],
+            position=Position(prod)
+            )
+    unf = prod[5]
+    unf.var_node = vnode
     prod[0] = shared.node_factory.create_node(
         ProcCall,
-        children=prod[3] + [unknown_f],
+        children=[vnode] + prod[3][1:] + [unf],
         leaf="for",
         position=Position(prod)
     )
 
 def p_repeat_call(prod):
-    "proc_call : REPEAT expressions LBRACE statement_list RBRACE"
-    unknown_f = shared.node_factory.create_node(
-        UnknownFunction,
-        arg_type = LogoType.VOID,
-        children=[prod[4]],
-        position=Position(prod)
-    )
+    "proc_call : REPEAT expression unknown_function"
+    #"proc_call : REPEAT expressions LBRACE statement_list RBRACE"
+    #unknown_f = shared.node_factory.create_node(
+    #    UnknownFunction,
+    #    arg_type = LogoType.VOID,
+    #    children=[prod[4]],
+    #    position=Position(prod)
+    #)
+    unf = prod[3]
+    unf.arg_type = LogoType.VOID
     prod[0] = shared.node_factory.create_node(
         ProcCall,
-        children=prod[2]+ [unknown_f],
+        children=[prod[2]] + [unf],
         leaf = "repeat",
         position=Position(prod)
     )

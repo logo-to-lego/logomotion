@@ -99,7 +99,9 @@ def p_statement_list_empty(prod):
 def p_unknown_function_statement_list(prod):
     "unknown_function : LBRACE statement_list RBRACE"
     prod[0] = shared.node_factory.create_node(\
-        UnknownFunction, children=[prod[2]], position=Position(prod))
+        UnknownFunction, children=[prod[2]],
+        arg_type=LogoType.VOID,
+        position=Position(prod))
 
 
 def p_empty(prod):
@@ -117,7 +119,7 @@ def p_error(prod):
             2000, lexspan, row=lineno, column=colpos, prodval=prod.value
         )
     else:
-        lexspan = (prod.lexpos, prod.lexpos)
+        lexspan = (-1, -1)
         shared.logger.error_handler.add_error(2001, lexspan, row=lineno, column=colpos)
 
 

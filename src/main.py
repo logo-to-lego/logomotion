@@ -27,7 +27,6 @@ def main():
             jcg = JavaCodeGenerator(logger=logger)
             preconf_gen.set_code_generator(jcg)
             funcs_dict = preconf_gen.get_funcs()
-            #code_gen = JavaCodeGenerator(funcs_dict=funcs_dict, logger=logger)
             jcg.set_preconf_funcs_dict(funcs_dict)
             jcg.add_env_variables(
                 wheelDiameter=os.getenv("WHEEL_DIAM"),

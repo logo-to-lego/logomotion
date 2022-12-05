@@ -304,7 +304,6 @@ class JavaCodeGenerator:
     def lambda_param_start(self, param_name):
         """Generate the start of a parametered Java lambda, return lambda variable's name"""
         temp_var = self._generate_temp_var()
-        #type_var = JAVA_TYPES_OBJECTS[param_type]
         java_param_name = self._mangle_logo_var_name(param_name)
         code = f"Consumer<DoubleVariable> {temp_var} = (DoubleVariable {java_param_name}) -> " + "{"
         self._append_code(code)
