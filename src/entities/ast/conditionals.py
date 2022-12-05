@@ -44,8 +44,13 @@ class IfElse(Node):
             )
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()
-        for child in self.children:
-            child.check_types()
+        self.children[0].check_types()
+        for variable in self.undefined_variables():
+            self._logger.error_handler.add_error(2007, self.position.get_lexspan(), var=variable)
+        self._symbol_tables.variables.finalize_scope()
+
+        self._symbol_tables.variables.initialize_scope()
+        self.children[1].check_types()
         for variable in self.undefined_variables():
             self._logger.error_handler.add_error(2007, self.position.get_lexspan(), var=variable)
         self._symbol_tables.variables.finalize_scope()
