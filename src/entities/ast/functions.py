@@ -51,17 +51,30 @@ class ProcCall(Node):
         super().__init__("ProcCall", children, leaf, **dependencies)
         self.procedure: Function = None
 
+    def set_logotype(self, logotype):
+        proc = self.get_procedure()
+        if proc:
+            proc.typeclass.logotype = logotype
+
     def get_logotype(self):
-        proc = self.procedure if self.procedure else self._symbol_tables.functions.lookup(self.leaf)
+        proc = self.get_procedure()
         if proc:
             return proc.get_logotype()
         return None
 
     def get_typeclass(self):
-        proc = self.procedure if self.procedure else self._symbol_tables.functions.lookup(self.leaf)
+        proc = self.get_procedure()
         if proc:
             return proc.typeclass
         return None
+
+    def get_procedure(self):
+        procedure = None
+        if self.procedure:
+            procedure = self.procedure
+        else:
+            procedure = self._symbol_tables.functions.lookup(self.leaf)
+        return procedure
 
     def set_arguments_logotype(self, argument, parameter):
         """Get ProcCall's argument/child Node and Procedures parameter Node as arguments
@@ -139,6 +152,22 @@ class ProcDecl(Node):
             return self.procedure.typeclass.logotype
         return None
 
+    def _check_for_recursive_calls(self, statement_list, proc_args):
+        for child in statement_list.children:
+
+            # Check if child is a recursive call
+            if child.__class__ == ProcCall and child.leaf == self.leaf:
+
+                # Check that function call has as many arguments as function has params
+                if len(child.children) != len(proc_args.children):
+                    return
+
+                # Set type of argument if parameter has it
+                for idx, c in enumerate(child.children): # pylint: disable=C0103
+                    proc_arg = proc_args.children[idx]
+                    if proc_arg.get_logotype() == LogoType.UNKNOWN and c.get_logotype() != LogoType.UNKNOWN:
+                        proc_arg.set_logotype(c.get_logotype())
+
     def check_types(self):
         # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
@@ -146,8 +175,16 @@ class ProcDecl(Node):
         self.procedure = Function(self.leaf, typeclass=Type(functions={self.leaf}))
         self._symbol_tables.functions.insert(self.leaf, self.procedure)
         self._symbol_tables.variables.initialize_scope(in_function=self.procedure)
-        for child in self.children:
-            child.check_types()
+
+        if len(self.children) != 2:
+            return
+
+        proc_args = self.children[0]
+        proc_args.check_types()
+
+        statement_list = self.children[1]
+        self._check_for_recursive_calls(statement_list, proc_args)
+        statement_list.check_types()
 
         # Check the procedure doesn't have unknown type parameters
         for parameter in self.procedure.parameters:
@@ -204,10 +241,23 @@ class ProcArg(Node):
         super().__init__("ProgArg", children, **dependencies)
         self.symbol: Variable = None
 
+    def set_logotype(self, logotype):
+        symbol = self.get_symbol()
+        if symbol:
+            symbol.typeclass.logotype = logotype
+
     def get_logotype(self):
-        if self.symbol:
+        if self.get_symbol():
             return self.symbol.get_logotype()
         return None
+
+    def get_symbol(self):
+        symbol = None
+        if self.symbol:
+            symbol = self.symbol
+        else:
+            symbol = self._symbol_tables.variables.lookup(self.leaf)
+        return symbol
 
     def check_types(self):
         procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
