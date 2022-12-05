@@ -142,8 +142,8 @@ class TestFunctions(unittest.TestCase):
         ast.check_types()
         self.assertEqual(0, len(self.error_handler.get_error_ids()))
 
-    def test_proccall_with_arguments_in_proccall_doesnt_cause_type_errors(self):
-        test_code = """TO f :x output :x+0 END TO g :y output f :y END g 1"""
+    def test_proccall_with_arguments_in_procdecl_doesnt_cause_type_errors(self):
+        test_code = """TO f :x output :x+0 END TO g :y output f :y END g f 1"""
         ast = self.parser.parse(test_code)
         ast.check_types()
         errors = self.error_handler.get_error_ids()
