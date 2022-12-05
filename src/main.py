@@ -54,7 +54,7 @@ def main():
 
         # Parse and type analyzation
         start_node = parser.parse(LOGO_CODE)
-        if start_node and not error_handler.errors:
+        if start_node:
             start_node.check_types()
             logger.debug("Parser AST:")
             logger.debug(console_io.get_formatted_ast(start_node))
