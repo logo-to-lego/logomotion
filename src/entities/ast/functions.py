@@ -154,14 +154,16 @@ class ProcDecl(Node):
 
     def _check_for_recursive_calls(self, statement_list, proc_args):
         for child in statement_list.children:
+
             # Check if child is a recursive call
             if child.__class__ == ProcCall and child.leaf == self.leaf:
+
                 # Check that function call has as many arguments as function has params
                 if len(child.children) != len(proc_args.children):
-                    print("THERE SHOULD BE THE SAME AMOUNT OF CHILDREN, NO MORE, NO LESS")
                     return
+
                 # Set type of argument if parameter has it
-                for idx, c in enumerate(child.children):
+                for idx, c in enumerate(child.children): # pylint: disable=C0103
                     proc_arg = proc_args.children[idx]
                     if proc_arg.get_logotype() == LogoType.UNKNOWN and c.get_logotype() != LogoType.UNKNOWN:
                         proc_arg.set_logotype(c.get_logotype())
@@ -173,7 +175,7 @@ class ProcDecl(Node):
         self.procedure = Function(self.leaf, typeclass=Type(functions={self.leaf}))
         self._symbol_tables.functions.insert(self.leaf, self.procedure)
         self._symbol_tables.variables.initialize_scope(in_function=self.procedure)
-        
+
         if len(self.children) != 2:
             return
 
