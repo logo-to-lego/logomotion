@@ -1,8 +1,8 @@
 {
     "2000": 
     {
-        "FIN": "En saanut selvää komennosta '@prodval'. Tarkista, että komento on oikein kirjoitettu",
-        "ENG": "I could not understand '@prodval'. Check that the command is written correctly."
+        "FIN": "Kirjoitit '@prodval'. En ymmärrä mitä tarkoitat.",
+        "ENG": "I could not understand '@prodval'."
     },
     "2001":
     {
@@ -16,7 +16,6 @@
     },
     "2003":
     {
-
         "FIN": "Sinä kirjoitit, että tyyppi olisi '@curr_type', mutta se ei ole mahdollista. Tyypin pitää olla negatiivinen numero.",
         "ENG": "You wrote that the type is '@curr_type', but that is impossible. Type should be a negative number"
     },
@@ -92,7 +91,6 @@
     "2021": {
         "FIN": "Olet määrittänyt funktiokutsussa '@proc' väärän määrän argumentteja. Niitä on @args kappaletta, vaikka niitä kuuluisi olla @params.",
         "ENG": "You have declared a wrong amount of arguments during procedure call '@proc'. There are @args arguments, there should be @params arguments."
-
     },
     "2022": {
         "FIN": "Olet määrittänyt funktion '@proc' argumentin '@arg' tyypiksi @atype, sen pitäisi olla @ptype.",
@@ -121,5 +119,9 @@
     "2028": {
         "FIN": "Kirjoitit :@var_name, tarkoititko \"@var_name ?",
         "ENG": "You wrote :@var_name, did you mean \"@var_name ?"
+    },
+    "2029": {
+        "FIN": "En ymmärrä merkkiä '@char' tässä yhteydessä",
+        "ENG": "I do not understand character '@char' in this context"
     }
 }
