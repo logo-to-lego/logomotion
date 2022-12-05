@@ -1,4 +1,6 @@
+from entities.ast.functions import ProcCall
 from entities.ast.node import Node
+from entities.ast.variables import Deref
 from entities.logotypes import LogoType
 
 
@@ -13,8 +15,13 @@ class BinOp(Node):
         """Checks that the types of both operands is LogoFloat"""
         for child in self.children:
             child.check_types()
-            if child.node_type == "Deref" and child.get_logotype() == LogoType.UNKNOWN:
+
+            if child.__class__ == Deref and child.get_logotype() == LogoType.UNKNOWN:
                 child.set_logotype(LogoType.FLOAT)
+
+            if child.__class__ == ProcCall and child.get_logotype() == LogoType.UNKNOWN:
+                child.set_logotype(LogoType.FLOAT)
+
             if child.get_logotype() != LogoType.FLOAT:
                 self._logger.error_handler.add_error(
                     2002, self.position.get_lexspan(), row=child.position.get_pos()[0]
