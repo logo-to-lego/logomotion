@@ -11,7 +11,7 @@ class TestLexer(unittest.TestCase):
     def setUp(self):
         self.console_mock = Mock()
         self.error_mock = Mock()
-        self.logger = Logger(self.console_mock, self.error_mock)
+        self.logger = Logger(self.console_mock, self.error_mock, debug=True)
         self.lexer = Lexer(self.logger)
         self.ply_lexer = self.lexer.get_ply_lexer()
         self.token_mock = Mock()

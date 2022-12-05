@@ -59,13 +59,12 @@ class ErrorHandler:
             fin_msg = fin_msg.replace(f"@{key}", str(value))
             eng_msg = eng_msg.replace(f"@{key}", str(value))
 
-        # All language options are saved, even though only the errors in the selected language
-        # will be written to the console. Reason for this is to make testing simple.
-        # We want to have only one test file for error testing, and because in this parser,
-        # there is only one instance of the Shared class (defined in parser/globals.py), only
-        # one parser object can be defined in the testing setup.
         err_msgs = {FIN: fin_msg, ENG: eng_msg, "Start": lexspan[0], "End": lexspan[1]}
-        self.errors.append(err_msgs)
+
+        # Lexer is ran multiple times in the program
+        # and causes the same error messages to occur
+        if err_msgs not in self.errors:
+            self.errors.append(err_msgs)
 
     def get_error_messages(self):
         """Returns error messages"""

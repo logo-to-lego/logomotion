@@ -38,10 +38,10 @@ class TestErrorHandler(unittest.TestCase):
 
         self.parser.parse(test_string)
         fin_expected_msg = (
-            "En saanut selvää komennosta 'mak'. Tarkista, että komento on oikein kirjoitettu"
+            "Kirjoitit 'mak'. En ymmärrä mitä tarkoitat."
         )
         eng_expected_msg = (
-            "I could not understand 'mak'. Check that the command is written correctly."
+            "I could not understand 'mak'."
         )
 
         self.assertEqual(len(self.error_handler.get_error_messages()), 1)
