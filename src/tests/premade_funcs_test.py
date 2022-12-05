@@ -60,5 +60,4 @@ class TestPremadeFuncs(unittest.TestCase):
         ast = self.parser.parse(test_code)
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
-        print("----------", error_ids)
         self.assertIn(2021 , error_ids)
