@@ -155,3 +155,10 @@ class TestFunctions(unittest.TestCase):
         ast.check_types()
         errors = self.error_handler.get_error_ids()
         self.assertEqual(0, len(errors))
+    
+    def test_binop_sets_type_in_recursive_call(self):
+        test_code = """TO f :y MAKE "x 1+f :y OUTPUT :y END"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        errors = self.error_handler.get_error_ids()
+        self.assertEqual(0, len(errors))

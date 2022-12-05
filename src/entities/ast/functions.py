@@ -51,17 +51,30 @@ class ProcCall(Node):
         super().__init__("ProcCall", children, leaf, **dependencies)
         self.procedure: Function = None
 
+    def set_logotype(self, logotype):
+        proc = self.get_procedure()
+        if proc:
+            proc.typeclass.logotype = logotype
+
     def get_logotype(self):
-        proc = self.procedure if self.procedure else self._symbol_tables.functions.lookup(self.leaf)
+        proc = self.get_procedure()
         if proc:
             return proc.get_logotype()
         return None
 
     def get_typeclass(self):
-        proc = self.procedure if self.procedure else self._symbol_tables.functions.lookup(self.leaf)
+        proc = self.get_procedure()
         if proc:
             return proc.typeclass
         return None
+
+    def get_procedure(self):
+        procedure = None
+        if self.procedure:
+            procedure = self.procedure
+        else:
+            procedure = self._symbol_tables.functions.lookup(self.leaf)
+        return procedure
 
     def set_arguments_logotype(self, argument, parameter):
         """Get ProcCall's argument/child Node and Procedures parameter Node as arguments
@@ -141,12 +154,12 @@ class ProcDecl(Node):
 
     def _check_for_recursive_calls(self, statement_list, proc_args):
         for child in statement_list.children:
-            # Function contains recursive call 
+            # Check if child is a recursive call
             if child.__class__ == ProcCall and child.leaf == self.leaf:
                 # Check that function call has as many arguments as function has params
                 if len(child.children) != len(proc_args.children):
+                    print("THERE SHOULD BE THE SAME AMOUNT OF CHILDREN, NO MORE, NO LESS")
                     return
-                
                 # Set type of argument if parameter has it
                 for idx, c in enumerate(child.children):
                     proc_arg = proc_args.children[idx]
@@ -162,7 +175,6 @@ class ProcDecl(Node):
         self._symbol_tables.variables.initialize_scope(in_function=self.procedure)
         
         if len(self.children) != 2:
-            print("PROCDECL SHOULD HAVE 2 CHILDREN, NO MORE, NO LESS")
             return
 
         proc_args = self.children[0]
@@ -171,14 +183,6 @@ class ProcDecl(Node):
         statement_list = self.children[1]
         self._check_for_recursive_calls(statement_list, proc_args)
         statement_list.check_types()
-            
-        
-        
-        # for child in self.children:
-        #     print("PROC DECL CHILD", child)
-        #     if child.node_type == "StatementList":
-        #         self._check_for_recursive_proc_call(child)
-        #     child.check_types()
 
         # Check the procedure doesn't have unknown type parameters
         for parameter in self.procedure.parameters:
