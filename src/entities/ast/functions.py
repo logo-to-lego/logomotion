@@ -63,7 +63,9 @@ class ProcCall(Node):
             return proc.typeclass
         return None
 
-    def set_arguments_typeclass(self, argument, parameter):
+    def set_arguments_logotype(self, argument, parameter):
+        """Get ProcCall's argument/child Node and Procedures parameter Node as arguments
+        and set parameters logotype to arguments logotype"""
         if argument.__class__ in (Deref, Function):
             arg_typeclass = argument.get_typeclass()
             arg_typeclass.logotype = parameter.get_logotype()
@@ -92,7 +94,7 @@ class ProcCall(Node):
             if index >= len(procedure.parameters):
                 break
             parameter_symbol = procedure.parameters[index]
-            self.set_arguments_typeclass(child, parameter_symbol)
+            self.set_arguments_logotype(child, parameter_symbol)
             argument_type = child.get_logotype()
             parameter_type = parameter_symbol.get_logotype()
             if argument_type != parameter_type:
