@@ -8,25 +8,8 @@ from lexer.token_types import TokenType
 START_METHOD = (
     "package logo; import classes.EV3MovePilot; import java.lang.Runnable;"\
 
+
     "public class Logo { \
-        class DoubleVariable { \
-    public double value; \
-    public DoubleVariable(double value) { \
-        this.value = value; \
-    } \
-}\
-class BoolVariable { \
-    public boolean value;\
-    public BoolVariable(boolean value) {\
-        this.value = value;\
-    }\
-}\
-class StrVariable {\
-    public String value;\
-    public StrVariable(String value) {\
-        this.value = value;\
-    }\
-}\
         EV3MovePilot robot; \
     public Logo() { \
         this.robot = new EV3MovePilot(); \
