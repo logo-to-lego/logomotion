@@ -6,7 +6,7 @@ from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
 START_METHOD = (
-    "package logo; import classes.EV3MovePilot; import java.lang.Runnable; \
+    "package logo; import classes.EV3MovePilot; import java.util.concurrent.Callable; \
     import classes.*;"
 
     "public class Logo { \
@@ -283,13 +283,13 @@ class JavaCodeGenerator:
 
     def if_statement_lambda(self, conditional, lambda_variable):
         """Create Java code for if statements utilising Java's lambda"""
-        code = f"if ({conditional}.value) {lambda_variable}.run();"
+        code = f"if ({conditional}.value) {lambda_variable}.call();"
         self._append_code(code)
 
     def lambda_no_param_start(self):
         """Generate the start of a paramless Java lambda, return lambda variable's name"""
         temp_var = self._generate_temp_var()
-        code = f"Runnable {temp_var} = () -> " + "{"
+        code = f"Callable<Void> {temp_var} = () -> " + "{"
         self._append_code(code)
         return temp_var
 

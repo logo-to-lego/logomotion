@@ -16,20 +16,32 @@ class JavaPreconfFuncsGenerator:
     def _repeat_code(self):
         # pylint: disable=W0212
         mangled_name = self.jcg._mangle_java_function_name("repeat")
-        java_repeat_code = f"public void {mangled_name}(DoubleVariable n, Runnable f) {{ \
+        java_repeat_code = f"public void {mangled_name}(DoubleVariable n, Callable<Void> f) throws ReturnException {{ \
+                try {{\
                     for(int i=0;i<n.value;i++) {{ \
-                        f.run();\
+                        f.call();\
                     }} \
-                  }}"
+                }} catch (ReturnException e) {{\
+                    throw e;\
+                }} catch (Exception e) {{\
+                    System.out.println(\"An unidentified error occurred in repeat.\");\
+                }}\
+            }}"
         return java_repeat_code
 
     def _for_code(self):
         # pylint: disable=W0212
         mangled_for = self.jcg._mangle_java_function_name("for")
         java_for_code = f"public void {mangled_for}(DoubleVariable itr, DoubleVariable start,\
-            DoubleVariable limit, DoubleVariable step, Runnable f) {{\
-                for (itr.value = start.value; itr.value <= limit.value; itr.value+=step.value) {{\
-                    f.run();\
+            DoubleVariable limit, DoubleVariable step, Callable<Void> f) throws ReturnException {{\
+                try {{\
+                    for (itr.value = start.value; itr.value <= limit.value; itr.value+=step.value) {{\
+                        f.call();\
+                    }}\
+                }} catch (ReturnException e) {{\
+                    throw e;\
+                }} catch (Exception e) {{\
+                    System.out.println(\"An unidentified error occurred in for.\");\
                 }}\
             }}"
         return java_for_code
