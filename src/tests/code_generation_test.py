@@ -127,10 +127,10 @@ class CodegenTest(unittest.TestCase):
         self.assertEqual("DoubleVariable temp2 = new DoubleVariable(0);", code_list[1])
         self.assertEqual("DoubleVariable temp3 = new DoubleVariable(5);", code_list[2])
         self.assertEqual("DoubleVariable temp4 = new DoubleVariable(1);", code_list[3])
-        self.assertEqual("Consumer<DoubleVariable> temp5 = (DoubleVariable var6) -> {", code_list[4])
-        self.assertEqual("DoubleVariable temp7 = new DoubleVariable(1);", code_list[5])
-        self.assertEqual("var var8 = temp7;", code_list[6])
-        self.assertEqual("this.func9(temp1, temp2, temp3, temp4, temp5);", code_list[8])
+        self.assertEqual("Runnable temp5 = () -> {", code_list[4])
+        self.assertEqual("DoubleVariable temp6 = new DoubleVariable(1);", code_list[5])
+        self.assertEqual("var var7 = temp6;", code_list[6])
+        self.assertEqual("this.func8(temp1, temp2, temp3, temp4, temp5);", code_list[8])
         
     
     def test_binop(self):
