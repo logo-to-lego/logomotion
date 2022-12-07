@@ -179,8 +179,12 @@ class ProcDecl(Node):
         self._code_generator.start_function_declaration(
             logo_func_name=to_lowercase(self.leaf), logo_func_type=self.get_logotype()
         )
-        for child in self.children:
-            child.generate_code()
+        self.children[0].generate_code()
+        if self.get_logotype() != LogoType.VOID:
+            self._code_generator.start_try_catch_block()
+        self.children[1].generate_code()
+        if self.get_logotype() != LogoType.VOID:
+            self._code_generator.end_try_catch_block(self.get_logotype())
         self._code_generator.end_function_declaration()
 
 

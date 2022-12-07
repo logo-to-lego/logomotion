@@ -91,6 +91,10 @@ class JavaCodeGenerator:
         code = f"public {JAVA_TYPES[logo_func_type]} {java_func_name}("
         self._append_code(code)
 
+    def start_try_catch_block(self):
+        code = "try {"
+        self._append_code(code)
+
     def _mangle_java_function_name(self, logo_func_name):
         java_func_name = self._java_function_names.get(logo_func_name, None)
         if not java_func_name:
@@ -109,6 +113,12 @@ class JavaCodeGenerator:
         self._append_code(code)
         self._proc_flag = False
 
+    def end_try_catch_block(self, logo_func_type):
+        code = "} catch (ReturnException error) { "\
+               f"return ({JAVA_TYPES[logo_func_type]}) error.returnValue;"\
+               "}"
+        self._append_code(code)
+
     def add_function_parameters(self, parameters):
         code = ""
         for index, param in enumerate(parameters):
@@ -119,7 +129,7 @@ class JavaCodeGenerator:
         self._append_code(code)
 
     def return_statement(self, arg_var):
-        code = f"return {arg_var};"
+        code = f"throw new ReturnException({arg_var});"
         self._append_code(code)
 
     def function_call(self, logo_func_name, arg_vars):
