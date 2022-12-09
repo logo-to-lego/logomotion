@@ -4,123 +4,107 @@
         "FIN": "Kirjoitit '@prodval'. En ymmärrä mitä tarkoitat.",
         "ENG": "I could not understand '@prodval'."
     },
-    "2001":
+    "parser_error_with_no_lexspan":
     {
         "FIN": "En saanut selvää rivillä @row ja sarakkeella @column olevasta koodista.",
         "ENG": "I could not understand the code on row @row and column @column."
     },
-    "2002":
+    "binop_error_when_operand_is_not_float":
     {
         "FIN": "Yritit tehdä laskutoimituksen jollakin joka ei ole numero.",
         "ENG": "You tried to do a calculation with something that is not a number."
     },
-    "2003":
+    "unary_without_float_as_child":
     {
-        "FIN": "Kirjoitit, että tyyppi olisi '@curr_type', mutta se ei ole mahdollista. Tyypin pitää olla negatiivinen numero.",
-        "ENG": "You wrote that the type is '@curr_type', but that is impossible. Type should be a negative number"
+        "FIN": "Negatiivisen luvun on oltava numero.",
+        "ENG": "Negative number has to be a number."
     },
-    "2004":
+    "unknown_types_when_comparing_with_equals":
     {
         "FIN": "Et ole kertonut mitä haluat vertailla keskenään. Kerro muuttujien tyypit ensin.",
         "ENG": "You have not told to me what kind of values you want to compare. Tell me what you want to compare first."
     },
-    "2005": {
+    "only_string_and_float_are_comparable": {
         "FIN": "Yritit vertailla vääränlaisia tyyppejä keskenään. Vain numeroita ja merkkijonoja voi vertailla ja vertailtavien tyyppien pitää olla samat.",
         "ENG": "You tried to compare wrong kind of types. Only numbers and strings can be compared and comparable types have to be the same kind of type."
     },
-    "2006": {
+    "conditional_statement_does_not_return_boolean": {
         "FIN": "Kirjoitit ehtolauseen, mutta se ei kerro minulle onko ehto totta vai ei.",
         "ENG": "You wrote a conditional statement, but it does not tell me if it is true or false."
     },
-    "2007": {
+    "undefined_variable": {
         "FIN": "Et ole kertonut minulle muuttujaa '@var'.",
         "ENG": "You have not told me variable '@var'."
     },
-    "2008": {
-        "FIN": "Olet kirjoittanut, että muuttujan '@var' tyyppi on '@curr_type'. Haluan, että se on '@expected_type'.",
-        "ENG": "You wrote that the variable's '@var' type is '@curr_type'. I want it to be '@expected_type'."
-    },
-    "2009": {
+    "wrong_amount_of_arguments": {
         "FIN": "Olet antanut tässä väärän määrän argumentteja.",
         "ENG": "You have given the wrong amount of arguments here."
     },
-    "2010": {
+    "wrong_param_type": {
         "FIN": "Yritit antaa komennon @command parametrin tyypiksi @curr_type. Haluan, että parametri on tyyppi @expected_type.",
         "ENG": "You tried to give @curr_type as the parameter's type for the command @command. I want the parameter type to be @expected_type."
     },
-    "2011": {
-        "FIN": "Yritit antaa komennon @command parametrin tyypiksi @value_type, mutta se on väärää tyyppiä.",
-        "ENG": "You tried to give @value_type as the parameter's type for command @command, but it is not acceptable."
+    "wrong_param_type_with_no_expected_type": {
+        "FIN": "Yritit antaa komennon @command parametrin tyypiksi @curr_type.",
+        "ENG": "You tried to give @curr_type as the parameter's type for the command @command."
     },
-    "2012": {
+    "type_cannot_be_assigned_to_a_variable": {
+        "FIN": "Muuttuja ei voi olla tyyppiä @curr_type.",
+        "ENG": "A varible cannot have type @curr_type."
+    },
+    "variable_type_cannot_be_changed": {
         "FIN": "Yritit muuttaa muuttujan '@var_name' tyyppiä tyypistä @curr_type tyyppiin @expected_type. En hyväksy tätä.",
         "ENG": "You tried to change variable's @var_name type from @curr_type to @expected_type. I don't like this."
     },
-    "2013": {
-        "FIN": "Et antanut komennolle @command yhtään parametria ja komento vaatii ainakin yhden parametrin.",
-        "ENG": "You did not give any parameters for command @command and it requires at least one parameter."
-    },
-    "2014": {
-        "FIN": "Yritit antaa komennolle @command parametriksi aliohjelman kutsua, joka palauttaa tyypin @return_type. En hyväksy tätä komennon @command parametrin tyypiksi.",
-        "ENG": "You tried to give a procedure which has a return type of @return_type as a parameter for command @command. I do not accept this type as the parameter for command @command."
-    },
-    "2015": {
-        "FIN": "Komento '@command' ei ota parametreja.",
-        "ENG": "Command '@command' does not take parameters."
-    },
-    "2016": {
+    "relative_operation_had_operands_that_were_not_not_string_or_float": {
         "FIN": "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2 vääränlaisella vertailuoperaatiolla. Tyypin FLOAT operaatiot ovat <, >, <=, >=, = ja <> ja tyypin STRING operaatiot ovat <> ja =",
         "ENG": "In row @row you tried to compare types @type1 and @type2 with the wrong kind of relative operation. Acceptable operations for FLOAT are <, >, <=, >=, = and <> and for STRING <> and ="
     },
-    "2017": {
+    "procedure_has_already_been_defined": {
         "FIN": "Olet kertonut aliohjelman '@proc' jo aiemmin",
         "ENG": "You have already told me what procedure '@proc' is."
     },
-    "2018": {
+    "procedure_param_has_already_been_declared": {
         "FIN": "Olet jo kertonut aliohjelman '@proc' parametrin '@param'.",
         "ENG": "Procedure @proc's parameter '@param' is already known by me"
     },
-    "2019": {
+    "procedure_param_type_is_unknown": {
         "FIN": "Et ole kertonut aliohjelman '@proc' parametrin '@param' tyyppiä.",
         "ENG": "You have not told me procedure's @proc's parameter @param's."
     },
-    "2020": {
+    "procedure_is_not_defined": {
         "FIN": "Kerro minulle aliohjelma '@proc' ennen sen käyttöä.",
         "ENG": "Create procedure '@proc' before you use it."
     },
-    "2021": {
+    "wrong_amount_of_aguments_for_procedure": {
         "FIN": "Olet kertonut aliohjelman kutsussa '@proc' väärän määrän argumentteja. Niitä on @args kappaletta, vaikka niitä kuuluisi olla @params.",
         "ENG": "You have declared a wrong amount of arguments during procedure call '@proc'. There are @args arguments, there should be @params arguments."
     },
-    "2022": {
+    "wrong_argument_type_for_procedure": {
         "FIN": "Olet kertonut aliohjelman '@proc' argumentin '@arg' tyypiksi @atype, sen pitäisi olla @ptype.",
         "ENG": "You have told me procedure's '@proc' argument's '@arg' type as @atype, it should be @ptype."
     },
-    "2023": {
-        "FIN": "En tiedä minkä tyyppisen arvon aliohjelma '@proc' antaa.",
-        "ENG": "I am not sure what kind of value procedure '@proc' outputs."
+    "no_output_inside_procedure": {
+        "FIN": "Anna/Output-komento ei ole aliohjelman sisällä.",
+        "ENG": "Output command isn't inside of a procedure."
     },
-    "2024": {
-        "FIN": "Anna/Output-komento ei ole aliohjelman sisällä rivillä @row",
-        "ENG": "Output command isn't inside of a procedure in row @row"
-    },
-    "2025": {
+    "wrong_type_of_output": {
         "FIN": "Olet antanut väärän palautusarvon aliohjelman '@proc' palautusarvoksi.",
         "ENG": "You have given the wrong type of output value for procedure @proc."
     },
-    "2026": {
+    "unknown_argument_type_for_procedure": {
         "FIN": "En tiedä, ottaako aliohjelma '@proc' tyyppiä @atype parametrina",
         "ENG": "I don't know if procedure '@proc' takes @atype as its parameter"
     },
-    "2027": {
+    "procedure_does_not_end_with_output": {
         "FIN": "En tykkää, ettei '@proc' anna arvoa lopussa, vaikka se antaa arvon muualla.",
         "ENG": "I don't like that '@proc' does not return value at it's end althought it returns value elsewhere."
     },
-    "2028": {
+    "deref_instead_of_string_literal": {
         "FIN": "Kirjoitit :@var_name, tarkoititko \"@var_name ?",
         "ENG": "You wrote :@var_name, did you mean \"@var_name ?"
     },
-    "2029": {
+    "unknown_character": {
         "FIN": "En ymmärrä merkkiä '@char' tässä yhteydessä",
         "ENG": "I do not understand character '@char' in this context"
     }
