@@ -5,11 +5,11 @@ The language itself is a variant of Logo, so some rules might differ from the "u
 
 ## Variables
 
-A variable is defined with the keyword `make` (or in Finnish `tee`) and writing `"` before the variable name. The value of a variable is given after the declaring
-of the variable's name. For example for variable x we can declare a value 42 in the following way
+A variable is defined with the keyword `make` (or in Finnish `tee`) and writing `"` before the variable name. The value of a variable is given after declaring
+the variable's name. For variable x we can declare a value 42 in the following way
 `make "x 42`
 
-A variable is referenced with a colon. For example for variable x, we can output its value with the commands `show`, `print`, `sano` or `tulosta`. Here's an example of the usage of the command show.
+A variable is referenced with a colon. For example for variable x, we can output its value with the commands `show`, `print`, `sano` or `tulosta`.
 `show :x`
 
 A variable's type cannot be changed later on. The following example below produces an error:
