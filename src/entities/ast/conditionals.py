@@ -12,7 +12,8 @@ class If(Node):
     def check_types(self):
         if self.leaf.get_logotype() is not LogoType.BOOL:
             self._logger.error_handler.add_error(
-                "conditional_statement_does_not_return_boolean", self.position.get_lexspan(), row=self.position.get_pos()[0]
+                "conditional_statement_does_not_return_boolean",
+                self.position.get_lexspan()
             )
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()
@@ -40,7 +41,8 @@ class IfElse(Node):
     def check_types(self):
         if self.leaf.get_logotype() is not LogoType.BOOL:
             self._logger.error_handler.add_error(
-                "conditional_statement_does_not_return_boolean", self.position.get_lexspan(), row=self.position.get_pos()[0]
+                "conditional_statement_does_not_return_boolean",
+                self.position.get_lexspan()
             )
         self.leaf.check_types()
         self._symbol_tables.variables.initialize_scope()

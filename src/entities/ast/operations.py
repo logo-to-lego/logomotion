@@ -24,8 +24,8 @@ class BinOp(Node):
 
             if child.get_logotype() != LogoType.FLOAT:
                 self._logger.error_handler.add_error(
-                    "binop_error_when_operand_is_not_float", self.position.get_lexspan(), row=child.position.get_pos()[0]
-                )
+                    "binop_error_when_operand_is_not_float",
+                    self.position.get_lexspan())
 
     def generate_code(self):
         """Generate binop to java"""
@@ -113,7 +113,9 @@ class RelOp(Node):
                 child1.get_logotype() == LogoType.UNKNOWN
                 and child2.get_logotype() == LogoType.UNKNOWN
             ):
-                self._logger.error_handler.add_error("unknown_types_when_comparing_with_equals", self.position.get_lexspan(), row=row)
+                self._logger.error_handler.add_error(
+                    "unknown_types_when_comparing_with_equals",
+                    self.position.get_lexspan())
                 return
 
         # <, >, <= and >= can only be used with type FLOAT

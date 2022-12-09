@@ -174,7 +174,7 @@ class Show(Node):
         # Must have at least 1 argument
         if len(self.children) == 0:
             self._logger.error_handler.add_error(
-                "wrong_amount_of_arguments", 
+                "wrong_amount_of_arguments",
                 self.position.get_lexspan())
 
         # Cannot be function call that returns VOID

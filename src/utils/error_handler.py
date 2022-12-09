@@ -24,16 +24,16 @@ class ErrorHandler:
         self.errors = []
         self.console_io = console_io
         self.language = language.lower()
-        
+
         self.fin_messages_dict = self._get_fin_messages()
         self.eng_messages_dict = self._get_eng_messages()
-        
+
         self._err_msg_filename = name
 
     def _get_fin_messages(self):
         with open(os.path.join(ERROR_MESSAGES_PATH, "fin/fin_error_messages.json"), encoding="utf-8") as file:
             return json.load(file)
-    
+
     def _get_eng_messages(self):
         with open(os.path.join(ERROR_MESSAGES_PATH, "eng/eng_error_messages.json"), encoding="utf-8") as file:
             return json.load(file)

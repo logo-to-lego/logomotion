@@ -88,8 +88,8 @@ class ProcCall(Node):
         procedure = self._symbol_tables.functions.lookup(self.leaf)
         if not procedure:
             self._logger.error_handler.add_error(
-                "procedure_is_not_defined", 
-                self.position.get_lexspan(), 
+                "procedure_is_not_defined",
+                self.position.get_lexspan(),
                 proc=self.leaf
             )
             return
@@ -174,8 +174,8 @@ class ProcDecl(Node):
         # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
             self._logger.error_handler.add_error(
-                "procedure_has_already_been_defined", 
-                self.position.get_lexspan(), 
+                "procedure_has_already_been_defined",
+                self.position.get_lexspan(),
                 proc=self.leaf)
 
         self.procedure = Function(self.leaf, typeclass=Type(functions={self.leaf}))
@@ -271,9 +271,9 @@ class ProcArg(Node):
         # Check the parameter hasn't already been declarated
         if self._symbol_tables.variables.lookup(self.leaf):
             self._logger.error_handler.add_error(
-                "procedure_param_has_already_been_declared", 
-                self.position.get_lexspan(), 
-                proc=procedure.name, 
+                "procedure_param_has_already_been_declared",
+                self.position.get_lexspan(),
+                proc=procedure.name,
                 param=self.leaf
             )
 

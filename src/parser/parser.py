@@ -121,9 +121,9 @@ def p_error(prod):
 
         lexspan = (-1, -1)
         shared.logger.error_handler.add_error(
-            "parser_error_with_no_lexspan", 
-            lexspan, 
-            row=lineno, 
+            "parser_error_with_no_lexspan",
+            lexspan,
+            row=lineno,
             column=colpos)
 
 
