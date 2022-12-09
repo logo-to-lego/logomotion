@@ -113,7 +113,7 @@ def p_error(prod):
     if prod:
         lexspan = (prod.lexpos, prod.lexpos)
         shared.logger.error_handler.add_error(
-            2000, lexspan, prodval=prod.value
+            "parser_error", lexspan, prodval=prod.value
         )
     else:
         lineno = shared.ply_lexer.lineno

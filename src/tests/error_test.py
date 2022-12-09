@@ -42,7 +42,7 @@ class TestErrorHandler(unittest.TestCase):
         self.parser.parse(test_string)
 
         error_ids = self.error_handler.get_error_ids()
-        self.assertListEqual(error_ids, [2000])
+        self.assertListEqual(error_ids, ["parser_error"])
 
     def test_error_with_invalid_binop(self):
         test_string = """

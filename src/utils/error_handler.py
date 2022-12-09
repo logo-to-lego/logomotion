@@ -8,8 +8,8 @@ from utils.console_io import default_console_io
 
 FIN = "FIN"
 ENG = "ENG"
-DEFAULT_NAME = "error_messages"
-PATH = os.path.join(os.path.dirname(os.path.relpath(__file__)), "../../src/error_messages/")
+DEFAULT_NAME = "errors"
+PATH = os.path.join(os.path.dirname(os.path.relpath(__file__)), "../../src/errors/")
 
 
 class ErrorHandler:
@@ -26,23 +26,20 @@ class ErrorHandler:
         self.console_io = console_io
         self.language = language
         self.error_dir = os.path.join(
-            os.path.dirname(os.path.relpath(__file__)), "../error_messages"
+            os.path.dirname(os.path.relpath(__file__)), "../language"
         )
 
-    def _get_parser_dict(self):
-        with open(os.path.join(self.error_dir, "parser_errors.json"), encoding="utf-8") as file:
+    def _get_error_messages_dict(self):
+        with open(os.path.join(self.error_dir, "error_messages.json"), encoding="utf-8") as file:
             return json.load(file)
 
-    def _get_messages_from_json_files(self, msg_id):
-        # if 1000 <= msg_id <= 1999:
-        #     pass
-        if 2000 <= msg_id <= 2999:
-            return self._get_parser_dict()[str(msg_id)]
-        # if 3000 <= msg_id <= 3999:
-        #     pass
-        raise Exception(f"Message id {msg_id} was not found from error message files")
+    def _get_messages_from_json_files(self, msg_id: str):
+        try:
+            return self._get_error_messages_dict()[msg_id]
+        except:
+            raise Exception(f"Message id {msg_id} was not found from error message files")
 
-    def add_error(self, msg_id: int, lexspan, **kwargs):
+    def add_error(self, msg_id: str, lexspan, **kwargs):
         """Gets the error message frame in the defined language (ENG/FIN),
         replaces the @-tags with the params given as **kwargs.
         These messages are then added to a list of messages.
