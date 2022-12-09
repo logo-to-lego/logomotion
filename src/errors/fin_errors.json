@@ -1,0 +1,12 @@
+{
+    "1": {
+        "msg": "Kirjoitit :a, tarkoititko \"a ?",
+        "Start": 0,
+        "End": 8
+    },
+    "2": {
+        "msg": "Yritit muuttaa muuttujan 'b' tyyppiä tyypistä STRING tyyppiin BOOL. En hyväksy tätä.",
+        "Start": 26,
+        "End": 34
+    }
+}

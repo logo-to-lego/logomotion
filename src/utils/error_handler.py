@@ -6,10 +6,11 @@ import json
 import os
 from utils.console_io import default_console_io
 
-FIN = "FIN"
-ENG = "ENG"
+FIN = "fin"
+ENG = "eng"
 DEFAULT_NAME = "errors"
 PATH = os.path.join(os.path.dirname(os.path.relpath(__file__)), "../../src/errors/")
+ERROR_MESSAGES_PATH = os.path.join(os.path.dirname(os.path.relpath(__file__)), "../../src/language/")
 
 
 class ErrorHandler:
@@ -18,26 +19,31 @@ class ErrorHandler:
     """
 
     def __init__(self, console_io=default_console_io, language=FIN, name=DEFAULT_NAME):
-        if language not in (FIN, ENG):
-            raise Exception(f"Language {language} is not defined or valid")
+        if language.lower() not in (FIN, ENG):
+            raise Exception(f"Language {language} is not defined")
         self.errors = []
-        self.err_dict = {}
-        self._name = name
         self.console_io = console_io
-        self.language = language
-        self.error_dir = os.path.join(
-            os.path.dirname(os.path.relpath(__file__)), "../language"
-        )
+        self.language = language.lower()
+        
+        self.fin_messages_dict = self._get_fin_messages()
+        self.eng_messages_dict = self._get_eng_messages()
+        
+        self._err_msg_filename = name
 
-    def _get_error_messages_dict(self):
-        with open(os.path.join(self.error_dir, "error_messages.json"), encoding="utf-8") as file:
+    def _get_fin_messages(self):
+        with open(os.path.join(ERROR_MESSAGES_PATH, "fin/fin_error_messages.json"), encoding="utf-8") as file:
+            return json.load(file)
+    
+    def _get_eng_messages(self):
+        with open(os.path.join(ERROR_MESSAGES_PATH, "eng/eng_error_messages.json"), encoding="utf-8") as file:
             return json.load(file)
 
-    def _get_messages_from_json_files(self, msg_id: str):
-        try:
-            return self._get_error_messages_dict()[msg_id]
-        except:
-            raise Exception(f"Message id {msg_id} was not found from error message files")
+    def _get_message_by_id(self, msg_id: str):
+        msg_dict = {
+            FIN: self.fin_messages_dict[msg_id],
+            ENG: self.eng_messages_dict[msg_id],
+        }
+        return msg_dict
 
     def add_error(self, msg_id: str, lexspan, **kwargs):
         """Gets the error message frame in the defined language (ENG/FIN),
@@ -47,7 +53,7 @@ class ErrorHandler:
         Args:
             msg_id (int): ID of the error defined in the error.json files
         """
-        msg_dict = self._get_messages_from_json_files(msg_id)
+        msg_dict = self._get_message_by_id(msg_id)
 
         fin_msg = msg_dict[FIN]
         eng_msg = msg_dict[ENG]
@@ -56,7 +62,12 @@ class ErrorHandler:
             fin_msg = fin_msg.replace(f"@{key}", str(value))
             eng_msg = eng_msg.replace(f"@{key}", str(value))
 
-        err_msgs = {FIN: fin_msg, ENG: eng_msg, "Start": lexspan[0], "End": lexspan[1]}
+        err_msgs = {
+            FIN: fin_msg,
+            ENG: eng_msg,
+            "start": lexspan[0],
+            "end": lexspan[1]
+        }
 
         # Lexer is ran multiple times in the program
         # and causes the same error messages to occur
@@ -68,14 +79,34 @@ class ErrorHandler:
         return self.errors
 
     def create_json_file(self):
+        fin_dict = {}
+        eng_dict = {}
         for index, msg in enumerate(self.errors, start=1):
-            self.err_dict[index] = msg
+            fin_dict[index] = {
+                "message": msg[FIN],
+                "start": msg["start"],
+                "end": msg["end"]
+            }
+            eng_dict[index] = {
+                "message": msg[ENG],
+                "start": msg["start"],
+                "end": msg["end"]
+            }
+
         try:
-            with open(PATH + self._name + ".json", mode="w+", encoding="utf-8") as file:
-                json_object = json.dumps(self.err_dict, ensure_ascii=False).encode("utf8")
+            fin_path = PATH + FIN + "_" + self._err_msg_filename + ".json"
+            eng_path = PATH + ENG + "_" + self._err_msg_filename + ".json"
+
+            with open(fin_path, mode="w+", encoding="utf-8") as file:
+                json_object = json.dumps(fin_dict, ensure_ascii=False).encode("utf8")
                 file.write(json_object.decode())
+
+            with open(eng_path, mode="w+", encoding="utf-8") as file:
+                json_object = json.dumps(eng_dict, ensure_ascii=False).encode("utf8")
+                file.write(json_object.decode())
+
         except Exception as error:
-            print(f"An error occurred when writing {self._name}.json file:\n{error}")
+            print(f"An error occurred when writing {self._err_msg_filename}.json file:\n{error}")
             raise
 
     def write_errors_to_console(self):
