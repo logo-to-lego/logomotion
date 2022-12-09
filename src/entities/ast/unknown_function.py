@@ -29,4 +29,8 @@ class UnknownFunction(Node):
         for child in self.children:
             child.generate_code()
         self._code_generator.lambda_end()
+        # in case we have multiple loops with same name for the iterator variable,
+        # we'll remove the variable from known variable names, so that they won't overlap
+        if self.var_node:
+            self._code_generator.remove_java_variable_name(self.var_node.leaf.leaf)
         return tmpvar
