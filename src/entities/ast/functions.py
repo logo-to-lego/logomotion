@@ -91,7 +91,9 @@ class ProcCall(Node):
                     raise KeyError(
                         f"ProcCall: Variable symbol {argument_node.leaf} not found in the variable symbol table."
                     )
-            elif argument_node.__class__ is ProcCall and self._is_recursive_call(argument_node.leaf):
+            elif argument_node.__class__ is ProcCall and self._is_recursive_call(
+                argument_node.leaf
+            ):
                 # Argument is a recursive procedure call, with an unknown return type.
                 proc_symbol = self._symbol_tables.functions.lookup(argument_node.leaf)
                 if proc_symbol:
@@ -127,9 +129,7 @@ class ProcCall(Node):
         procedure = self._symbol_tables.functions.lookup(self.leaf)
         if not procedure:
             self._logger.error_handler.add_error(
-                "procedure_is_not_defined",
-                self.position.get_lexspan(),
-                proc=self.leaf
+                "procedure_is_not_defined", self.position.get_lexspan(), proc=self.leaf
             )
             return
         # Check the procedure has right amout of arguments
@@ -198,9 +198,8 @@ class ProcDecl(Node):
         # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
             self._logger.error_handler.add_error(
-                "procedure_has_already_been_defined",
-                self.position.get_lexspan(),
-                proc=self.leaf)
+                "procedure_has_already_been_defined", self.position.get_lexspan(), proc=self.leaf
+            )
 
         self.procedure = Function(self.leaf, typeclass=Type(functions={self.leaf}))
         self._symbol_tables.functions.insert(self.leaf, self.procedure)
@@ -236,7 +235,14 @@ class ProcDecl(Node):
                 self._logger.error_handler.add_error(
                     "procedure_does_not_end_with_output",
                     self.position.get_lexspan(),
-                    proc=self.leaf
+                    proc=self.leaf,
+                )
+            elif self.procedure.get_logotype() == LogoType.UNKNOWN:
+                # Procedure returns an UNKNOWN type.
+                self._logger.error_handler.add_error(
+                    "procedure_return_type_cannot_be_determined",
+                    self.position.get_lexspan(),
+                    proc=self.leaf,
                 )
 
         self._symbol_tables.variables.finalize_scope()
@@ -297,7 +303,7 @@ class ProcArg(Node):
                 "procedure_param_has_already_been_declared",
                 self.position.get_lexspan(),
                 proc=procedure.name,
-                param=self.leaf
+                param=self.leaf,
             )
 
         self.symbol = Variable(self.leaf)
