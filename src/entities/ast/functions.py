@@ -192,25 +192,6 @@ class ProcDecl(Node):
             return self.procedure.typeclass.logotype
         return None
 
-    def _check_for_recursive_calls(self, statement_list, proc_args):
-        for child in statement_list.children:
-
-            # Check if child is a recursive call
-            if child.__class__ == ProcCall and child.leaf == self.leaf:
-
-                # Check that function call has as many arguments as function has params
-                if len(child.children) != len(proc_args.children):
-                    return
-
-                # Set type of argument if parameter has it
-                for idx, c in enumerate(child.children):  # pylint: disable=C0103
-                    proc_arg = proc_args.children[idx]
-                    if (
-                        proc_arg.get_logotype() == LogoType.UNKNOWN
-                        and c.get_logotype() != LogoType.UNKNOWN
-                    ):
-                        proc_arg.set_logotype(c.get_logotype())
-
     def check_types(self):
         # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
@@ -226,7 +207,6 @@ class ProcDecl(Node):
         proc_args.check_types()
 
         statement_list = self.children[1]
-        # self._check_for_recursive_calls(statement_list, proc_args)
         statement_list.check_types()
 
         # Check the procedure doesn't have unknown type parameters
