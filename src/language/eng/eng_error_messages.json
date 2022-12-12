@@ -75,6 +75,9 @@
         "I don't know if procedure '@proc' takes @atype as its parameter",
 
     "procedure_does_not_end_with_output": 
-        "I don't like that '@proc' does not return value at it's end althought it returns value elsewhere."
+        "I don't like that '@proc' does not return value at it's end althought it returns value elsewhere.",
+
+    "procedure_return_type_cannot_be_determined":
+        "I can't decide what is the return type of procedure '@proc'."
 
 }
