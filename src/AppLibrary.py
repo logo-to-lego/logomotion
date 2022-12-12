@@ -12,9 +12,8 @@ from utils.logger import Logger
 from utils.preconf_code_generator import JavaPreconfFuncsGenerator
 
 CWD = os.getcwd()
-CURR_DIR = os.path.dirname(os.path.relpath(__file__))
-LOGO_TEST_PATH = os.path.join(CURR_DIR, "tests/e2e/test_files/")
-JAVA_GEN_PATH = os.path.join(CURR_DIR, "tests/e2e/java/logo/")
+LOGO_TEST_PATH = os.path.join(CWD, "src/tests/e2e/test_files/")
+JAVA_GEN_PATH = os.path.join(CWD, "src/tests/e2e/java/logo/")
 
 
 class MockIO:
