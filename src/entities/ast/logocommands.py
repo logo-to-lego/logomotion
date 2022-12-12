@@ -32,7 +32,7 @@ class Make(Node):
                 2010,
                 lexspan=self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
-                command=self.node_type.value,
+                command=self.node_type,
                 curr_type=variable_node.get_logotype().value,
                 expected_type=LogoType.STRING.value,
             )
