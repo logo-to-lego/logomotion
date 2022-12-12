@@ -53,6 +53,7 @@ class ProcCall(Node):
         super().__init__("ProcCall", children, leaf, **dependencies)
         self.procedure: Function = None
         self._in_procedure = False
+        self.void_parent = False
 
     def set_logotype(self, logotype):
         proc = self.get_procedure()
@@ -141,7 +142,7 @@ class ProcCall(Node):
             temp_vars.append(child.generate_code())
 
         if to_lowercase(self.leaf) in ["repeat", "for"]:
-            if self._in_procedure:
+            if self._in_procedure and not self.void_parent:
                 self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
                 return None
             self._code_generator.start_try_catch_block()
@@ -227,17 +228,24 @@ class ProcDecl(Node):
 
         self._symbol_tables.variables.finalize_scope()
 
+    def _has_loop(self, node):
+        if to_lowercase(node.leaf) in ["repeat", "for"]:
+            node.void_parent = True
+        for child in node.children:
+            self._has_loop(child)
+
     def generate_code(self):
         self._code_generator.start_function_declaration(
             logo_func_name=to_lowercase(self.leaf), logo_func_type=self.get_logotype()
         )
         self.children[0].generate_code()
-        self._code_generator.start_try_catch_block()
-        self.children[1].generate_code()
         if self.get_logotype() != LogoType.VOID:
+            self._code_generator.start_try_catch_block()
+            self.children[1].generate_code()
             self._code_generator.end_try_catch_block_in_procedure(self.get_logotype())
         else:
-            self._code_generator.end_try_catch_block_outside_procedure()
+            self._has_loop(self)
+            self.children[1].generate_code()
         self._code_generator.end_function_declaration()
 
 
