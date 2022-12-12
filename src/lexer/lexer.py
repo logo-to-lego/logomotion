@@ -163,7 +163,7 @@ class Lexer:
     def t_error(self, token):
         self._logger.debug(f"Illegal char {token.value[0]!r}")
         self._logger.error_handler.add_error(
-            2029,
+            "unknown_character",
             lexspan=(token.lexpos, token.lexpos),
             char=token.value[0]
         )

@@ -24,8 +24,8 @@ class BinOp(Node):
 
             if child.get_logotype() != LogoType.FLOAT:
                 self._logger.error_handler.add_error(
-                    2002, self.position.get_lexspan(), row=child.position.get_pos()[0]
-                )
+                    "binop_error_when_operand_is_not_float",
+                    self.position.get_lexspan())
 
     def generate_code(self):
         """Generate binop to java"""
@@ -42,27 +42,13 @@ class UnaryOp(Node):
         return LogoType.FLOAT
 
     def check_types(self):
-        # Check UnaryOp type
-        unary_type = self.get_logotype()
-        if unary_type != LogoType.FLOAT:
-            self._logger.error_handler.add_error(
-                2003,
-                self.position.get_lexspan(),
-                row=self.position.get_pos()[0],
-                curr_type=self.get_logotype().value,  # _logo_type.value,
-                expected_type=LogoType.FLOAT.value,
-            )
-
         # Check the type of the child of UnaryOp
         for child in self.children:
             child_type = child.get_logotype()
             if child_type != LogoType.FLOAT:
                 self._logger.error_handler.add_error(
-                    2003,
+                    "unary_without_float_as_child",
                     self.position.get_lexspan(),
-                    row=child.position.get_pos()[0],
-                    curr_type=child_type.value,
-                    expected_type=LogoType.FLOAT.value,
                 )
 
     def generate_code(self):
@@ -95,7 +81,7 @@ class RelOp(Node):
         # Check that given types are comparable
         if child1.get_logotype() not in allowed_types or child2.get_logotype() not in allowed_types:
             self._logger.error_handler.add_error(
-                2005,
+                "only_string_and_float_are_comparable",
                 self.position.get_lexspan(),
                 row=row,
                 type1=child1.get_logotype().value,
@@ -112,7 +98,7 @@ class RelOp(Node):
         # If after setting unknown types the types are still not the same -> error
         if child1.get_logotype() != child2.get_logotype():
             self._logger.error_handler.add_error(
-                2005,
+                "only_string_and_float_are_comparable",
                 self.position.get_lexspan(),
                 row=row,
                 type1=child1.get_logotype().value,
@@ -127,7 +113,9 @@ class RelOp(Node):
                 child1.get_logotype() == LogoType.UNKNOWN
                 and child2.get_logotype() == LogoType.UNKNOWN
             ):
-                self._logger.error_handler.add_error(2004, self.position.get_lexspan(), row=row)
+                self._logger.error_handler.add_error(
+                    "unknown_types_when_comparing_with_equals",
+                    self.position.get_lexspan())
                 return
 
         # <, >, <= and >= can only be used with type FLOAT
@@ -142,7 +130,7 @@ class RelOp(Node):
                 or child2.get_logotype() is not LogoType.FLOAT
             ):
                 self._logger.error_handler.add_error(
-                    2016,
+                    "relative_operation_had_operands_that_were_not_not_string_or_float",
                     self.position.get_lexspan(),
                     row=row,
                     type1=child1.get_logotype().value,
