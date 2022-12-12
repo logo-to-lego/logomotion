@@ -113,9 +113,15 @@ class JavaCodeGenerator:
         self._append_code(code)
         self._proc_flag = False
 
-    def end_try_catch_block(self, logo_func_type):
+    def end_try_catch_block_in_procedure(self, logo_func_type):
         code = "} catch (ReturnException error) { "\
                f"return ({JAVA_TYPES[logo_func_type]}) error.returnValue;"\
+               "}"
+        self._append_code(code)
+
+    def end_try_catch_block_outside_procedure(self):
+        code = "} catch (ReturnException error) { "\
+               "System.out.println(\"An unidentified error occurred.\");"\
                "}"
         self._append_code(code)
 
