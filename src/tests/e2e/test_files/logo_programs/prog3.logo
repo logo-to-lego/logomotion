@@ -31,21 +31,24 @@ if (:bool) {
     }
 }
 
-if (:bool = false) {
+if (:bool) {
     for ["i 0 20 1] {
         repeat (:i - (-1)) {
             rotate 90
         }
     }
     repeat 5 {
-        for ["j 0 2 1] {
+        for ["i 0 2 1] {
             repeat 3 {
                 go_forward
                 bk 42
-                for ["k 0 10 5] {
-                    show :i + :j - :k
+                for ["j 0 10 5] {
+                    for ["k 0 10 5] {
+                        show :i + :j - :k
+                    }
                 }
             }
         }
     }
 }
+

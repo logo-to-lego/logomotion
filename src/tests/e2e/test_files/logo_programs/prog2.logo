@@ -26,6 +26,23 @@ to checker :x
     output false
 end
 
+to animal :num 
+    if :num = 0 {
+        output "cat
+    }
+    if (:num = 1) {
+        output "dog
+    }
+    if {:num = 2} {
+        output "turtle
+    }
+    if :num = 3 {
+        output "platypus
+    }
+    output "unknown
+end
+
+
 shape "square
 shape "triangle
 shape "circle
@@ -44,3 +61,7 @@ ifelse :num = 0 {
 
 show :result
 
+make "animal 0
+make "animal 1
+make "animal 2
+make "animal 3
