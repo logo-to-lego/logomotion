@@ -1,0 +1,80 @@
+{
+    "unknown_character": 
+        "I do not understand character '@char' in this context",
+
+    "parser_error": 
+        "I could not understand '@prodval'.",
+
+    "parser_error_with_no_lexspan":
+        "I could not understand the code on row @row and column @column.",
+
+    "undefined_variable": 
+        "You have not told me variable '@var'.",
+
+    "type_cannot_be_assigned_to_a_variable": 
+        "A varible cannot have type @curr_type.",
+
+    "variable_type_cannot_be_changed": 
+        "You tried to change variable's @var_name type from @curr_type to @expected_type. I don't like this.",
+
+    "deref_instead_of_string_literal": 
+        "You wrote :@var_name, did you mean \"@var_name ?",
+
+    "binop_error_when_operand_is_not_float":
+        "You tried to do a calculation with something that is not a number.",
+
+    "unary_without_float_as_child":
+        "Negative number has to be a number.",
+
+    "unknown_types_when_comparing_with_equals":
+        "You have not told to me what kind of values you want to compare. Tell me what you want to compare first.",
+
+    "relative_operation_had_operands_that_were_not_not_string_or_float": 
+        "In row @row you tried to compare types @type1 and @type2 with the wrong kind of relative operation. Acceptable operations for FLOAT are <, >, <=, >=, = and <> and for STRING <> and =",
+
+    "only_string_and_float_are_comparable": 
+        "You tried to compare wrong kind of types. Only numbers and strings can be compared and comparable types have to be the same kind of type.",
+
+    "conditional_statement_does_not_return_boolean": 
+        "You wrote a conditional statement, but it does not tell me if it is true or false.",
+
+    "wrong_amount_of_arguments": 
+        "You have given the wrong amount of arguments here.",
+
+    "wrong_param_type": 
+        "You tried to give @curr_type as the parameter's type for the command @command. I want the parameter type to be @expected_type.",
+
+    "wrong_param_type_with_no_expected_type": 
+        "You tried to give @curr_type as the parameter's type for the command @command.",
+
+    "procedure_has_already_been_defined": 
+        "You have already told me what procedure '@proc' is.",
+
+    "procedure_param_has_already_been_declared": 
+        "Procedure @proc's parameter '@param' is already known by me",
+
+    "procedure_param_type_is_unknown": 
+        "You have not told me procedure's @proc's parameter @param's.",
+
+    "procedure_is_not_defined": 
+        "Create procedure '@proc' before you use it.",
+
+    "wrong_amount_of_aguments_for_procedure": 
+        "You have declared a wrong amount of arguments during procedure call '@proc'. There are @args arguments, there should be @params arguments.",
+
+    "wrong_argument_type_for_procedure": 
+        "You have told me procedure's '@proc' argument's '@arg' type as @atype, it should be @ptype.",
+
+    "no_output_inside_procedure": 
+        "Output command isn't inside of a procedure.",
+
+    "wrong_type_of_output": 
+        "You have given the wrong type of output value for procedure @proc.",
+
+    "unknown_argument_type_for_procedure": 
+        "I don't know if procedure '@proc' takes @atype as its parameter",
+
+    "procedure_does_not_end_with_output": 
+        "I don't like that '@proc' does not return value at it's end althought it returns value elsewhere."
+
+}

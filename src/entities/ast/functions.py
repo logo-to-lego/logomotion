@@ -19,7 +19,7 @@ class Output(Node):
         # Check output command is in function
         if not procedure:
             self._logger.error_handler.add_error(
-                2024, lexspan=self.position.get_lexspan(), row=self.position.get_pos()[0]
+                "no_output_inside_procedure", lexspan=self.position.get_lexspan()
             )
             return
         if procedure.get_logotype() == LogoType.UNKNOWN:
@@ -38,7 +38,7 @@ class Output(Node):
             # Check output value's type is same as funtion's other output values' types
             if procedure.get_logotype() != output_value.get_logotype():
                 self._logger.error_handler.add_error(
-                    2025, lexspan=self.position.get_lexspan(), proc=procedure.name
+                    "wrong_type_of_output", lexspan=self.position.get_lexspan(), proc=procedure.name
                 )
 
     def generate_code(self):
@@ -88,13 +88,15 @@ class ProcCall(Node):
         procedure = self._symbol_tables.functions.lookup(self.leaf)
         if not procedure:
             self._logger.error_handler.add_error(
-                2020, self.position.get_lexspan(), proc=self.leaf, row=self.position.get_pos()[0]
+                "procedure_is_not_defined",
+                self.position.get_lexspan(),
+                proc=self.leaf
             )
             return
         # Check the procedure has right amout of arguments
         if len(procedure.parameters) != len(self.children):
             self._logger.error_handler.add_error(
-                2021,
+                "wrong_amount_of_aguments_for_procedure",
                 self.position.get_lexspan(),
                 proc=self.leaf,
                 row=self.position.get_pos()[0],
@@ -113,14 +115,14 @@ class ProcCall(Node):
             if argument_type != parameter_type:
                 if parameter_type == LogoType.UNKNOWN:
                     self._logger.error_handler.add_error(
-                        2026,
+                        "unknown_argument_type_for_procedure",
                         self.position.get_lexspan(),
                         proc=self.leaf,
                         atype=argument_type.value,
                     )
                 else:
                     self._logger.error_handler.add_error(
-                        2022,
+                        "wrong_argument_type_for_procedure",
                         self.position.get_lexspan(),
                         proc=self.leaf,
                         arg=child.leaf,
@@ -171,7 +173,11 @@ class ProcDecl(Node):
     def check_types(self):
         # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
-            self._logger.error_handler.add_error(2017, self.position.get_lexspan(), proc=self.leaf)
+            self._logger.error_handler.add_error(
+                "procedure_has_already_been_defined",
+                self.position.get_lexspan(),
+                proc=self.leaf)
+
         self.procedure = Function(self.leaf, typeclass=Type(functions={self.leaf}))
         self._symbol_tables.functions.insert(self.leaf, self.procedure)
         self._symbol_tables.variables.initialize_scope(in_function=self.procedure)
@@ -190,7 +196,7 @@ class ProcDecl(Node):
         for parameter in self.procedure.parameters:
             if parameter.get_logotype() == LogoType.UNKNOWN:
                 self._logger.error_handler.add_error(
-                    2019,
+                    "procedure_param_type_is_unknown",
                     self.position.get_lexspan(),
                     proc=self.procedure.name,
                     param=parameter.name,
@@ -205,7 +211,7 @@ class ProcDecl(Node):
             # Check function with output statements ends to output statement
             if not self.children[1].children[-1].__class__ == Output:
                 self._logger.error_handler.add_error(
-                    2027,
+                    "procedure_does_not_end_with_output",
                     self.position.get_lexspan(),
                     proc=self.leaf
                 )
@@ -261,11 +267,16 @@ class ProcArg(Node):
 
     def check_types(self):
         procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
+
         # Check the parameter hasn't already been declarated
         if self._symbol_tables.variables.lookup(self.leaf):
             self._logger.error_handler.add_error(
-                2018, self.position.get_lexspan(), proc=procedure.name, param=self.leaf
+                "procedure_param_has_already_been_declared",
+                self.position.get_lexspan(),
+                proc=procedure.name,
+                param=self.leaf
             )
+
         self.symbol = Variable(self.leaf)
         procedure.parameters.append(self.symbol)
         self._symbol_tables.variables.insert(self.leaf, self.symbol)
