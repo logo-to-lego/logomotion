@@ -74,40 +74,40 @@ class ProcCall(Node):
             procedure = self._symbol_tables.functions.lookup(self.leaf)
         return procedure
 
+    def _handle_unknown_type_parameter_for_recursion_calls(self, parameter_symbol, argument_node):
+        """Handle type unification for a recursive call's unknown typed parameter, with given argument AST node."""
+        argument_type = argument_node.get_logotype()
+
+        if argument_type != LogoType.UNKNOWN:
+            # Argument type is known, simply set parameter type.
+            parameter_symbol.typeclass.logotype = argument_type
+        else:
+            if argument_node.__class__ is Deref:
+                # Argument is a deref node, with an unknown type.
+                argument_symbol = self._symbol_tables.variables.lookup(argument_node.leaf)
+                if argument_symbol:
+                    self._symbol_tables.concatenate_typeclasses(parameter_symbol, argument_symbol)
+                else:
+                    raise KeyError(
+                        f"ProcCall: Variable symbol {argument_node.leaf} not found in the variable symbol table."
+                    )
+            elif argument_node.__class__ is ProcCall and self._is_recursive_call(argument_node.leaf):
+                # Argument is a recursive procedure call, with an unknown return type.
+                proc_symbol = self._symbol_tables.functions.lookup(argument_node.leaf)
+                if proc_symbol:
+                    self._symbol_tables.concatenate_typeclasses(parameter_symbol, proc_symbol)
+                else:
+                    raise KeyError(
+                        f"ProcCall: Function symbol {argument_node.leaf} not found in the function symbol table."
+                    )
+
     def set_arguments_logotype(self, argument_node, parameter_symbol):
         """Get ProcCall's argument/child Node and Procedures parameter Node as arguments
         and set parameters logotype to arguments logotype"""
         parameter_type = parameter_symbol.get_logotype()
-        argument_type = argument_node.get_logotype()
 
         if parameter_type == LogoType.UNKNOWN and self._is_recursive_call(self.leaf):
-            # We do not know the parameter type and this is a recursive procedure call.
-            if argument_type != LogoType.UNKNOWN:
-                # Argument type is known, set parameter type.
-                parameter_symbol.typeclass.logotype = argument_type
-            else:
-                if argument_node.__class__ is Deref:
-                    # Argument is a deref node with unknown type.
-                    argument_symbol = self._symbol_tables.variables.lookup(argument_node.leaf)
-                    if argument_symbol:
-                        self._symbol_tables.concatenate_typeclasses(
-                            parameter_symbol, argument_symbol
-                        )
-                    else:
-                        raise KeyError(
-                            f"ProcCall: Variable symbol {argument_node.leaf} not found in the variable symbol table."
-                        )
-                if argument_node.__class__ is ProcCall and self._is_recursive_call(argument_node.leaf):
-                    # Argument is a recursive procedure call
-                    argument_symbol = self._symbol_tables.functions.lookup(argument_node.leaf)
-                    if argument_symbol:
-                        self._symbol_tables.concatenate_typeclasses(
-                            parameter_symbol, argument_symbol
-                        )
-                    else:
-                        raise KeyError(
-                            f"ProcCall: Function symbol {argument_node.leaf} not found in the function symbol table."
-                        )
+            self._handle_unknown_type_parameter_for_recursion_calls(parameter_symbol, argument_node)
         elif argument_node.__class__ in (Deref, ProcCall):
             arg_typeclass = argument_node.get_typeclass()
             # This never overwrites non-unknown types.
