@@ -82,7 +82,7 @@ class AppLibrary:
         Raises AssertionError if the compilation fails."""
         path = os.path.join(JAVA_GEN_PATH, "..")
         os.chdir(path)  # Change dir to make the compile
-        output = subprocess.run(["javac", "logo/Logo.java"], capture_output=True)
+        output = subprocess.run(["javac", "logo/Logo.java"], capture_output=True) # Compile java
         os.chdir(CWD)  # Change dir back to make tests work after this
         if output.returncode != 0:
             raise AssertionError("Java compilation failed: \n", output.stderr.decode("utf-8"))

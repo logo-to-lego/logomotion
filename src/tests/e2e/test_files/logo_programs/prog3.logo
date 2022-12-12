@@ -1,0 +1,20 @@
+to go_forward 
+    fd 100
+end
+
+to rotate :num
+    lt :num
+end
+
+for ["i (-5) 5 1] {
+    make "angle 360
+    ifelse :i < 0 {
+        show :i
+    } {
+        ifelse :i = 0 {
+            go_forward
+        } {
+            rotate :angle
+        }
+    }
+}

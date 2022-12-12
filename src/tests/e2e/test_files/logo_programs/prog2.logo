@@ -1,0 +1,46 @@
+to shape :shape 
+    if :shape = "square {
+        repeat 4 {
+            fd 100
+            rt 90
+        }
+    }
+    if :shape = "triangle {
+        repeat 3 {
+            fd 100
+            rt 60
+        }
+    }
+    if :shape = "circle {
+        repeat 360 {
+            fd 1
+            rt 1
+        }
+    }
+end
+
+to checker :x
+    if :x=0 {
+        output true
+    }
+    output false
+end
+
+shape "square
+shape "triangle
+shape "circle
+shape "cat
+
+show "yay
+make "num 0
+
+make "result true
+
+ifelse :num = 0 {
+    make "result checker :num
+} {
+    make "result checker :num    
+}
+
+show :result
+
