@@ -169,6 +169,13 @@ class JavaCodeGenerator:
             self._java_variable_names[logo_var_name] = java_var_name
         return java_var_name
 
+    def remove_java_variable_name(self, logo_var_name):
+        if logo_var_name in self._java_variable_names:
+            del self._java_variable_names[logo_var_name]
+        else:
+            print("Attempted to remove key that doesn't exist in code_generator,\
+                remove_java_variable_name.")
+
     def create_new_variable(self, logo_var_name, value_name):
         """Create a new Java variable and assign it a value."""
         java_var_name = self._mangle_logo_var_name(logo_var_name)
