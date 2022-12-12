@@ -181,23 +181,25 @@ class ProcCall(Node):
 
     def generate_code(self):
         temp_vars = []
+        temp_var = None
         for child in self.children:
             temp_vars.append(child.generate_code())
 
         if to_lowercase(self.leaf) in ["repeat", "for"]:
             if self._in_procedure and not self.void_parent:
                 self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
-                return None
+                return temp_var
             self._code_generator.start_try_catch_block()
             self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
             self._code_generator.end_try_catch_block_outside_procedure()
-            return None
+            return temp_var
 
         if self.get_logotype() != LogoType.VOID:
             temp_var = self._code_generator.returning_function_call(to_lowercase(self.leaf), temp_vars)
             return temp_var
 
         self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
+        return temp_var
 
 
 class ProcDecl(Node):
