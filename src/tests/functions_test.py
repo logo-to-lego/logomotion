@@ -27,32 +27,32 @@ class TestFunctions(unittest.TestCase):
         ast = self.parser.parse(test_code)
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
-        self.assertListEqual(error_ids, [2017])
+        self.assertListEqual(error_ids, ["procedure_has_already_been_defined"])
 
     def test_function_parameter_type_is_unknown_in_procdecl(self):
         test_code = "TO f :x END"
         ast = self.parser.parse(test_code)
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
-        self.assertListEqual(error_ids, [2019])
+        self.assertListEqual(error_ids, ["procedure_param_type_is_unknown"])
 
     def test_function_parameter_already_exists_in_procarg(self):
         test_code = "TO f :x :x END"
         ast = self.parser.parse(test_code)
         ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2018))
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors("procedure_param_has_already_been_declared"))
 
     def test_output_command_is_not_in_a_function_in_output(self):
         test_code = "TO f END output 1"
         ast = self.parser.parse(test_code)
         ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2024))
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors("no_output_inside_procedure"))
 
     def test_output_values_types_do_not_vary_in_output(self):
         test_code = """TO f if true { output 1 } output "a END"""
         ast = self.parser.parse(test_code)
         ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2025))
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors("wrong_type_of_output"))
 
     def test_output_of_deref_does_not_cause_error_in_output(self):
         test_code = """TO f :x make "y :x+1 output :y END"""
@@ -64,37 +64,37 @@ class TestFunctions(unittest.TestCase):
         test_code = """TO f :x if :x > 0 { output :y } output :y END"""
         ast = self.parser.parse(test_code)
         ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2007))
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors("undefined_variable"))
 
     def test_function_call_has_too_much_arguments_in_proccall(self):
         test_code = """TO f :x output :x+1 END (f 1 2)"""
         ast = self.parser.parse(test_code)
         ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2021))
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors("wrong_amount_of_aguments_for_procedure"))
 
     def test_function_call_has_too_few_arguments_in_proccall(self):
         test_code = """TO f :x :y output :x+:y+1 END (f 1)"""
         ast = self.parser.parse(test_code)
         ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2021))
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors("wrong_amount_of_aguments_for_procedure"))
 
     def test_called_function_does_not_exists_in_proccall(self):
         test_code = """TO f END (g)"""
         ast = self.parser.parse(test_code)
         ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2020))
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors("procedure_is_not_defined"))
 
     def test_function_calls_argument_is_not_right_type_in_proccall(self):
         test_code = """TO f :x output :x+1 END (f true)"""
         ast = self.parser.parse(test_code)
         ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2022))
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors("wrong_argument_type_for_procedure"))
 
     def test_function_doesnt_end_to_output_if_it_has_output_elsewhere_procdecl(self):
         test_code = """TO f :x if :x > 1 { output :x+1 } END"""
         ast = self.parser.parse(test_code)
         ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2027))
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors("procedure_does_not_end_with_output"))
 
     def test_make_statement_works_in_functions(self):
         test_code = """TO f :x if :x > 0 { make "x :x-1 output :x }
@@ -108,7 +108,7 @@ class TestFunctions(unittest.TestCase):
         test_code = """TO f :a output :a END make "a (f 3)"""
         ast = self.parser.parse(test_code)
         ast.check_types()
-        self.assertEqual(True, self.error_handler.check_id_is_in_errors(2026))
+        self.assertEqual(True, self.error_handler.check_id_is_in_errors("unknown_argument_type_for_procedure"))
 
     def test_function_calls_are_case_insensitive(self):
         test_code = """TO Test output 1 END make "x (tEST)"""
