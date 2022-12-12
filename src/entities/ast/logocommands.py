@@ -115,7 +115,9 @@ class Make(Node):
         if arg_node.node_type == "Deref":
             arg_name = arg_node.leaf
             arg_symbol = self._symbol_tables.variables.lookup(arg_name)
-            arg_node.set_symbol(arg_symbol)
+        elif arg_node.node_type == "ProcCall":
+            arg_name = arg_node.leaf
+            arg_symbol = self._symbol_tables.functions.lookup(arg_name)
 
         arg_logotype = arg_node.get_logotype()
 
