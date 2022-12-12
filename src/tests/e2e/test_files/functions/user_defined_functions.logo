@@ -1,0 +1,16 @@
+to func :x :y 
+    make "a :x + :y
+    output :a
+end
+
+to whats_the_logo_mascot :x
+    ifelse :x = "turtle {
+        show "yep
+    } {
+        show "nope
+    }
+end
+
+make "a func 1 (-5)
+whats_the_logo_mascot "cat
+whats_the_logo_mascot "turtle

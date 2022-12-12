@@ -54,14 +54,16 @@ class AppLibrary:
         self._parser = Parser(
             self._lexer, self._logger, self._symbol_tables, self._java_code_generator
         )
+        self._symbol_tables.functions = initialize_logo_functions(self._symbol_tables.functions)
+
 
     def _get_file_as_str(self, path):
         with open(path) as f:
             return f.read()
 
-    def compile_logo(self, filename):
-        """Compiles the logocode (located in e2e/test_files/logo)"""
-        path = os.path.join(LOGO_TEST_PATH, filename)
+    def compile_logo(self, filepath):
+        """Compiles the logocode (located in e2e/test_files/logo/filepath)"""
+        path = os.path.join(LOGO_TEST_PATH, filepath)
         logocode = self._get_file_as_str(path)
 
         # Compile logo
@@ -73,7 +75,7 @@ class AppLibrary:
             ast.generate_code()
             self._java_code_generator.write(JAVA_GEN_PATH)
         else:
-            raise AssertionError(f"Given logocode in {filename} is not valid")
+            raise AssertionError(f"Given logocode in {filepath} is not valid", self._error_handler.errors)
 
     def java_compiles(self):
         """Compiles the generated java code (located in e2e/java/logo/Logo.java).
