@@ -67,11 +67,15 @@ class Deref(Node):
     def check_types(self):
         symbol = self.get_symbol()
         if not symbol:
+<<<<<<< HEAD
             self._logger.error_handler.add_error(2007, self.position.get_lexspan(), var=self.leaf)
         else:
             # We need to set the symbol ref here,
             # since the symbol table is not fully accessible after type checking.
             self.set_symbol(symbol)
+=======
+            self._logger.error_handler.add_error("undefined_variable", self.position.get_lexspan(), var=self.leaf)
+>>>>>>> 565c8e285b3d19e06c6c9d50216a7e4b504a6532
 
     def generate_code(self):
         return self._code_generator.variable_name(to_lowercase(self.leaf))

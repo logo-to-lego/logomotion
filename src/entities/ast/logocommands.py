@@ -18,7 +18,7 @@ class Make(Node):
         # Check that variable name is string
         if variable_node.node_type == "Deref":
             self._logger.error_handler.add_error(
-                2028,
+                "deref_instead_of_string_literal",
                 lexspan=self.position.get_lexspan(),
                 var_name=variable_node.leaf
             )
@@ -29,7 +29,7 @@ class Make(Node):
 
         if variable_logotype != LogoType.STRING:
             self._logger.error_handler.add_error(
-                2010,
+                "wrong_param_type",
                 lexspan=self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 command=self.node_type.value,
@@ -44,11 +44,9 @@ class Make(Node):
 
         if arg_logotype == LogoType.VOID:
             self._logger.error_handler.add_error(
-                2011,
+                "type_cannot_be_assigned_to_a_variable",
                 self.position.get_lexspan(),
-                row=self.position.get_pos()[0],
-                command=self.node_type.value,
-                value_type=arg_logotype.value,
+                curr_type=arg_logotype
             )
 
     def _create_new_variable(self, name, logotype):
@@ -62,7 +60,7 @@ class Make(Node):
             self._symbol_tables.variables.insert(name, symbol)
         else:
             self._logger.error_handler.add_error(
-                2012,
+                "variable_type_cannot_be_changed",
                 self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 var_name=name,
@@ -78,7 +76,7 @@ class Make(Node):
             var_symbol.typeclass.logotype = arg_type
         elif var_type != arg_type:
             self._logger.error_handler.add_error(
-                2012,
+                "variable_type_cannot_be_changed",
                 self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 var_name=name,
@@ -97,7 +95,7 @@ class Make(Node):
             self._symbol_tables.concatenate_typeclasses(reference_node, symbol_node)
         else:
             self._logger.error_handler.add_error(
-                2012,
+                "variable_type_cannot_be_changed",
                 self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 var_name=name,
@@ -146,7 +144,7 @@ class Make(Node):
         # Check for right amount of arguments
         if len(self.children) != 1 or not self.leaf:
             self._logger.error_handler.add_error(
-                2009,
+                "wrong_amount_of_arguments",
                 self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 command=self.node_type.value,
@@ -178,19 +176,18 @@ class Show(Node):
         # Must have at least 1 argument
         if len(self.children) == 0:
             self._logger.error_handler.add_error(
-                2013, self.position.get_lexspan(), row=self.position.get_pos()[0]
-            )
+                "wrong_amount_of_arguments",
+                self.position.get_lexspan())
 
         # Cannot be function call that returns VOID
         for child in self.children:
             logo_type = child.get_logotype()
             if logo_type == LogoType.VOID:
                 self._logger.error_handler.add_error(
-                    2014,
+                    "wrong_param_type",
                     self.position.get_lexspan(),
-                    row=child.position.get_pos()[0],
                     command=self.node_type.value,
-                    return_type=LogoType.VOID.value,
+                    curr_type=LogoType.VOID.value,
                 )
             child.check_types()
 
@@ -205,10 +202,7 @@ class Bye(Node):
         return LogoType.VOID
 
     def check_types(self):
-        if self.children:
-            self._logger.error_handler.add_error(
-                2015, self.position.get_lexspan(), command=self.node_type.value
-            )
+        return
 
     def generate_code(self):
         self._code_generator.bye()
@@ -223,7 +217,7 @@ class Move(Node):
     def check_types(self):
         if len(self.children) != 1:
             self._logger.error_handler.add_error(
-                2009,
+                "wrong_amount_of_arguments",
                 self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
                 command=self.node_type.value,
@@ -241,7 +235,7 @@ class Move(Node):
 
         if child.get_logotype() != LogoType.FLOAT:
             self._logger.error_handler.add_error(
-                2010,
+                "wrong_param_type",
                 self.position.get_lexspan(),
                 row=child.position.get_pos()[0],
                 command=self.node_type.value,
