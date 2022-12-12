@@ -8,6 +8,8 @@ from utils.lowercase_converter import convert_to_lowercase as to_lowercase
 
 
 class Output(Node):
+    def __init__(self, children, **dependencies):
+        super().__init__("Output", children, **dependencies)
 
     def get_logotype(self):
         return LogoType.VOID
@@ -50,6 +52,7 @@ class ProcCall(Node):
     def __init__(self, children, leaf, **dependencies):
         super().__init__("ProcCall", children, leaf, **dependencies)
         self.procedure: Function = None
+        self._in_procedure = False
 
     def set_logotype(self, logotype):
         proc = self.get_procedure()
@@ -130,15 +133,27 @@ class ProcCall(Node):
                     )
         # Set the procedure as a parameter for use in code gen
         self.procedure = procedure
+        self._in_procedure = not self._symbol_tables.variables.is_scope_global()
 
     def generate_code(self):
         temp_vars = []
         for child in self.children:
             temp_vars.append(child.generate_code())
-        if self.get_logotype() == LogoType.VOID:
+
+        if to_lowercase(self.leaf) in ["repeat", "for"]:
+            if self._in_procedure:
+                self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
+                return None
+            self._code_generator.start_try_catch_block()
             self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
+            self._code_generator.end_try_catch_block_outside_procedure()
             return None
-        return self._code_generator.returning_function_call(to_lowercase(self.leaf), temp_vars)
+
+        if self.get_logotype() != LogoType.VOID:
+            temp_var = self._code_generator.returning_function_call(to_lowercase(self.leaf), temp_vars)
+            return temp_var
+
+        self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
 
 
 class ProcDecl(Node):
@@ -217,11 +232,12 @@ class ProcDecl(Node):
             logo_func_name=to_lowercase(self.leaf), logo_func_type=self.get_logotype()
         )
         self.children[0].generate_code()
-        if self.get_logotype() != LogoType.VOID:
-            self._code_generator.start_try_catch_block()
+        self._code_generator.start_try_catch_block()
         self.children[1].generate_code()
         if self.get_logotype() != LogoType.VOID:
-            self._code_generator.end_try_catch_block(self.get_logotype())
+            self._code_generator.end_try_catch_block_in_procedure(self.get_logotype())
+        else:
+            self._code_generator.end_try_catch_block_outside_procedure()
         self._code_generator.end_function_declaration()
 
 

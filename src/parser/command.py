@@ -167,7 +167,6 @@ def p_output(prod):
     "output : OUTPUT expression"
     prod[0] = shared.node_factory.create_node(
         Output,
-        node_type=shared.reserved_words[prod[1]],
         children=[prod[2]],
         position=Position(prod),
     )

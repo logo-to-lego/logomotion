@@ -8,7 +8,7 @@ from utils.lowercase_converter import convert_to_lowercase as to_lowercase
 
 class Make(Node):
     def __init__(self, children, leaf, **dependencies):
-        super().__init__(TokenType.MAKE, children, leaf, **dependencies)
+        super().__init__("Make", children, leaf, **dependencies)
         self._new_variable = False
 
     def get_logotype(self):

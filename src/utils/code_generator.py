@@ -152,6 +152,13 @@ class JavaCodeGenerator:
         self._append_code(code)
         return temp_var
 
+    def returning_function_call_outside_procedure(self, logo_func_name, arg_vars, temp_var):
+        java_func_name = self._mangle_java_function_name(logo_func_name)
+        arguments = ", ".join(arg_vars)
+        code = f"{temp_var} = this.{java_func_name}({arguments});"
+        self._append_code(code)
+        return temp_var
+
     def _generate_temp_var(self):
         """create an unique temp variable name"""
         return f"temp{self._increase_temp_var_index()}"
@@ -252,6 +259,12 @@ class JavaCodeGenerator:
         self._append_code(code)
         return temp_var
 
+    def callable(self, value):
+        temp_var = self._generate_temp_var()
+        code = f"CallableVariable {temp_var} = new CallableVariable({value});"
+        self._append_code(code)
+        return temp_var
+
     def binop(self, value1, value2, operation):
         """create java code for binops and return variable name"""
         temp_var = self._generate_temp_var()
@@ -296,7 +309,7 @@ class JavaCodeGenerator:
 
     def if_statement_lambda(self, conditional, lambda_variable):
         """Create Java code for if statements utilising Java's lambda"""
-        code = f"if ({conditional}.value) {lambda_variable}.call();"
+        code = f"if ({conditional}.value) {lambda_variable}.value.call();"
         self._append_code(code)
 
     def lambda_no_param_start(self):
@@ -317,6 +330,11 @@ class JavaCodeGenerator:
     def lambda_end(self):
         """Generate the closing bracket for Java lambda"""
         code = "};"
+        self._append_code(code)
+
+    def return_null(self):
+        """Return null at lambda end if proc type is void"""
+        code = "return null;"
         self._append_code(code)
 
     def write(self, path=None):
