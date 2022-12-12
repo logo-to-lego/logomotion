@@ -11,6 +11,9 @@ def lint(ctx):
 def test(ctx):
     ctx.run("pytest src", pty=True)
 
+@task
+def e2e(ctx):
+    ctx.run("robot src", pty=True)
 
 @task
 def black(ctx):
