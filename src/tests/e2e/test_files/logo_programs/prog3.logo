@@ -8,13 +8,44 @@ end
 
 for ["i (-5) 5 1] {
     make "angle 360
-    ifelse :i < 0 {
+    ifelse {:i < 0} {
         show :i
     } {
-        ifelse :i = 0 {
+        ifelse (:i = 0) {
             go_forward
         } {
             rotate :angle
+        }
+    }
+}
+
+
+make "bool true
+
+if (:bool) {
+    repeat 5 {
+        go_forward
+    }
+    repeat (-5) {
+        rotate (-360)
+    }
+}
+
+if (:bool = false) {
+    for ["i 0 20 1] {
+        repeat (:i - (-1)) {
+            rotate 90
+        }
+    }
+    repeat 5 {
+        for ["j 0 2 1] {
+            repeat 3 {
+                go_forward
+                bk 42
+                for ["k 0 10 5] {
+                    show :i + :j - :k
+                }
+            }
         }
     }
 }

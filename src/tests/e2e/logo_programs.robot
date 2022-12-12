@@ -1,4 +1,4 @@
-# Tests miscellaneous logo programs, that test all features we have implemented
+# Tests miscellaneous logo programs. Tests test all features we have implemented
 
 *** Settings ***
 Library  ../../AppLibrary.py
