@@ -1,0 +1,80 @@
+{
+    "unknown_character": 
+        "En ymmärrä merkkiä '@char' tässä yhteydessä",
+
+    "parser_error": 
+        "Kirjoitit '@prodval'. En ymmärrä mitä tarkoitat.",
+
+    "parser_error_with_no_lexspan":
+        "En saanut selvää rivillä @row ja sarakkeella @column olevasta koodista.",
+
+    "undefined_variable": 
+        "Et ole kertonut minulle muuttujaa '@var'.",
+
+    "type_cannot_be_assigned_to_a_variable": 
+        "Muuttuja ei voi olla tyyppiä @curr_type.",
+
+    "variable_type_cannot_be_changed": 
+        "Yritit muuttaa muuttujan '@var_name' tyyppiä tyypistä @curr_type tyyppiin @expected_type. En hyväksy tätä.",
+
+    "deref_instead_of_string_literal": 
+        "Kirjoitit :@var_name, tarkoititko \"@var_name ?",
+
+    "binop_error_when_operand_is_not_float":
+        "Yritit tehdä laskutoimituksen jollakin joka ei ole numero.",
+
+    "unary_without_float_as_child":
+        "Negatiivisen luvun on oltava numero.",
+
+    "unknown_types_when_comparing_with_equals":
+        "Et ole kertonut mitä haluat vertailla keskenään. Kerro muuttujien tyypit ensin.",
+
+    "relative_operation_had_operands_that_were_not_not_string_or_float": 
+        "Rivillä @row koitit vertailla tyyppejä @type1 ja @type2 vääränlaisella vertailuoperaatiolla. Tyypin FLOAT operaatiot ovat <, >, <=, >=, = ja <> ja tyypin STRING operaatiot ovat <> ja =",
+
+    "only_string_and_float_are_comparable": 
+        "Yritit vertailla vääränlaisia tyyppejä keskenään. Vain numeroita ja merkkijonoja voi vertailla ja vertailtavien tyyppien pitää olla samat.",
+
+    "conditional_statement_does_not_return_boolean": 
+        "Kirjoitit ehtolauseen, mutta se ei kerro minulle onko ehto totta vai ei.",
+
+    "wrong_amount_of_arguments": 
+        "Olet antanut tässä väärän määrän argumentteja.",
+
+    "wrong_param_type": 
+        "Yritit antaa komennon @command parametrin tyypiksi @curr_type. Haluan, että parametri on tyyppi @expected_type.",
+
+    "wrong_param_type_with_no_expected_type": 
+        "Yritit antaa komennon @command parametrin tyypiksi @curr_type.",
+
+    "procedure_has_already_been_defined": 
+        "Olet kertonut aliohjelman '@proc' jo aiemmin",
+
+    "procedure_param_has_already_been_declared": 
+        "Olet jo kertonut aliohjelman '@proc' parametrin '@param'.",
+
+    "procedure_param_type_is_unknown": 
+        "Et ole kertonut aliohjelman '@proc' parametrin '@param' tyyppiä.",
+
+    "procedure_is_not_defined": 
+        "Kerro minulle aliohjelma '@proc' ennen sen käyttöä.",
+
+    "wrong_amount_of_aguments_for_procedure": 
+        "Olet kertonut aliohjelman kutsussa '@proc' väärän määrän argumentteja. Niitä on @args kappaletta, vaikka niitä kuuluisi olla @params.",
+
+    "wrong_argument_type_for_procedure": 
+        "Olet kertonut aliohjelman '@proc' argumentin '@arg' tyypiksi @atype, sen pitäisi olla @ptype.",
+
+    "no_output_inside_procedure": 
+        "Anna/Output-komento ei ole aliohjelman sisällä.",
+
+    "wrong_type_of_output": 
+        "Olet antanut väärän palautusarvon aliohjelman '@proc' palautusarvoksi.",
+
+    "unknown_argument_type_for_procedure": 
+        "En tiedä, ottaako aliohjelma '@proc' tyyppiä @atype parametrina",
+
+    "procedure_does_not_end_with_output": 
+        "En tykkää, ettei '@proc' anna arvoa lopussa, vaikka se antaa arvon muualla."
+
+}
