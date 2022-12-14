@@ -1,6 +1,6 @@
 import unittest
 from entities.ast.statementlist import StatementList
-from utils.code_generator import default_code_generator
+from code_generator.code_generator import default_code_generator
 from entities.ast.node import Node
 from entities.ast.logocommands import Bye, Make, Move, Show
 from entities.ast.variables import Deref, Float, StringLiteral

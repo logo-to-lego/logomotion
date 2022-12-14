@@ -7,8 +7,8 @@ import dotenv
 from entities.symbol_tables import SymbolTables
 from entities.preconfigured_functions import initialize_logo_functions
 from lexer.lexer import Lexer
-from utils.code_generator import JavaCodeGenerator
-from utils.preconf_code_generator import JavaPreconfFuncsGenerator
+from code_generator.code_generator import JavaCodeGenerator
+from code_generator.preconf_code_generator import JavaPreconfFuncsGenerator
 from utils.console_io import ConsoleIO
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
