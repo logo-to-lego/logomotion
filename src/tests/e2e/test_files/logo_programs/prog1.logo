@@ -1,0 +1,81 @@
+; This logofile contains all valid logo from all test files under logo directory
+
+To Sum :First :Second
+	Make "Result :first + :second
+	Output :result
+End
+
+TO MULTIPLY :FIRST :SECOND
+	MAKE "RESULT :first * :second
+	OUTPUT :result
+END
+
+make "x (SUM 2 2)
+make "y (multiply 2 2)
+
+fd 8 / 4 / 2
+fd 2
+rt -4
+bk 6,5
+lt -8,23
+
+make "a 3
+
+for ["wasd :a 3 4] { ;itr start limit step
+    make "a 3+:wasd
+}
+
+for ["i 1 2 1] { ;itr start limit step
+    for ["j 1 3 1] {
+        show :j
+    }
+}
+
+make "robot_move true
+make "robot_say false
+make "robot.message "ThisIsRobotSpeaking
+
+if { :robot_move } {
+    if :robot_say {
+        show "Hello
+        show :robot.message
+    }
+}
+
+make "num1 5.123
+make "num2 (-20.6)
+
+make "bool1 :num1 < :num2
+make "bool2 :num1 <= :num2
+make "bool3 :num1 > :num2
+make "bool4 :num1 >= :num2
+make "bool5 :num1 = :num2
+make "bool6 :num1 <> :num2
+
+make "str1 "kissa
+make "str2 "vesinokkaeläin
+
+make "bool7 :str1 = :str2
+make "bool8 :str1 <> :str2
+
+repeat 2 { ; kommentti
+    fd 20
+}
+
+show 1
+(show 1 2)
+
+to star :argh :perjantai :numero
+output :argh+1+:perjantai+:numero
+end
+
+make "a (star 1 2 3)
+show :a
+
+make "animal "kissa
+make "num 2.5
+make "neg -700
+make "ok true
+make "notok false
+
+repeat 1+1+1 {fd 20}
