@@ -39,7 +39,7 @@ class TestParser(unittest.TestCase):
         end
         fd lisää.ykkönen 2"""
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(ProcDecl, lisää.ykkönen, children: [(ProcArgs, children: [(ProgArg, numero)]), (StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(BinOp, +, logo type: LogoType.FLOAT, children: [(Deref, numero), (Float, 1.0, logo type: LogoType.FLOAT)])])])]), (TokenType.FD, logo type: LogoType.VOID, children: [(ProcCall, lisää.ykkönen, children: [(Float, 2.0, logo type: LogoType.FLOAT)])])])])"
+        expected = "(Start, children: [(StatementList, children: [(ProcDecl, lisää.ykkönen, children: [(ProcArgs, children: [(ProgArg, numero)]), (StatementList, children: [(Output, logo type: LogoType.VOID, children: [(BinOp, +, logo type: LogoType.FLOAT, children: [(Deref, numero), (Float, 1.0, logo type: LogoType.FLOAT)])])])]), (TokenType.FD, logo type: LogoType.VOID, children: [(ProcCall, lisää.ykkönen, children: [(Float, 2.0, logo type: LogoType.FLOAT)])])])])"
         self.assertEqual(str(ast), expected)
 
     def test_procedure_call_without_parantheses_with_multiple_args(self):
@@ -49,7 +49,7 @@ class TestParser(unittest.TestCase):
         end
         show summa 5.5 4.5"""
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(ProcDecl, summa, children: [(ProcArgs, children: [(ProgArg, numero1), (ProgArg, numero2)]), (StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(BinOp, +, logo type: LogoType.FLOAT, children: [(Deref, numero1), (Deref, numero2)])])])]), (TokenType.SHOW, logo type: LogoType.VOID, children: [(ProcCall, summa, children: [(Float, 5.5, logo type: LogoType.FLOAT), (Float, 4.5, logo type: LogoType.FLOAT)])])])])"
+        expected = "(Start, children: [(StatementList, children: [(ProcDecl, summa, children: [(ProcArgs, children: [(ProgArg, numero1), (ProgArg, numero2)]), (StatementList, children: [(Output, logo type: LogoType.VOID, children: [(BinOp, +, logo type: LogoType.FLOAT, children: [(Deref, numero1), (Deref, numero2)])])])]), (TokenType.SHOW, logo type: LogoType.VOID, children: [(ProcCall, summa, children: [(Float, 5.5, logo type: LogoType.FLOAT), (Float, 4.5, logo type: LogoType.FLOAT)])])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_start_node(self):
@@ -105,47 +105,47 @@ class TestParser(unittest.TestCase):
     def test_parser_output_with_deref(self):
         test_string = "output :value"
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(Deref, value)])])])"
+        expected = "(Start, children: [(StatementList, children: [(Output, logo type: LogoType.VOID, children: [(Deref, value)])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_output_with_float(self):
         test_string = "output 10"
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(Float, 10.0, logo type: LogoType.FLOAT)])])])"
+        expected = "(Start, children: [(StatementList, children: [(Output, logo type: LogoType.VOID, children: [(Float, 10.0, logo type: LogoType.FLOAT)])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_output_with_string_literal(self):
         test_string = 'output "kissa'
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(StringLiteral, kissa, logo type: LogoType.STRING)])])])"
+        expected = "(Start, children: [(StatementList, children: [(Output, logo type: LogoType.VOID, children: [(StringLiteral, kissa, logo type: LogoType.STRING)])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_output_with_bool(self):
         test_string = "output true"
         ast = self.parser.parse(test_string)
-        expected = "(Start, children: [(StatementList, children: [(TokenType.OUTPUT, logo type: LogoType.VOID, children: [(Bool, TokenType.TRUE, logo type: LogoType.BOOL)])])])"
+        expected = "(Start, children: [(StatementList, children: [(Output, logo type: LogoType.VOID, children: [(Bool, TokenType.TRUE, logo type: LogoType.BOOL)])])])"
         self.assertEqual(str(ast), expected)
 
     def test_parser_make_call_is_parsed_correctly(self):
         test_string = 'make "turn.angle 10'
         ast = self.parser.parse(test_string)
-        correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, (StringLiteral, turn.angle, logo type: LogoType.STRING), logo type: LogoType.VOID, children: [(Float, 10.0, logo type: LogoType.FLOAT)])])])"
+        correct_result = "(Start, children: [(StatementList, children: [(Make, (StringLiteral, turn.angle, logo type: LogoType.STRING), logo type: LogoType.VOID, children: [(Float, 10.0, logo type: LogoType.FLOAT)])])])"
         self.assertEqual(str(ast), correct_result)
 
         test_string = 'make "turn.angle :10'
         ast = self.parser.parse(test_string)
-        correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, (StringLiteral, turn.angle, logo type: LogoType.STRING), logo type: LogoType.VOID, children: [(Deref, 10)])])])"
+        correct_result = "(Start, children: [(StatementList, children: [(Make, (StringLiteral, turn.angle, logo type: LogoType.STRING), logo type: LogoType.VOID, children: [(Deref, 10)])])])"
         self.assertEqual(str(ast), correct_result)
 
         test_string = 'make "turn.angle.string "10'
         ast = self.parser.parse(test_string)
-        correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, (StringLiteral, turn.angle.string, logo type: LogoType.STRING), logo type: LogoType.VOID, children: [(StringLiteral, 10, logo type: LogoType.STRING)])])])"
+        correct_result = "(Start, children: [(StatementList, children: [(Make, (StringLiteral, turn.angle.string, logo type: LogoType.STRING), logo type: LogoType.VOID, children: [(StringLiteral, 10, logo type: LogoType.STRING)])])])"
         self.assertEqual(str(ast), correct_result)
 
     def test_make_with_parenthesis(self):
         test_string = '(make "robot.move 1+2)'
         ast = self.parser.parse(test_string)
-        correct_result = "(Start, children: [(StatementList, children: [(TokenType.MAKE, (StringLiteral, robot.move, logo type: LogoType.STRING), logo type: LogoType.VOID, children: [(BinOp, +, logo type: LogoType.FLOAT, children: [(Float, 1.0, logo type: LogoType.FLOAT), (Float, 2.0, logo type: LogoType.FLOAT)])])])])"
+        correct_result = "(Start, children: [(StatementList, children: [(Make, (StringLiteral, robot.move, logo type: LogoType.STRING), logo type: LogoType.VOID, children: [(BinOp, +, logo type: LogoType.FLOAT, children: [(Float, 1.0, logo type: LogoType.FLOAT), (Float, 2.0, logo type: LogoType.FLOAT)])])])])"
         self.assertEqual(str(ast), correct_result)
 
     def test_parser_if_statementlist_brackets(self):
