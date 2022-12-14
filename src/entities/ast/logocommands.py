@@ -8,7 +8,7 @@ from utils.lowercase_converter import convert_to_lowercase as to_lowercase
 
 class Make(Node):
     def __init__(self, children, leaf, **dependencies):
-        super().__init__(TokenType.MAKE, children, leaf, **dependencies)
+        super().__init__("Make", children, leaf, **dependencies)
         self._new_variable = False
 
     def get_logotype(self):
@@ -32,7 +32,7 @@ class Make(Node):
                 "wrong_param_type",
                 lexspan=self.position.get_lexspan(),
                 row=self.position.get_pos()[0],
-                command=self.node_type.value,
+                command=self.node_type,
                 curr_type=variable_node.get_logotype().value,
                 expected_type=LogoType.STRING.value,
             )

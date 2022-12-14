@@ -6,7 +6,7 @@ from utils.logger import Logger, default_logger
 from lexer.token_types import TokenType
 
 START_METHOD = (
-    "package logo; import classes.EV3MovePilot; import java.lang.Runnable; \
+    "package logo; import classes.EV3MovePilot; import java.util.concurrent.Callable; \
     import classes.*;"
 
     "public class Logo { \
@@ -37,6 +37,7 @@ JAVA_TYPES = {
     LogoType.STRING: "StrVariable",
     LogoType.BOOL: "BoolVariable",
     LogoType.VOID: "void",
+    LogoType.NAMELESS_FUNCTION: "CallableVariable"
 }
 
 JAVA_TYPES_OBJECTS = {
@@ -91,6 +92,10 @@ class JavaCodeGenerator:
         code = f"public {JAVA_TYPES[logo_func_type]} {java_func_name}("
         self._append_code(code)
 
+    def start_try_catch_block(self):
+        code = "try {"
+        self._append_code(code)
+
     def _mangle_java_function_name(self, logo_func_name):
         java_func_name = self._java_function_names.get(logo_func_name, None)
         if not java_func_name:
@@ -109,6 +114,18 @@ class JavaCodeGenerator:
         self._append_code(code)
         self._proc_flag = False
 
+    def end_try_catch_block_in_procedure(self, logo_func_type):
+        code = "} catch (ReturnException error) { "\
+               f"return ({JAVA_TYPES[logo_func_type]}) error.returnValue;"\
+               "}"
+        self._append_code(code)
+
+    def end_try_catch_block_outside_procedure(self):
+        code = "} catch (ReturnException error) { "\
+               "System.out.println(\"An unidentified error occurred.\");"\
+               "}"
+        self._append_code(code)
+
     def add_function_parameters(self, parameters):
         code = ""
         for index, param in enumerate(parameters):
@@ -119,7 +136,7 @@ class JavaCodeGenerator:
         self._append_code(code)
 
     def return_statement(self, arg_var):
-        code = f"return {arg_var};"
+        code = f"throw new ReturnException({arg_var});"
         self._append_code(code)
 
     def function_call(self, logo_func_name, arg_vars):
@@ -133,6 +150,13 @@ class JavaCodeGenerator:
         java_func_name = self._mangle_java_function_name(logo_func_name)
         arguments = ", ".join(arg_vars)
         code = f"var {temp_var} = this.{java_func_name}({arguments});"
+        self._append_code(code)
+        return temp_var
+
+    def returning_function_call_outside_procedure(self, logo_func_name, arg_vars, temp_var):
+        java_func_name = self._mangle_java_function_name(logo_func_name)
+        arguments = ", ".join(arg_vars)
+        code = f"{temp_var} = this.{java_func_name}({arguments});"
         self._append_code(code)
         return temp_var
 
@@ -236,6 +260,12 @@ class JavaCodeGenerator:
         self._append_code(code)
         return temp_var
 
+    def callable(self, value):
+        temp_var = self._generate_temp_var()
+        code = f"CallableVariable {temp_var} = new CallableVariable({value});"
+        self._append_code(code)
+        return temp_var
+
     def binop(self, value1, value2, operation):
         """create java code for binops and return variable name"""
         temp_var = self._generate_temp_var()
@@ -280,13 +310,13 @@ class JavaCodeGenerator:
 
     def if_statement_lambda(self, conditional, lambda_variable):
         """Create Java code for if statements utilising Java's lambda"""
-        code = f"if ({conditional}.value) {lambda_variable}.run();"
+        code = f"if ({conditional}.value) {lambda_variable}.value.call();"
         self._append_code(code)
 
     def lambda_no_param_start(self):
         """Generate the start of a paramless Java lambda, return lambda variable's name"""
         temp_var = self._generate_temp_var()
-        code = f"Runnable {temp_var} = () -> " + "{"
+        code = f"Callable<Void> {temp_var} = () -> " + "{"
         self._append_code(code)
         return temp_var
 
@@ -301,6 +331,11 @@ class JavaCodeGenerator:
     def lambda_end(self):
         """Generate the closing bracket for Java lambda"""
         code = "};"
+        self._append_code(code)
+
+    def return_null(self):
+        """Return null at lambda end if proc type is void"""
+        code = "return null;"
         self._append_code(code)
 
     def write(self, path=None):

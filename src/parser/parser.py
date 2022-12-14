@@ -65,7 +65,7 @@ from parser.expression import *
 from parser.preparser import Preparser
 from ply import yacc
 from lexer.lexer import Lexer
-from utils.code_generator import default_code_generator
+from code_generator.code_generator import default_code_generator
 from utils.logger import default_logger
 from entities.symbol_tables import default_symbol_tables
 
