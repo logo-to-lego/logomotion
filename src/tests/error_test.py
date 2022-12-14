@@ -2,7 +2,6 @@ import unittest
 from unittest.mock import Mock
 from lexer.lexer import Lexer
 from parser.parser import Parser
-from utils.error_handler import ErrorHandler
 from utils.error_handler_mock import ErrorHandlerMock
 from utils.logger import Logger
 from entities.symbol_tables import SymbolTables
@@ -15,7 +14,6 @@ class TestErrorHandler(unittest.TestCase):
     def setUp(self):
         self.console_mock = Mock()
         self.error_handler = ErrorHandlerMock()
-        #self.error_handler = ErrorHandler(console_io=self.console_mock)
         self.logger = Logger(self.console_mock, self.error_handler)
         self.lexer = Lexer(self.logger)
         self.lexer.build()
