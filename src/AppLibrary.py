@@ -9,12 +9,11 @@ from lexer.lexer import Lexer
 from utils.code_generator import JavaCodeGenerator
 from utils.error_handler import ErrorHandler
 from utils.logger import Logger
+from utils.preconf_code_generator import JavaPreconfFuncsGenerator
 
 CWD = os.getcwd()
-CURR_DIR = os.path.dirname(os.path.relpath(__file__))
-JAVA_GEN_PATH = os.path.join(CURR_DIR, "tests/e2e/java/logo/")
-JAVA_TEST_PATH = os.path.join(CURR_DIR, "tests/e2e/test_files/java/")
-LOGO_TEST_PATH = os.path.join(CURR_DIR, "tests/e2e/test_files/logo/")
+LOGO_TEST_PATH = os.path.join(CWD, "src/tests/e2e/test_files/")
+JAVA_GEN_PATH = os.path.join(CWD, "src/tests/e2e/java/logo/")
 
 
 class MockIO:
@@ -23,6 +22,22 @@ class MockIO:
 
     def write(self, message):
         self._messages.append(message)
+
+def build_java_code_generator(logger):
+    preconf_gen = JavaPreconfFuncsGenerator()
+    jcg = JavaCodeGenerator(logger=logger)
+    preconf_gen.set_code_generator(jcg)
+    funcs_dict = preconf_gen.get_funcs()
+    jcg.set_preconf_funcs_dict(funcs_dict)
+    jcg.add_env_variables(
+        wheelDiameter=os.getenv("WHEEL_DIAM"),
+        wheelDistance=os.getenv("AXLE_LEN"),
+        leftMotor=os.getenv("LEFT_MOTOR_PORT"),
+        rightMotor=os.getenv("RIGHT_MOTOR_PORT"),
+        motorSpeed=os.getenv("MOVEMENT_SPD"),
+        motorRotationSpeed = os.getenv("ROTATION_SPD"),
+    )
+    return jcg
 
 
 class AppLibrary:
@@ -34,19 +49,20 @@ class AppLibrary:
         self._lexer = Lexer(self._logger)
         self._lexer.build()
         self._symbol_tables = SymbolTables(SymbolTable(), SymbolTable())
-        self._java_code_generator = JavaCodeGenerator(logger=self._logger)
+        self._java_code_generator = build_java_code_generator(self._logger)
         self._parser = Parser(
             self._lexer, self._logger, self._symbol_tables, self._java_code_generator
         )
-        self._parser.build()
+        self._symbol_tables.functions = initialize_logo_functions(self._symbol_tables.functions)
+
 
     def _get_file_as_str(self, path):
         with open(path) as f:
             return f.read()
 
-    def compile_logo(self, filename):
-        """Compiles the logocode (located in e2e/test_files/logo)"""
-        path = os.path.join(LOGO_TEST_PATH, filename)
+    def compile_logo(self, filepath):
+        """Compiles the logocode (located in e2e/test_files/logo/filepath)"""
+        path = os.path.join(LOGO_TEST_PATH, filepath)
         logocode = self._get_file_as_str(path)
 
         # Compile logo
@@ -58,40 +74,14 @@ class AppLibrary:
             ast.generate_code()
             self._java_code_generator.write(JAVA_GEN_PATH)
         else:
-            raise AssertionError(f"Given logocode in {filename} is not valid")
-
-    def _difference(self, str1, str2):
-        # Differences between two strings
-        str1 = str1.split()
-        str2 = str2.split()
-        A = set(str1)
-        B = set(str2)
-        return A.symmetric_difference(B)
-
-    def java_is_valid(self, filename):
-        """Compares the test java file (located in e2e/test_files/java) and generated java.
-        Raises AssertionError if the test code and generated code do not match.
-        The comparison is done simply by comparing the strings without spaces, tabs or newlines"""
-        test_java_path = os.path.join(JAVA_TEST_PATH, filename)
-        generated_java_path = os.path.join(JAVA_GEN_PATH, "Logo.java")
-
-        test_java_code = self._get_file_as_str(test_java_path)
-        generated_java_code = self._get_file_as_str(generated_java_path)
-
-        # Remove spaces, tabs and new lines
-        code1 = "".join(test_java_code.split())
-        code2 = "".join(generated_java_code.split())
-
-        if code1 != code2:
-            difference = self._difference(test_java_code, generated_java_code)
-            raise AssertionError(f"{filename} and generated java did not match ", difference)
+            raise AssertionError(f"Given logocode in {filepath} is not valid", self._error_handler.errors)
 
     def java_compiles(self):
         """Compiles the generated java code (located in e2e/java/logo/Logo.java).
         Raises AssertionError if the compilation fails."""
         path = os.path.join(JAVA_GEN_PATH, "..")
         os.chdir(path)  # Change dir to make the compile
-        output = subprocess.run(["javac", "logo/Logo.java"], capture_output=True)
+        output = subprocess.run(["javac", "logo/Logo.java"], capture_output=True) # Compile java
         os.chdir(CWD)  # Change dir back to make tests work after this
         if output.returncode != 0:
             raise AssertionError("Java compilation failed: \n", output.stderr.decode("utf-8"))
