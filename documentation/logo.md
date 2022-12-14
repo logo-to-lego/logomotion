@@ -347,9 +347,11 @@ for ["a 2 20 2] { show :a }
 
 ## Scopes
 
-Variables defined on a global scale are not visible within procedures. Procedures' inner or own variables are not visible on a global scale.
+To sum up the scopes:
 
-Variables defined within conditional statements and [Loops](#loops) are not visible outside of the condition statements. However, they are still capable of using a variables of an upper scope. For example, a global variable.
+Variables defined on a global scale are not visible within [Procedures](#procedures). Procedures' inner or own variables are not visible on a global scale.
+
+Variables defined within [Conditional statements](#conditional-statements) and [Loops](#loops) are not visible outside of them. However, they are still capable of using a variables of an upper scope. For example, a global variable.
 
 ## Case sensitivity
 
@@ -359,7 +361,7 @@ Variables, commands, function names and other referenced types of information ar
 make "x 42
 ```
 
-The variable `x` is now defined with lowercase letters, but can be referenced in upper case in the future:
+The variable `x` is now defined with lowercase letters, but can be referenced in upper case later:
 
 ```
 show :X
