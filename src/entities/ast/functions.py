@@ -266,23 +266,26 @@ class ProcDecl(Node):
 
         self._symbol_tables.variables.finalize_scope()
 
-    def _has_loop(self, node):
+    def _has_unknown_function(self, node):
+        """Check if a void type procedure has an unknown function in it.
+           Mark the unknown function's void_parent variable as True if yes"""
         if to_lowercase(node.leaf) in ["repeat", "for"]:
             node.void_parent = True
         for child in node.children:
-            self._has_loop(child)
+            self._has_unknown_function(child)
 
     def generate_code(self):
         self._code_generator.start_function_declaration(
             logo_func_name=to_lowercase(self.leaf), logo_func_type=self.get_logotype()
         )
         self.children[0].generate_code()
+        # To avoid unreachable code in void methods without loops
         if self.get_logotype() != LogoType.VOID:
             self._code_generator.start_try_catch_block()
             self.children[1].generate_code()
             self._code_generator.end_try_catch_block_in_procedure(self.get_logotype())
         else:
-            self._has_loop(self)
+            self._has_unknown_function(self)
             self.children[1].generate_code()
         self._code_generator.end_function_declaration()
 
