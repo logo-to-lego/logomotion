@@ -20,6 +20,7 @@ This document contains the syntax and grammar of the Logo variant that is used i
     - [About parameter typing](#about-parameter-typing)
     - [About the scope of procedures](#about-the-scope-of-procedures)
 - [Loops](#loops)
+    - [About the scope of loops](#about-the-scope-of-loops)
 - [Scopes](#scopes)
 - [Case insensitivity](#case-sensitivity)
 
@@ -343,6 +344,31 @@ for ["a 1 10 1] { show :a }
 *Example: Print out the multiplication table of 2*
 ```
 for ["a 2 20 2] { show :a }
+```
+
+### About the scope of loops
+
+Similar to the [Scope of conditional statements](#about-the-scope-of-conditional-statements), variables defined outside of the loops can be used inside them
+```
+make "x 10
+repeat 10 { show :x }
+for ["i 1 10 1] { show :x }
+```
+and variables defined inside the loops cannot be used outside of them.
+```
+repeat 10 { make "x 10 }
+for ["i 1 10 1] { make "y 10 }
+show :x
+-> ERROR, :x is not defined
+show :y
+-> ERROR, :y is not defined
+```
+A **for** loop's iterable variable can only be used within its own scope.
+```
+for ["i 1 10 1] { show :i }
+
+show :i
+-> ERROR, :i is not defined
 ```
 
 ## Scopes
