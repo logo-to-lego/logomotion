@@ -1,6 +1,6 @@
 import unittest
 from entities.ast.statementlist import StatementList
-from utils.code_generator import default_code_generator
+from code_generator.code_generator import default_code_generator
 from entities.ast.node import Node
 from entities.ast.logocommands import Bye, Make, Move, Show
 from entities.ast.variables import Deref, Float, StringLiteral
@@ -127,10 +127,10 @@ class CodegenTest(unittest.TestCase):
         self.assertEqual("DoubleVariable temp2 = new DoubleVariable(0);", code_list[1])
         self.assertEqual("DoubleVariable temp3 = new DoubleVariable(5);", code_list[2])
         self.assertEqual("DoubleVariable temp4 = new DoubleVariable(1);", code_list[3])
-        self.assertEqual("Runnable temp5 = () -> {", code_list[4])
+        self.assertEqual("Callable<Void> temp5 = () -> {", code_list[4])
         self.assertEqual("DoubleVariable temp6 = new DoubleVariable(1);", code_list[5])
         self.assertEqual("var var7 = temp6;", code_list[6])
-        self.assertEqual("this.func8(temp1, temp2, temp3, temp4, temp5);", code_list[8])
+        self.assertEqual("this.func9(temp1, temp2, temp3, temp4, temp8);", code_list[11])
         
     
     def test_binop(self):
