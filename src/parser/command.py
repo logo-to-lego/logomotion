@@ -203,7 +203,7 @@ def p_for_call(prod): #for ["i 1 2 3] {}
     )
 
 def p_repeat_call(prod):
-    "proc_call : REPEAT expression unknown_function"
+    "proc_call : REPEAT expression expression"
     unf = prod[3]
     unf.arg_type = LogoType.VOID
     prod[0] = shared.node_factory.create_node(

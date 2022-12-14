@@ -37,6 +37,7 @@ JAVA_TYPES = {
     LogoType.STRING: "StrVariable",
     LogoType.BOOL: "BoolVariable",
     LogoType.VOID: "void",
+    LogoType.NAMELESS_FUNCTION: "CallableVariable"
 }
 
 JAVA_TYPES_OBJECTS = {
