@@ -20,6 +20,8 @@ Logomotion is a Logo to Java compiler. The goal of the project is to enable the 
 - [Gradle usage](https://github.com/logo-to-lego/logomotion/blob/main/documentation/template_usage.md)
 - [Architecture](https://github.com/logo-to-lego/logomotion/blob/main/documentation/architecture.md)
 
+[Command structures](https://github.com/logo-to-lego/logomotion/blob/main/documentation/adding_command_structures.md)
+
 ## Definition of Done
 
 * Pull requests from branches go through CI/CD pipeline successfully
