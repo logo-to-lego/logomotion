@@ -155,6 +155,7 @@ class ProcCall(Node):
             return temp_var
 
         self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
+        return None
 
 
 class ProcDecl(Node):

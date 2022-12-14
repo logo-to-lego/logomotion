@@ -16,7 +16,8 @@ class JavaPreconfFuncsGenerator:
     def _repeat_code(self):
         # pylint: disable=W0212
         mangled_name = self.jcg._mangle_java_function_name("repeat")
-        java_repeat_code = f"public void {mangled_name}(DoubleVariable n, CallableVariable f) throws ReturnException {{ \
+        java_repeat_code = f"public void {mangled_name}(DoubleVariable n, CallableVariable f)\
+            throws ReturnException {{\
                 try {{\
                     for(int i=0;i<n.value;i++) {{ \
                         f.value.call();\
