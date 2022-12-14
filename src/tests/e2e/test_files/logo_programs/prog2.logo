@@ -1,0 +1,67 @@
+to shape :shape 
+    if :shape = "square {
+        repeat 4 {
+            fd 100
+            rt 90
+        }
+    }
+    if :shape = "triangle {
+        repeat 3 {
+            fd 100
+            rt 60
+        }
+    }
+    if :shape = "circle {
+        repeat 360 {
+            fd 1
+            rt 1
+        }
+    }
+end
+
+to checker :x
+    if :x=0 {
+        output true
+    }
+    output false
+end
+
+to animal :num 
+    if :num = 0 {
+        output "cat
+    }
+    if (:num = 1) {
+        output "dog
+    }
+    if {:num = 2} {
+        output "turtle
+    }
+    if :num = 3 {
+        output "platypus
+    }
+    output "unknown
+end
+
+
+shape "square
+shape "triangle
+shape "circle
+shape "cat
+
+show "yay
+make "num 0
+
+make "result true
+
+ifelse :num = 0 {
+    make "result checker :num
+} {
+    make "result checker :num    
+}
+
+show :result
+
+make "animal 0
+make "animal 1
+make "animal 2
+make "animal 3

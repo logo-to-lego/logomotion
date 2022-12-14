@@ -67,7 +67,13 @@ class Deref(Node):
     def check_types(self):
         symbol = self.get_symbol()
         if not symbol:
-            self._logger.error_handler.add_error(2007, self.position.get_lexspan(), var=self.leaf)
+            self._logger.error_handler.add_error(
+                "undefined_variable", self.position.get_lexspan(), var=self.leaf
+            )
+        else:
+            # We need to set the symbol ref here,
+            # since the symbol table is not fully accessible after type checking.
+            self.set_symbol(symbol)
 
     def generate_code(self):
         return self._code_generator.variable_name(to_lowercase(self.leaf))
@@ -83,10 +89,12 @@ class StringLiteral(Node):
     def generate_code(self):
         return self._code_generator.string(self.leaf)
 
+
 class VariableNode(Node):
     """Used as the first argument in for argument list"""
+
     def __init__(self, leaf, **dependencies):
-        super().__init__("VariableNode",children=None, leaf=leaf, **dependencies)
+        super().__init__("VariableNode", children=None, leaf=leaf, **dependencies)
 
     def get_logotype(self):
         return LogoType.STRING
@@ -94,7 +102,7 @@ class VariableNode(Node):
     def check_types(self):
         """Type check is passed as scoped_type_check
         will be called from unknown_function node"""
-        #pylint: disable=W0107
+        # pylint: disable=W0107
         pass
 
     def scoped_type_check(self):

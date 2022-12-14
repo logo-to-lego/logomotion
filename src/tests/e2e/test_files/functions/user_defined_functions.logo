@@ -1,0 +1,24 @@
+to func :x :y 
+    make "a :x + :y
+    output :a
+end
+
+to whats_the_logo_mascot :x
+    ifelse :x = "turtle {
+        show "yep
+    } {
+        show "nope
+    }
+end
+
+to recursive :y
+    if :y = 100 {
+        bye
+    }
+    recursive :y+1
+end
+
+make "a func 1 (-5)
+whats_the_logo_mascot "cat
+whats_the_logo_mascot "turtle
+recursive (-1)

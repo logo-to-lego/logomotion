@@ -21,7 +21,7 @@ class Output(Node):
         # Check output command is in function
         if not procedure:
             self._logger.error_handler.add_error(
-                2024, lexspan=self.position.get_lexspan(), row=self.position.get_pos()[0]
+                "no_output_inside_procedure", lexspan=self.position.get_lexspan()
             )
             return
         if procedure.get_logotype() == LogoType.UNKNOWN:
@@ -32,15 +32,14 @@ class Output(Node):
             else:
                 procedure.typeclass.logotype = output_value.get_logotype()
         else:
-            if output_value.get_logotype() == LogoType.UNKNOWN \
-               and output_value.__class__ == Deref:
+            if output_value.get_logotype() == LogoType.UNKNOWN and output_value.__class__ == Deref:
                 deref_symbol = self._symbol_tables.variables.lookup(output_value.leaf)
                 self._symbol_tables.concatenate_typeclasses(deref_symbol, procedure)
                 return
             # Check output value's type is same as funtion's other output values' types
             if procedure.get_logotype() != output_value.get_logotype():
                 self._logger.error_handler.add_error(
-                    2025, lexspan=self.position.get_lexspan(), proc=procedure.name
+                    "wrong_type_of_output", lexspan=self.position.get_lexspan(), proc=procedure.name
                 )
 
     def generate_code(self):
@@ -80,25 +79,68 @@ class ProcCall(Node):
             procedure = self._symbol_tables.functions.lookup(self.leaf)
         return procedure
 
-    def set_arguments_logotype(self, argument, parameter):
+    def _handle_unknown_type_parameter_for_recursion_calls(self, parameter_symbol, argument_node):
+        """Handle type unification for a recursive call's unknown typed parameter, with given argument AST node."""
+        argument_type = argument_node.get_logotype()
+
+        if argument_type != LogoType.UNKNOWN:
+            # Argument type is known, simply set parameter type.
+            parameter_symbol.typeclass.logotype = argument_type
+        else:
+            if argument_node.__class__ is Deref:
+                # Argument is a deref node, with an unknown type.
+                argument_symbol = self._symbol_tables.variables.lookup(argument_node.leaf)
+                if argument_symbol:
+                    self._symbol_tables.concatenate_typeclasses(parameter_symbol, argument_symbol)
+                else:
+                    raise KeyError(
+                        f"ProcCall: Variable symbol {argument_node.leaf} not found in the variable symbol table."
+                    )
+            elif argument_node.__class__ is ProcCall and self._is_recursive_call(
+                argument_node.leaf
+            ):
+                # Argument is a recursive procedure call, with an unknown return type.
+                proc_symbol = self._symbol_tables.functions.lookup(argument_node.leaf)
+                if proc_symbol:
+                    self._symbol_tables.concatenate_typeclasses(parameter_symbol, proc_symbol)
+                else:
+                    raise KeyError(
+                        f"ProcCall: Function symbol {argument_node.leaf} not found in the function symbol table."
+                    )
+
+    def set_arguments_logotype(self, argument_node, parameter_symbol):
         """Get ProcCall's argument/child Node and Procedures parameter Node as arguments
         and set parameters logotype to arguments logotype"""
-        if argument.__class__ in (Deref, Function):
-            arg_typeclass = argument.get_typeclass()
-            arg_typeclass.logotype = parameter.get_logotype()
+        parameter_type = parameter_symbol.get_logotype()
+
+        if parameter_type == LogoType.UNKNOWN and self._is_recursive_call(self.leaf):
+            self._handle_unknown_type_parameter_for_recursion_calls(parameter_symbol, argument_node)
+        elif argument_node.__class__ in (Deref, ProcCall):
+            arg_typeclass = argument_node.get_typeclass()
+            # This never overwrites non-unknown types.
+            arg_typeclass.logotype = parameter_type
+
+    def _is_recursive_call(self, procedure_name):
+        """Returns True if the procedure call is a recursive call, i.e. the procedure is
+        called inside its own definition."""
+        inside_procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
+        called_procedure_name = to_lowercase(procedure_name)
+        if inside_procedure and called_procedure_name == inside_procedure.name:
+            return True
+        return False
 
     def check_types(self):
         # Check the procedure has been declarated
         procedure = self._symbol_tables.functions.lookup(self.leaf)
         if not procedure:
             self._logger.error_handler.add_error(
-                2020, self.position.get_lexspan(), proc=self.leaf, row=self.position.get_pos()[0]
+                "procedure_is_not_defined", self.position.get_lexspan(), proc=self.leaf
             )
             return
         # Check the procedure has right amout of arguments
         if len(procedure.parameters) != len(self.children):
             self._logger.error_handler.add_error(
-                2021,
+                "wrong_amount_of_aguments_for_procedure",
                 self.position.get_lexspan(),
                 proc=self.leaf,
                 row=self.position.get_pos()[0],
@@ -114,17 +156,18 @@ class ProcCall(Node):
             self.set_arguments_logotype(child, parameter_symbol)
             argument_type = child.get_logotype()
             parameter_type = parameter_symbol.get_logotype()
+
             if argument_type != parameter_type:
                 if parameter_type == LogoType.UNKNOWN:
                     self._logger.error_handler.add_error(
-                        2026,
+                        "unknown_argument_type_for_procedure",
                         self.position.get_lexspan(),
                         proc=self.leaf,
                         atype=argument_type.value,
                     )
                 else:
                     self._logger.error_handler.add_error(
-                        2022,
+                        "wrong_argument_type_for_procedure",
                         self.position.get_lexspan(),
                         proc=self.leaf,
                         arg=child.leaf,
@@ -138,24 +181,25 @@ class ProcCall(Node):
 
     def generate_code(self):
         temp_vars = []
+        temp_var = None
         for child in self.children:
             temp_vars.append(child.generate_code())
 
         if to_lowercase(self.leaf) in ["repeat", "for"]:
             if self._in_procedure and not self.void_parent:
                 self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
-                return None
+                return temp_var
             self._code_generator.start_try_catch_block()
             self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
             self._code_generator.end_try_catch_block_outside_procedure()
-            return None
+            return temp_var
 
         if self.get_logotype() != LogoType.VOID:
             temp_var = self._code_generator.returning_function_call(to_lowercase(self.leaf), temp_vars)
             return temp_var
 
         self._code_generator.function_call(to_lowercase(self.leaf), temp_vars)
-        return None
+        return temp_var
 
 
 class ProcDecl(Node):
@@ -169,26 +213,13 @@ class ProcDecl(Node):
             return self.procedure.typeclass.logotype
         return None
 
-    def _check_for_recursive_calls(self, statement_list, proc_args):
-        for child in statement_list.children:
-
-            # Check if child is a recursive call
-            if child.__class__ == ProcCall and child.leaf == self.leaf:
-
-                # Check that function call has as many arguments as function has params
-                if len(child.children) != len(proc_args.children):
-                    return
-
-                # Set type of argument if parameter has it
-                for idx, c in enumerate(child.children): # pylint: disable=C0103
-                    proc_arg = proc_args.children[idx]
-                    if proc_arg.get_logotype() == LogoType.UNKNOWN and c.get_logotype() != LogoType.UNKNOWN:
-                        proc_arg.set_logotype(c.get_logotype())
-
     def check_types(self):
         # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
-            self._logger.error_handler.add_error(2017, self.position.get_lexspan(), proc=self.leaf)
+            self._logger.error_handler.add_error(
+                "procedure_has_already_been_defined", self.position.get_lexspan(), proc=self.leaf
+            )
+
         self.procedure = Function(self.leaf, typeclass=Type(functions={self.leaf}))
         self._symbol_tables.functions.insert(self.leaf, self.procedure)
         self._symbol_tables.variables.initialize_scope(in_function=self.procedure)
@@ -200,14 +231,13 @@ class ProcDecl(Node):
         proc_args.check_types()
 
         statement_list = self.children[1]
-        self._check_for_recursive_calls(statement_list, proc_args)
         statement_list.check_types()
 
         # Check the procedure doesn't have unknown type parameters
         for parameter in self.procedure.parameters:
             if parameter.get_logotype() == LogoType.UNKNOWN:
                 self._logger.error_handler.add_error(
-                    2019,
+                    "procedure_param_type_is_unknown",
                     self.position.get_lexspan(),
                     proc=self.procedure.name,
                     param=parameter.name,
@@ -222,30 +252,40 @@ class ProcDecl(Node):
             # Check function with output statements ends to output statement
             if not self.children[1].children[-1].__class__ == Output:
                 self._logger.error_handler.add_error(
-                    2027,
+                    "procedure_does_not_end_with_output",
                     self.position.get_lexspan(),
-                    proc=self.leaf
+                    proc=self.leaf,
+                )
+            elif self.procedure.get_logotype() == LogoType.UNKNOWN:
+                # Procedure returns an UNKNOWN type.
+                self._logger.error_handler.add_error(
+                    "procedure_return_type_cannot_be_determined",
+                    self.position.get_lexspan(),
+                    proc=self.leaf,
                 )
 
         self._symbol_tables.variables.finalize_scope()
 
-    def _has_loop(self, node):
+    def _has_unknown_function(self, node):
+        """Check if a void type procedure has an unknown function in it.
+           Mark the unknown function's void_parent variable as True if yes"""
         if to_lowercase(node.leaf) in ["repeat", "for"]:
             node.void_parent = True
         for child in node.children:
-            self._has_loop(child)
+            self._has_unknown_function(child)
 
     def generate_code(self):
         self._code_generator.start_function_declaration(
             logo_func_name=to_lowercase(self.leaf), logo_func_type=self.get_logotype()
         )
         self.children[0].generate_code()
+        # To avoid unreachable code in void methods without loops
         if self.get_logotype() != LogoType.VOID:
             self._code_generator.start_try_catch_block()
             self.children[1].generate_code()
             self._code_generator.end_try_catch_block_in_procedure(self.get_logotype())
         else:
-            self._has_loop(self)
+            self._has_unknown_function(self)
             self.children[1].generate_code()
         self._code_generator.end_function_declaration()
 
@@ -290,11 +330,16 @@ class ProcArg(Node):
 
     def check_types(self):
         procedure = self._symbol_tables.variables.get_in_scope_function_symbol()
+
         # Check the parameter hasn't already been declarated
         if self._symbol_tables.variables.lookup(self.leaf):
             self._logger.error_handler.add_error(
-                2018, self.position.get_lexspan(), proc=procedure.name, param=self.leaf
+                "procedure_param_has_already_been_declared",
+                self.position.get_lexspan(),
+                proc=procedure.name,
+                param=self.leaf,
             )
+
         self.symbol = Variable(self.leaf)
         procedure.parameters.append(self.symbol)
         self._symbol_tables.variables.insert(self.leaf, self.symbol)

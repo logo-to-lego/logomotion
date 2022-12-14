@@ -42,7 +42,7 @@ class TestErrorHandler(unittest.TestCase):
         self.parser.parse(test_string)
 
         error_ids = self.error_handler.get_error_ids()
-        self.assertListEqual(error_ids, [2000])
+        self.assertListEqual(error_ids, ["parser_error"])
 
     def test_error_with_invalid_binop(self):
         test_string = """
@@ -54,7 +54,7 @@ class TestErrorHandler(unittest.TestCase):
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
 
-        self.assertListEqual(error_ids, [2002])
+        self.assertListEqual(error_ids, ["binop_error_when_operand_is_not_float"])
 
     def test_invalid_unary_op_with_bool(self):
         test_string = """
@@ -65,7 +65,7 @@ class TestErrorHandler(unittest.TestCase):
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
 
-        self.assertListEqual(error_ids, [2003])
+        self.assertListEqual(error_ids, ["unary_without_float_as_child"])
 
     def test_invalid_unary_op_with_str(self):
         test_string = """
@@ -76,7 +76,7 @@ class TestErrorHandler(unittest.TestCase):
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
 
-        self.assertListEqual(error_ids, [2003])
+        self.assertListEqual(error_ids, ["unary_without_float_as_child"])
 
 
     def test_valid_relops_work(self):
@@ -101,7 +101,7 @@ class TestErrorHandler(unittest.TestCase):
 
         error_ids = self.error_handler.get_error_ids()
 
-        self.assertListEqual(error_ids, [2007, 2007])
+        self.assertListEqual(error_ids, ["undefined_variable", "undefined_variable"])
 
     def test_relop_raises_error_with_non_comparable_types(self):
         test_string = """
@@ -114,7 +114,7 @@ class TestErrorHandler(unittest.TestCase):
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
 
-        self.assertListEqual(error_ids, [2005])
+        self.assertListEqual(error_ids, ["only_string_and_float_are_comparable"])
 
     def test_variable_is_not_defined(self):
         test_string = """fd :x"""
@@ -123,7 +123,7 @@ class TestErrorHandler(unittest.TestCase):
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
 
-        self.assertListEqual(error_ids, [2007])
+        self.assertListEqual(error_ids, ["undefined_variable"])
 
     def test_move_commands_yield_error_with_invalid_parameter_type(self):
         test_string = """
@@ -138,7 +138,7 @@ class TestErrorHandler(unittest.TestCase):
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
 
-        self.assertListEqual(error_ids, [2010, 2010, 2010, 2010])
+        self.assertListEqual(error_ids, ["wrong_param_type", "wrong_param_type", "wrong_param_type", "wrong_param_type"])
 
     def test_make_only_accepts_string_as_variable_name(self):
         test_string = """
@@ -151,7 +151,7 @@ class TestErrorHandler(unittest.TestCase):
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
 
-        self.assertListEqual(error_ids, [2010, 2010])
+        self.assertListEqual(error_ids, ["wrong_param_type", "wrong_param_type"])
 
     def test_make_only_accepts_same_type_as_new_value(self):
         test_string = """
@@ -165,7 +165,7 @@ class TestErrorHandler(unittest.TestCase):
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
 
-        self.assertListEqual(error_ids, [2012, 2012])
+        self.assertListEqual(error_ids, ["variable_type_cannot_be_changed", "variable_type_cannot_be_changed"])
 
     def test_make_raises_error_if_variable_name_is_deref(self):
         test_string = "make :muuttuja 42"
@@ -175,5 +175,5 @@ class TestErrorHandler(unittest.TestCase):
         error_ids = self.error_handler.get_error_ids()
 
 
-        self.assertListEqual(error_ids, [2028])
+        self.assertListEqual(error_ids, ["deref_instead_of_string_literal"])
 
