@@ -3,7 +3,7 @@
 This document contains the syntax and grammar of the Logo variant that is used in this project. Some rules may differ from the typical Logo language.
 
 - [Data types and syntax](#data-types-and-syntax)
-- [Debugging](#debugging)
+- [Communication](#communication)
 - [Moving the robot](#moving-the-robot)
 - [Mathematical operations](#mathematical-operations)
 - [Unary operations](#unary-operations)
@@ -72,9 +72,10 @@ Call a procedure that supports an arbitrary number of parameters.
 (show "hello "world)
 ```
 
-## Debugging
-### show
-`show` can be used to print out various values. `show` will always print with a line break, even when given multiple inputs.
+## Communication
+
+***show expr***\
+*show* can be used to print out various values. *show* will always print with a line break, even when given multiple inputs.
 
 *Example*
 ```
