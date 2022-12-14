@@ -279,7 +279,7 @@ class ProcDecl(Node):
             logo_func_name=to_lowercase(self.leaf), logo_func_type=self.get_logotype()
         )
         self.children[0].generate_code()
-        # To avoid unreachable code in void methods without loops
+        # To avoid unreachable code in void methods without unknown functions
         if self.get_logotype() != LogoType.VOID:
             self._code_generator.start_try_catch_block()
             self.children[1].generate_code()
