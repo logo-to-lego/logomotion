@@ -44,7 +44,7 @@ class SymbolTable:
         """Saves current symbol table entries to a stack when entering to a new scope"""
         self._stack.appendleft({})
         if not self._in_function and in_function:
-            self._in_function = in_function
+            self._in_function = to_lowercase(in_function)
 
     def finalize_scope(self):
         """Restores the previous symbol table scope and discards the current scope"""
@@ -72,7 +72,7 @@ class SymbolTable:
     def get_in_scope_function_symbol(self):
         """Return the current in-scope function's symbol,
         or None when not currently in a function scope."""
-        return self._in_function
+        return to_lowercase(self._in_function)
 
 
 default_variable_table = SymbolTable()

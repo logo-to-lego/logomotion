@@ -1,0 +1,9 @@
+repeat 5 {
+    fd 42
+}
+
+for ["i 0 20 2] {
+    bk :i
+}
+
+bye
