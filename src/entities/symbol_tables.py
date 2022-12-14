@@ -15,15 +15,17 @@ class SymbolTables:
         """Takes two symbols (variable or function) as parameters,
         concatenates their typeclasses and updates their symbols typeclasses
         """
-        new_typeclass = Type.concatenate(symbol1.typeclass, symbol2.typeclass)
 
-        for var_name in new_typeclass.variables:
-            variable = self.variables.lookup(var_name)
-            variable.typeclass = new_typeclass
+        typeclass1 = symbol1.typeclass
+        typeclass2 = symbol2.typeclass
+        new_typeclass = Type.concatenate(typeclass1, typeclass2)
 
-        for func_name in new_typeclass.functions:
-            func = self.functions.lookup(func_name)
-            func.typeclass = new_typeclass
+        for variable in self.variables.get_symbols():
+            if variable.typeclass in (typeclass1, typeclass2):
+                variable.typeclass = new_typeclass
 
+        for function in self.functions.get_symbols():
+            if function.typeclass in (typeclass1, typeclass2):
+                function.typeclass = new_typeclass
 
 default_symbol_tables = SymbolTables()

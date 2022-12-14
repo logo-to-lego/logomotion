@@ -102,7 +102,6 @@ class TestFunctions(unittest.TestCase):
         ast = self.parser.parse(test_code)
         ast.check_types()
         self.assertEqual(0, len(self.error_handler.get_error_ids()))
-    
 
     def test_function_calls_argument_is_not_right_type_in_proccall_when_parameter_type_is_unknown(self):
         test_code = """TO f :a output :a END make "a (f 3)"""
@@ -158,6 +157,21 @@ class TestFunctions(unittest.TestCase):
     
     def test_binop_sets_type_in_recursive_call(self):
         test_code = """TO f :y MAKE "x 1+f :y OUTPUT :y END"""
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        errors = self.error_handler.get_error_ids()
+        self.assertEqual(0, len(errors))
+
+    def test_type_concat_works_with_conditional_statement(self):
+        test_code = """
+            TO f :x
+                make "b :x
+                if true {
+                    make "a :x
+                    make "a 1
+                }
+                make "b :x
+            END"""
         ast = self.parser.parse(test_code)
         ast.check_types()
         errors = self.error_handler.get_error_ids()

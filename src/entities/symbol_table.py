@@ -36,6 +36,15 @@ class SymbolTable:
                     return table[key]
         return None
 
+    def get_symbols(self):
+        """Returns all symbols except predefined functions (for and repeat) from symbol table in list"""
+        symbols = []
+        for table in self._stack:
+            for key in table:
+                if key not in ("for", "repeat"):
+                    symbols.append(table[key])
+        return symbols
+
     def free(self):
         """Removes entries from the current symbol table scope"""
         self._stack[0] = {}

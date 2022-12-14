@@ -37,7 +37,7 @@ class Variable(Symbol):
                 Defaults to new type class.
         """
         if not typeclass:
-            typeclass = Type(variables={name})
+            typeclass = Type()
         if not isinstance(typeclass, Type):
             raise TypeError("Symbols type must be an instance of Type class")
         super().__init__(name, typeclass)
@@ -62,7 +62,7 @@ class Function(Symbol):
         else:
             self._parameters = params
         if not typeclass:
-            typeclass = Type(functions={name})
+            typeclass = Type()
         if not isinstance(typeclass, Type):
             raise TypeError("Symbols type must be an instance of Type class")
         super().__init__(name, typeclass)

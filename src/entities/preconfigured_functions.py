@@ -29,7 +29,7 @@ def _repeat():
     procedure = Function(
         fname,
         params=[repeat_n, nameless],
-        typeclass=Type(logotype=LogoType.VOID, functions=set((fname,))),
+        typeclass=Type(logotype=LogoType.VOID),
     )
     return procedure
 
@@ -47,6 +47,6 @@ def _for():
     procedure = Function(
         fname,
         params=[iterator_name, start, limit, stepsize, nameless],
-        typeclass=Type(logotype=LogoType.VOID, functions=set((fname,))),
+        typeclass=Type(logotype=LogoType.VOID),
     )
     return procedure

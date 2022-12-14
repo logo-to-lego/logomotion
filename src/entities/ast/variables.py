@@ -106,7 +106,7 @@ class VariableNode(Node):
         pass
 
     def scoped_type_check(self):
-        symbol = Variable(self.leaf, Type(LogoType.FLOAT, variables={self.leaf}))
+        symbol = Variable(self.leaf, Type(LogoType.FLOAT))
         self._symbol_tables.variables.insert(self.leaf.leaf, symbol)
 
     def generate_code(self):

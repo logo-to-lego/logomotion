@@ -194,6 +194,12 @@ class ProcDecl(Node):
             return self.procedure.typeclass.logotype
         return None
 
+    def _typeclass_has_variables(self, typeclass, variables):
+        for variable in variables:
+            if variable.typeclass == typeclass:
+                return True
+        return False
+
     def check_types(self):
         # Check the procedure hasn't already been declarated
         if self._symbol_tables.functions.lookup(self.leaf):
@@ -201,7 +207,7 @@ class ProcDecl(Node):
                 "procedure_has_already_been_defined", self.position.get_lexspan(), proc=self.leaf
             )
 
-        self.procedure = Function(self.leaf, typeclass=Type(functions={self.leaf}))
+        self.procedure = Function(self.leaf, typeclass=Type())
         self._symbol_tables.functions.insert(self.leaf, self.procedure)
         self._symbol_tables.variables.initialize_scope(in_function=self.procedure)
 
@@ -224,9 +230,13 @@ class ProcDecl(Node):
                     param=parameter.name,
                 )
 
+        # Procedure output type is void, if procedures type is still unknown and 
+        # typeclass of the procedure has no variables. I.e. procedures logotype, which is 
+        # unknown, has not gotten its unknown type from a variable which has unknown as its type
         if (
             self.procedure.get_logotype() == LogoType.UNKNOWN
-            and len(self.procedure.typeclass.variables) == 0
+            and not self._typeclass_has_variables(
+                self.procedure.typeclass, self._symbol_tables.variables.get_symbols())
         ):
             self.procedure.typeclass.logotype = LogoType.VOID
         else:

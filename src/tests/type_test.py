@@ -24,17 +24,6 @@ class TestType(unittest.TestCase):
 
         self.parser = Parser(self.lexer, self.logger, self.symbol_tables)
 
-    def test_new_variable_and_function_saves_correct_params(self):
-        var = Variable("var1")
-        func = Function("func1")
-
-        var_typeclass_variables = var.typeclass.variables
-        func_typeclass_functions = func.typeclass.functions
-
-        self.assertNotEqual(id(var.typeclass), id(func.typeclass))
-        self.assertEqual(var_typeclass_variables, {"var1"})
-        self.assertEqual(func_typeclass_functions, {"func1"})
-
     def test_concatenate_func_and_var_result_in_shared_typeclass(self):
         var = Variable("var1")
         func = Function("func1")
@@ -44,10 +33,6 @@ class TestType(unittest.TestCase):
         self.symbol_tables.concatenate_typeclasses(var, func)
 
         self.assertEqual(id(var.typeclass), id(func.typeclass))
-        self.assertEqual(var.typeclass.variables, {"var1"})
-        self.assertEqual(func.typeclass.variables, {"var1"})
-        self.assertEqual(var.typeclass.functions, {"func1"})
-        self.assertEqual(func.typeclass.functions, {"func1"})
 
     def test_deref_adds_variable_to_same_instance_of_typeclass(self):
         test_string = """
