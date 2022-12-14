@@ -14,41 +14,59 @@ statement_list
 
 statement
     : command
-    | procedure_decl
+    | proc_decl
 
 command
     : fd
     | bk
     | rt
     | lt
-    | cs
     | show
     | make
-    | procedure_call_no_params TODO
-    | procedure_call_params TODO
-    | IFE TODO
-    | STOP TODO
-    | FORE TODO
-    | RUN TODO
-    | REPEAT
+    | proc_decl
+    | proc_args
+    | output
+    | proc_call
+    | bye
+    | if
+    | ifelse
 
-expression_list
-    : expression expression_list
+expressions
+    : expression expressions
     | empty
 
-procedure_call_no_params
-    : IDENT
+expression
+    : NUMBER
+    | FLOAT
+    | TRUE
+    | FALSE
+    | DEREF
+    | STRINGLITERAL
+    | proc_call
+    | unknown_function
+    | expression PLUS expression
+    | expression MINUS expression
+    | expression MUL expression
+    | expression DIV expression
+    | expression EQUALS expression
+    | expression LESSTHAN expression
+    | expression GREATERTHAN expression
+    | expression LTEQUALS expression
+    | expression GTEQUALS expression
+    | expression NOTEQUALS expression
+    | MINUS expression %prec UMINUS
 
-procedure_call_params
-    : IDENT expression
-    | LPAREN IDENT expression_list RPAREN
+proc_call
+    : IDENT expressions
+    | FOR LBRACKET expressions RBRACKET unknown_function
+    | REPEAT expression unknown_function
 
-procedure_decl
-    : TO IDENT param_decl_list statement_list END
+proc_decl
+    : TO IDENT proc_args statement_list END
 
-param_decl_list
-    : DEREF
-    | DEREF COMMA param_decl_list
+proc_args
+    : proc_args DEREF
+    | empty
 
 unknown_function
     : LBRACE statement_list RBRACE
