@@ -11,6 +11,7 @@ This file is a work in progress. Headings follow the folder structure of the pro
 Define token types here.
 
 ### Lexer.py
+Contains `class Lexer`
 Define word representations for lex tokens. Forbidden characters also defined here. 
 
 ## Parser
