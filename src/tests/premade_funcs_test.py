@@ -34,6 +34,18 @@ class TestPremadeFuncs(unittest.TestCase):
         ast.check_types()
         self.assertEqual(0,len(self.error_handler.get_error_ids()))
         
+    def test_repeat2_structure(self):
+        test_code = """ 
+        make "blokki {repeat 3 {fd 10}}
+        TO repeat2 :foo
+            repeat 2 :foo
+        END
+        repeat2 :blokki
+        """
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(0,len(self.error_handler.get_error_ids()))
+        
     def test_for_in_for(self):
         test_code = """
         for ["i 1 2 1] { ;itr start limit step
@@ -61,3 +73,14 @@ class TestPremadeFuncs(unittest.TestCase):
         ast.check_types()
         error_ids = self.error_handler.get_error_ids()
         self.assertIn("wrong_amount_of_aguments_for_procedure" , error_ids)
+        
+    def test_no_scope_bleed(self):
+        test_code = """
+        repeat 2 {
+            make "a 3
+        }
+        show :a
+        """
+        ast = self.parser.parse(test_code)
+        ast.check_types()
+        self.assertEqual(1,len(self.error_handler.get_error_ids()))
