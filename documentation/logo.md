@@ -22,7 +22,7 @@ This document contains the syntax and grammar of the Logo variant that is used i
 - [Loops](#loops)
     - [About the scope of loops](#about-the-scope-of-loops)
 - [Scopes](#scopes)
-- [Case insensitivity](#case-sensitivity)
+- [Case sensitivity](#case-sensitivity)
 
 ## Data types and syntax
 
@@ -283,6 +283,26 @@ make "y (square 2) + 5
 if 10 < square 5 {}
 ```
 
+Note that if you have an *output* within an inner scope in your procedure (like a conditional statement), you also have to end your procedure with an output. Below is an example and a suggested fix.
+```
+TO foo :x
+    if :x > 1000 {
+        output "too.far
+    }
+    fd :x
+END
+-> ERROR
+```
+```
+TO foo :x
+    if :x > 1000 {
+        output "too.far
+    }
+    fd :x
+    output "far.enough
+END
+```
+
 ### About parameter typing
 You must be able to determine the procedure parameter types from your code or it won't compile. Most often this can be done by reassigning the parameter value with `make` or using [Mathematical operations](#mathematical-operations) and [Relational operations](#relational-operations).
 
@@ -313,7 +333,7 @@ Similarly, it is not possible to refer to a variable defined within a procedure 
 TO foo
     make "x 10
 END
-    show :x
+show :x
 -> ERROR, :x is not defined
 ```
 
@@ -382,7 +402,7 @@ Variables defined within [Conditional statements](#conditional-statements) and [
 
 ## Case sensitivity
 
-Variables, commands, function names and other referenced types of information are all case insensitive. For example:
+Variables, commands, procedure names and other referenced types of information are all case insensitive. For example:
 
 ```
 make "x 42
