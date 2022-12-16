@@ -24,7 +24,7 @@ Clone this repo by running `git clone git@github.com:logo-to-lego/logomotion.git
 ### Poetry
 1. [Poetry](https://pypi.org/project/poetry/) makes it easier to handle dependencies and run the program with coherent commands. Install poetry with `pip3 install poetry`.
 2. After installing poetry, go to the logomotion directory, and run `poetry install`.
-3. The setup with poetry should now be done. You can try to run tests with `poetry run invoke test`.
+3. The setup with poetry should now be done. List invoke commands with `poetry run invoke --list`. E.g. you can try to run tests with `poetry run invoke test`.
 
 ### Java and Gradle
 
@@ -63,9 +63,9 @@ Check also that you have the correct motor ports configured in [.env](https://gi
 
 ## Create your own code generator
 
-If you wish to compile logo to some other language than java, like python, you need to build a new CodeGenerator class. The default java code generator is in [src/utils/code_generator.py](https://github.com/logo-to-lego/logomotion/blob/main/src/utils/code_generator.py). Implement the classes methods to your code generator class. Working with Java has required us to do some tricks here and there, so all the method names might not be logical with your language.
+If you wish to compile logo to some other language than java, like python, you need to build a new CodeGenerator class. The default java code generator is in [src/code_generator](https://github.com/logo-to-lego/logomotion/blob/main/src/utils/code_generator.py). Implement the classes methods to your code generator class. Working with Java has required us to do some tricks here and there, so all the method names might not be logical with your language.
 
-In [main.py](https://github.com/logo-to-lego/logomotion/blob/main/src/main.py) add your language settings in method [get_code_generator](https://github.com/logo-to-lego/logomotion/blob/main/src/main.py#L18). The [CODE_GEN_LANG](https://github.com/logo-to-lego/logomotion/blob/main/src/main.py#L100) is defined in the [.env](https://github.com/logo-to-lego/logomotion/blob/main/.env) file.
+In [main.py](https://github.com/logo-to-lego/logomotion/tree/main/src/code_generator) add your language settings in method [get_code_generator](https://github.com/logo-to-lego/logomotion/blob/main/src/main.py#L18). The [CODE_GEN_LANG](https://github.com/logo-to-lego/logomotion/blob/main/src/main.py#L100) is defined in the [.env](https://github.com/logo-to-lego/logomotion/blob/main/.env) file.
 
 For testing purposes we transfered python code to the EV3 Brick with SSH. There might be more automated tools to do the job.
 
