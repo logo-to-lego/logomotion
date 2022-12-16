@@ -58,5 +58,4 @@ Run e2e tests with `poetry run invoke e2e`.
 Contains logger, error_handler and lowercase_converter.
 
 ## Logo
-- [Logo language (English)](https://github.com/logo-to-lego/logomotion/blob/main/documentation/logo.md)
-- [Logo language (Finnish)](https://github.com/logo-to-lego/logomotion/blob/main/documentation/logo_finnish.md)
+Contains examples of logo code
