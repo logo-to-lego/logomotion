@@ -47,7 +47,7 @@ The brick must be in connected to the same wifi as your computer. We have used h
 Once your brick has connection to internet, the IP should be at the top of the screen of your brick. Set the IP-address of the brick in **/logomotion_gradle/config.gradle**
 
 ### Running the code
-Run the logo code with `poetry run invoke start path_to_your_logo_code.logo` so for example `poetry run invoke start logo/move.logo`. If there are no errors, java code is generated to logomotion_gradle/src/java/Logo.java. If there were errors, java is not generated. 
+Run the logo code with `poetry run invoke start path_to_your_logo_code.logo` so for example `poetry run invoke start logo/move.logo`. If there are no errors, java code is generated to logomotion_gradle/src/main/java/logo/Logo.java. If there were errors, java is not generated. 
 
 Change your directory to logomotion_gradle with `cd logomotion_gradle` and run `./gradlew deployAndRun`. 
 
