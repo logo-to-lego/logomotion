@@ -7,21 +7,33 @@ This file is a work in progress. Headings follow the folder structure of the pro
 
 ## Lexer
 
-### Lexer.py
-
 ### Token_types.py
+Define token types here.
+
+### Lexer.py
+Contains `class Lexer`
+Define word representations for lex tokens. Forbidden characters also defined here. 
 
 ## Parser
 
 ### Command.py
+Parsing rules for function calls, command structures, logo specific commands.
 
 ### Expression.py
+Parsing rules for expressions: binop, relop, uminus, numbers, bools, references (derefs), things that reduce to expressions.  
 
 ### Globals.py
+Contains:
+- Precedence rules for operations. 
+- `class Position` which is used for error highlighting.
+- Shared wrapper for exposing lexer, console_io, symbol tables, and error_handler to parser functions.
 
 ### Parser.py
+Contains the parser class, which uses the PLY parser.
+Contains rules for start, statement_list, empty and error.
 
 ### Preparser.py
+Provides preparsing of functions, which are then given to parser.py.
 
 ## Ply
 
@@ -36,6 +48,7 @@ This file is a work in progress. Headings follow the folder structure of the pro
 ### End-to-End testing
 
 ## Utils
+Contains logger, error_handler and lowercase_converter.
 
 ## Logo
 
