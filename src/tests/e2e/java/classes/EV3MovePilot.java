@@ -1,6 +1,5 @@
 package classes;
 
-
 public class EV3MovePilot {
 
     public EV3MovePilot() {
