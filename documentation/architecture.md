@@ -46,6 +46,9 @@ Provides preparsing of functions, which are then given to parser.py.
 ### Unit testing
 
 ### End-to-End testing
+End-to-End tests are done with Robot Framework. They are used for compiling the generated java. I.e. they compile a logo file and check that the generated java code compiles.
+
+The tests are located in [src/tests/e2e](https://github.com/logo-to-lego/logomotion/tree/main/src/tests/e2e) and [AppLibrary.py](https://github.com/logo-to-lego/logomotion/blob/main/src/AppLibrary.py) handles the Robot Framework function calls.
 
 ## Utils
 Contains logger, error_handler and lowercase_converter.
