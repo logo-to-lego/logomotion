@@ -17,7 +17,6 @@ Logomotion is a Logo to Java compiler. The goal of the project is to enable the 
 - [Instructions](https://github.com/logo-to-lego/logomotion/blob/main/documentation/instructions.md)
 - [Logo language](https://github.com/logo-to-lego/logomotion/blob/main/documentation/logo.md)
 - [Logo language (Finnish)](https://github.com/logo-to-lego/logomotion/blob/main/documentation/logo_finnish.md)
-- [Working hours](https://docs.google.com/spreadsheets/d/12jyUsrNQjnxRyR_zxs0hcPKDV8_77uyjEEaTHGnhgDI)
 - [Architecture](https://github.com/logo-to-lego/logomotion/blob/main/documentation/architecture.md)
 - [Command structures](https://github.com/logo-to-lego/logomotion/blob/main/documentation/adding_command_structures.md)
 

@@ -37,22 +37,26 @@ Provides preparsing of functions, which are then given to parser.py.
 
 ## Ply
 
-### lex.py
-
-### yacc.py
+Checkout [https://www.dabeaz.com/ply/ply.html](https://www.dabeaz.com/ply/ply.html). The lexer and parser are in [src/ply](https://github.com/logo-to-lego/logomotion/tree/main/src/ply).
 
 ## Tests
 
 ### Unit testing
+
+Found in [src/tests](https://github.com/logo-to-lego/logomotion/tree/main/src/tests)
+
+Run unit tests with `poetry run invoke test`.
 
 ### End-to-End testing
 End-to-End tests are done with Robot Framework. They are used for compiling the generated java. I.e. they compile a logo file and check that the generated java code compiles.
 
 The tests are located in [src/tests/e2e](https://github.com/logo-to-lego/logomotion/tree/main/src/tests/e2e) and [AppLibrary.py](https://github.com/logo-to-lego/logomotion/blob/main/src/AppLibrary.py) handles the Robot Framework function calls.
 
+Run e2e tests with `poetry run invoke e2e`.
+
 ## Utils
 Contains logger, error_handler and lowercase_converter.
 
 ## Logo
-
-## Other architectural comments
+- [Logo language (English)](https://github.com/logo-to-lego/logomotion/blob/main/documentation/logo.md)
+- [Logo language (Finnish)](https://github.com/logo-to-lego/logomotion/blob/main/documentation/logo_finnish.md)
